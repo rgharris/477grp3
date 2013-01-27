@@ -1,0 +1,7 @@
+Folder Structure:
+
+webapp -> all php, html, css, etc. that will be in the web server folder on the rpi
+
+rpi -> all other code that will be on the pi (for communication with the micro, etc.)
+
+micr -> all code for the micro

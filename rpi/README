@@ -1,0 +1,1 @@
+all non web server code that will be on the pi (for communication with the micro, etc.) goes in this directory
