@@ -11,20 +11,21 @@ Required communication from micro:
 - ports at location
 - resources on location
 - roll of resources
+- if valid
 --Turn Commands
 - Resources Recieved by Player 
 
 There are a few different responses that could occur:
 - road placed:
-{ "command":"piece", "piece":"new", "piecetype":"road", "pieceloc":"D,3", "locresources":[ { "resource":"wheat", "roll":11, "scarcity":3 }, { "resource":"ore", "roll":4, "scarcity":2 } ], "locports":null }
+{ "command":"piece", "piece":"new", "piecetype":"road", "pieceloc":"D,3", "locresources":[ { "resource":"wheat", "roll":11, "scarcity":3 }, { "resource":"ore", "roll":4, "scarcity":2 } ], "locports":null, "isvalid":true }
 - settlement placed:
-{ "command":"piece", "piece":"new", "piecetype":"town", "pieceloc":"A,2", "locresources":[ { "resource":"wheat", "roll":4, "scarcity":5 }, {"resource":"ore", "roll":3, "scarcity": 3}, {"resource":"wood", "roll":4, "scarcity":6 } ], "locports":null}
+{ "command":"piece", "piece":"new", "piecetype":"town", "pieceloc":"A,2", "locresources":[ { "resource":"wheat", "roll":4, "scarcity":5 }, {"resource":"ore", "roll":3, "scarcity": 3}, {"resource":"wood", "roll":4, "scarcity":6 } ], "locports":null, "isvalid":true }
 - city placed:
-{ "command":"piece", "piece":"replace", "piecetype":"town", "pieceloc":"B,1", "locresources":[ {"resource":"wood", "roll":2, "scarcity":4 }, {"resouce":"sheep", "roll":12, "scarcity":4}], "locports":{"type":"any", "value":4} }
+{ "command":"piece", "piece":"replace", "piecetype":"town", "pieceloc":"B,1", "locresources":[ {"resource":"wood", "roll":2, "scarcity":4 }, {"resouce":"sheep", "roll":12, "scarcity":4}], "locports":{"type":"any", "value":4}, "isvalid":false }
 - settlement removed (to be replaced by a city):
-{ "command":"piece", "piece":"removed", "piecetype":"town", "pieceloc":"A,2", "locresources":[ { "resource":"wheat", "roll":4, "scarcity":5 }, {"resource":"ore", "roll":3, "scarcity": 3}, {"resource":"wood", "roll":4, "scarcity":6 } ], "locports":null}
+{ "command":"piece", "piece":"removed", "piecetype":"town", "pieceloc":"A,2", "locresources":[ { "resource":"wheat", "roll":4, "scarcity":5 }, {"resource":"ore", "roll":3, "scarcity": 3}, {"resource":"wood", "roll":4, "scarcity":6 } ], "locports":null, "isvalid":true}
 - Thief placed:
-{ "command":"piece", "piece":"new", "piecetype":"thief", "pieceloc":"B,3", "locresources":[ { "resource":"desert", "roll":0, "scarcity":0 } ], "locports":null }
+{ "command":"piece", "piece":"new", "piecetype":"thief", "pieceloc":"B,3", "locresources":[ { "resource":"desert", "roll":0, "scarcity":0 } ], "locports":null, "isvalid":true }
 - Turn change, dice rolled:
 { "command":"turn", "resources":[ {"player":1, "recieved":[ { "resource":"wheat", "amount":1 }, {"resource":"ore", "amount":2} ]}, {"player":2, "recieved":null}, {"player":3, "recieved":[ {"resource":"sheep", "amount":1}]}]}
 
