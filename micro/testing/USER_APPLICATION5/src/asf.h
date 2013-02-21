@@ -65,8 +65,14 @@
 // From module: FLASHC - Flash Controller
 #include <flashc.h>
 
+// From module: GPIO - General-Purpose Input/Output
+#include <gpio.h>
+
 // From module: Generic board support
 #include <board.h>
+
+// From module: INTC - Interrupt Controller
+#include <intc.h>
 
 // From module: IOPORT - General purpose I/O service
 #include <ioport.h>
@@ -86,5 +92,12 @@
 
 // From module: System Clock Control - UC3 B0 implementation
 #include <sysclk.h>
+
+// From module: TWI - Two-Wire Interface
+#include <twi.h>
+
+// From module: TWI - Two-Wire Interface - UC3 A/B implementation
+#include <twi_master.h>
+#include <uc3_twi/twi_master.h>
 
 #endif // ASF_H
