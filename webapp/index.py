@@ -18,9 +18,56 @@
 #I don't think anything else needs stored on the server, right?
 #Everything else can be done by live communication with the micro.
 
-# Enables debugging
+# Import debugging
 import cgitb
+#Everything else.
+import os, sys, json
+
+#Enable debugging
 cgitb.enable()
+
+#The prefix of the player json files - PLAYER_FILE[num].json
+PLAYER_FILE="player"
+
+playerID = 0
+
+#Starting with really crappy python to get a feel for the process.
+#Will make it better later...maybe.
+
+#First start by checking if json files exist. If not, create them.
+#If so, check if they are set to "active". If not, we have this player's ID!
+for i in range(0, 3):
+	filename=PLAYER_FILE + str(i) + ".json"
+	#Ignores directories, which is fine, but creates a race condition
+	#if multiple people access the site within a few micro/milliseconds
+	#of each other (not sure which, depends on the speed of the pi).
+	#Need a way to solve this.
+	newPlayer = {'playerName':"player" + str(i), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'active':1}
+	if not os.path.isfile(filename):
+		#Need a way of doing timeouts without timeouts - arch's ntp service is not reliable, and generally returns Jan 1 1970.
+		with open(filename, 'w') as f:
+			json.dump(newPlayer, f, ensure_ascii=False)	
+		playerID = i
+		break
+	else:
+		jsonInfo = open(filename, 'r')
+		playerInfo = json.loads(jsonInfo)
+		jsonInfo.close()
+		if(playerInfo["active"] == 0):
+			#This player is inactive, so here we go!
+			playerID = i
+			playerInfo["active"] = 1
+			with open(filename, 'w') as f:
+				json.dump(newPlayer, f, ensure_ascii=False)
+			break
+		else:
+			continue
+
+if playerID=0:
+	#We hit all 4 players, so disallow anyone else from joining.
+	pass
+
+		
 
 print "Content-Type: text/html;charset=utf-8"
 print
@@ -36,7 +83,12 @@ print """<!DOCTYPE HTML>
 	<head>
 		<!-- Required for mobile devices -->
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-		<link rel="stylesheet" href="styles/catron.css" type="text/css" />
+		<!-- Not really a good practice, but this basically just needs to work in demo. If anyone has any better ideas, PLEASE IMPLEMENT THEM. -->
+		<!-- Should support up to 720p phones, which works for the iPhone 4s, Galaxy S3, and Galaxy Nexus we'll be testing with. -->
+		<link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" media="only screen and (max-device-width: 720px) and (orientation: portrait)/>	
+		<link rel="stylesheet" href="styles/catronMobileLandscape.css" type="text/css" media="only screen and (max-device-width: 1280px) and (orientation: landscape)/>
+		<link rel="stylesheet" href="styles/catronNormal.css" type="text/css" media="only screen and (min-device-width: 721px)/>
+
 	</head>
 	<body>
 		<div id="container">
