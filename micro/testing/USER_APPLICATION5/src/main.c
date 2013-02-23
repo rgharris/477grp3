@@ -19,11 +19,6 @@
 #include <spi_master.h>
 #include <twi.h>
 /*
-// I2C MACROS
-#define SET(x,y) (x|=(1<<y))
-#define CLR(x,y) (x&=(~(1<<y)))
-#define CHK(x,y) (x&(1<<y))
-#define TOG(x,y) (x^=(1<<y))
 
 //global variables
 #define BUFLEN_RECV 12
@@ -37,8 +32,7 @@ uint8_t tran[BUFLEN_TRAN] = {0x12, 0x34, 0x56};
 //variable to indicate if something went horribly wrong
  uint8_t reset=0 
  
-//prototypes
-void handleI2C();
+//prototypes 
 void blinkLED(uint32_t led);
 void spi_init_pins(void);
 
@@ -105,80 +99,8 @@ void spi_init_pins(void)
       spi_master_init(&AVR32_SPI);
       spi_master_setup_device(&AVR32_SPI, &spi_device_conf, SPI_MODE_0, 1000000, 0);
       spi_enable(&AVR32_SPI);
-   }
+   }*/
    
-//setup the I2C hardware to ACK the next transmission
-//and indicate that we've handled the last one.
-#define TWACK (TWCR=(1<<TWINT)|(1<<TWEN)|(1<<TWEA))
-//setup the I2C hardware to NACK the next transmission
-#define TWNACK (TWCR=(1<<TWINT)|(1<<TWEN))
-//reset the I2C hardware (used when the bus is in a illegal state)
-#define TWRESET (TWCR=(1<<TWINT)|(1<<TWEN)|(1<<TWSTO)|(1<<TWEA))
-
-void handleI2C(){
-  //check if we need to do any software actions
-  if(CHK(TWCR,TWINT)){
-    switch(TW_STATUS){
-//--------------Slave receiver------------------------------------
-    //SLA_W received and acked, prepare for data receiving
-    case 0x60:  
-      TWACK;
-      r_index =0;
-      break;
-    case 0x80:  //a byte was received, store it and 
-                //setup the buffer to recieve another
-      recv[r_index] = TWDR;
-      r_index++;
-      //don't ack next data if buffer is full
-      if(r_index >= BUFLEN_RECV){
-          TWNACK;
-      }else {
-          TWACK;
-      }
-      break;
-    
-	case 0x68://adressed as slave while in master mode.
-              //should never happen, better reset;
-      reset=1;
-    
-	case 0xA0: //Stop or rep start, reset state machine
-      TWACK;
-      break;
-//-------------- error recovery ----------------------------------
-    case 0x88: //data received  but not acked
-      //should not happen if the master is behaving as expected
-      //switch to not addressed mode
-      TWACK;
-      break;
-//---------------Slave Transmitter--------------------------------
-    case 0xA8:  //SLA R received, prep for transmission
-		        //and load first data
-      t_index=1;
-      TWDR = tran[0];
-      TWACK;
-      break;
-    case 0xB8:  //data transmitted and acked by master, load next
-      TWDR = tran[t_index];
-      t_index++;
-      //designate last byte if we're at the end of the buffer
-      if(t_index >= BUFLEN_ACC_DATA) TWNACK;
-      else TWACK;
-      break;
-    case 0xC8: //last byte send and acked by master
-    //last bytes should not be acked, ignore till start/stop
-      //reset=1;
-    case 0xC0: //last byte send and nacked by master 
-		//(as should be)
-      TWACK;
-      break;
-//--------------------- bus error---------------------------------
-    //illegal start or stop received, reset the I2C hardware
-	case 0x00: 
-      TWRESET;
-      break;
-    }
-  }
-}*/
 
 //------------------  C O N F I G U R A T I O N S  -------------------
 
@@ -203,6 +125,7 @@ void handleI2C(){
 #define TWI_MEM_IDLE    0  // Idle state
 #define TWI_MEM_ADDR    1  // Address state
 #define TWI_MEM_DATA    2  // Data state
+#define LED			AVR32_PIN_PA11
 U8  s_status_cmd = TWI_MEM_IDLE; // State variable
 U8  s_u8_addr_pos;               // Offset in the address value (because we receive the address one Byte at a time)
 U32 s_u32_addr;                  // The current address in the virtual mem
@@ -276,6 +199,10 @@ int main(void)
   twi_options_t opt;
   twi_slave_fct_t twi_slave_fct;
   int status;
+  
+  ioport_init();
+  ioport_set_pin_dir(LED,IOPORT_DIR_OUTPUT);
+  ioport_set_pin_level(LED,false);
 
   // Switch to oscillator 0
   //pm_switch_to_osc0(&AVR32_PM, FOSC0, OSC0_STARTUP);
@@ -300,16 +227,18 @@ int main(void)
    twi_slave_fct.stop = &twi_slave_stop;
    status = twi_slave_init(&AVR32_TWI, &opt, &twi_slave_fct );
   // check init result
-  /*if (status == TWI_SUCCESS)
+  if (status == TWI_SUCCESS)
   {
     // display test result to user
-     print_dbg("Slave start:\tPASS\r\n");
+     ioport_set_pin_level(LED,true);
+	 //print_dbg("Slave start:\tPASS\r\n");
   }
   else
   {
     // display test result to user
-    print_dbg("slave start:\tFAIL\r\n");
-  }*/
+	ioport_set_pin_level(LED,false);
+    //print_dbg("slave start:\tFAIL\r\n");
+  }
  
   while(1);
  }
