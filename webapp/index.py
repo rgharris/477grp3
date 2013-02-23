@@ -1,12 +1,36 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
+#My thoughts:
+#Perhaps we should create 4 seperate flat files
+#as a sort of database (instead of running an actual
+#database, as that could be tough on this little
+#guy) that use a JSON or YAML format. I'm leaning
+#toward JSON because it basically maps directly to 
+#python structures.
+#
+#The json file should contain each player's name,
+#their resources, cards, etc., and the active status.
+#We'll also need a way to keep track of the active status...
+#The last one will determine what player number the attaching
+#player is (if 1 is active, check 2, etc.)
+#
+#I don't think anything else needs stored on the server, right?
+#Everything else can be done by live communication with the micro.
+
 # Enables debugging
 import cgitb
 cgitb.enable()
 
 print "Content-Type: text/html;charset=utf-8"
 print
+
+#The below HTML is just an example page. It only works in portrait mode on my S3,
+#and I don't know how it would look on, say, a One X or an iPhone. Additionally,
+#it doesn't do any setup (get user ID) and none of the buttons work yet.
+#
+#I'm working on it.
+
 print """<!DOCTYPE HTML>
 <html>
 	<head>
