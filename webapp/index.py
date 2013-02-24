@@ -82,7 +82,7 @@ for i in range(0, 4):
 				#Cookies aren't valid anymore. Reset the cookies string.
 				cookies = ''
 
-if playerID != -1:
+#if playerID != -1:
 	#Set cookie for player ID and last active time.
 	#This should have the effect of just resetting
 	#last active time if the the cookie existed
