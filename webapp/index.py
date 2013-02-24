@@ -63,13 +63,36 @@ for i in range(0, 4):
 		else:
 			continue
 
+#This stuff needs to go at the top of all pages.
 print "Content-Type: text/html;charset=utf-8"
 print
+print """<!DOCTYPE HTML>
+   <html>
+      <head>
+         <!-- Required for mobile devices -->
+         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+         <!-- Not really a good practice, but this basically just needs to work in demo. If anyone has any better ideas, PLEASE IMPLEMENT THEM. -->
+         <link rel="stylesheet" href="styles/catronNormal.css" type="text/css" media="screen"/>
+         <link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" media="screen and (max-device-width: 480px) and (orientation: portrait)"/> 
+         <link rel="stylesheet" href="styles/catronMobileLandscape.css" type="text/css" media="screen and (max-device-width: 640px) and (orientation: landscape)"/>
+         <!--<link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" />-->
+   
+      </head>
+"""
 if playerID == -1:
-	#We hit all 4 players, so disallow anyone else from joining.
-	print "Error! All four spots appear to be taken! Please wait until the next game."
-#else:	
-if True:
+	print """<body class="error">
+        		 <div id="container">
+           		 <div id="head">
+               	<h2>Max Players Reached!</h2>
+		          </div>
+      	       <div id="body">
+           		    <p>This game already has the maximum number of players. Enjoy watching this game, and try to join the next one!</p>
+	             </div>
+    	      </div>
+	      </body>
+	"""
+
+else:	
 	# Need to set cookie with user ID, which is checked above. Should we have an external cgi page to
 	# do resource management or do it all in this page?
 	#
@@ -144,3 +167,6 @@ if True:
 			</div>
 		</body>
 	</html>"""
+
+#This needs to go at the end of all pages.
+print "</html>"
