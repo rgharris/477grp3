@@ -21,18 +21,22 @@
 # Import debugging
 import cgitb
 #Everything else.
-import os, sys, json
+import os, sys, json, http.cookie, time
 
 #Enable debugging
 cgitb.enable()
 
 #The prefix of the player json files - PLAYER_FILE[num].json
 PLAYER_FILE="player"
-
+TIMEOUT = 3600 #one hour (3600 seconds)
 playerID = -1
 
 #Starting with really crappy python to get a feel for the process.
 #Will make it better later...maybe.
+
+#Get cookies!
+cookies = os.environ.get('HTTP_COOKIE')
+cookie = Cookie.SimpleCookie()
 
 #First start by checking if json files exist. If not, create them.
 #If so, check if they are set to "active". If not, we have this player's ID!
@@ -50,18 +54,48 @@ for i in range(0, 4):
 		playerID = i
 		break
 	else:
-		jsonInfo = open(filename)
-		playerInfo = json.load(jsonInfo)
-		jsonInfo.close()
-		if(playerInfo["active"] == 0):
-			#This player is inactive, so here we go!
-			playerID = i
-			playerInfo["active"] = 1
-			with open(filename, 'w') as f:
-				json.dump(newPlayer, f, ensure_ascii=False)
-			break
+		#All json files exist, so check cookies!
+		if not cookies:
+			#No cookies. Check if player is active, if not, use this player. If so, carry on.
+			jsonInfo = open(filename)
+			playerInfo = json.load(jsonInfo)
+			jsonInfo.close()
+			if(playerInfo["active"] == 0):
+				#This player is inactive, so here we go!
+				playerID = i
+				playerInfo["active"] = 1
+				with open(filename, 'w') as f:
+					json.dump(newPlayer, f, ensure_ascii=False)
+				break
+			else:
+				continue
 		else:
-			continue
+			#We have delicious cookies (are they snickerdoodle?).
+			cookie.load(cookies)
+			lastactive = float(cookie['lastactive'].value)
+			if (lastactive + TIMEOUT > time.time()):
+				#We didn't time out! We have the player ID, and the JSON file is still valid.
+				playerID = int(cookie['playerid'].value)
+				playerInfo = json.load(open(PLAYER_FILE + str(playerID) + ".json"))
+				break
+			else:
+				#Cookies aren't valid anymore. Reset the cookies string.
+				cookies = ''
+
+if playerID != -1:
+	#Set cookie for player ID and last active time.
+	#This should have the effect of just resetting
+	#last active time if the the cookie existed
+	#already.
+	#(Clear cookie var in the process)
+	cookie = Cookie.SimpleCookie()
+	cookie['playerid'] = str(playerID)
+	cookie['lastactive'] = str(time.time())
+	#Cookies need to be sent before other headers
+	print cookie
+
+
+#################################PAGE GENERATION BELOW##################################
 
 #This stuff needs to go at the top of all pages.
 print "Content-Type: text/html;charset=utf-8"
@@ -80,7 +114,7 @@ print """<!DOCTYPE HTML>
       </head>
 """
 if playerID == -1:
-	print """<body class="error">
+	output = """<body class="error">
         		 <div id="container">
            		 <div id="head">
                	<h2>Max Players Reached!</h2>
@@ -92,21 +126,18 @@ if playerID == -1:
 	      </body>
 	"""
 
-else:	
-	# Need to set cookie with user ID, which is checked above. Should we have an external cgi page to
-	# do resource management or do it all in this page?
-	#
+else:
 	#The below HTML is just an example page. It only works in portrait mode on my S3,
 	#and I don't know how it would look on, say, a One X or an iPhone. Additionally,
 	#it doesn't do any setup (get user ID) and none of the buttons work yet.
 	#
 	#I'm working on it.
 
-	print """<!DOCTYPE HTML>
+	output = """<!DOCTYPE HTML>
 		<body>
 			<div id="container">
 				<div id="head">
-					<h2>Player ID: 0 Points</h2>
+					<h2>Player {0}: 0 Points</h2>
 					<img src="images/settings.png" class="settingsImg" />
 				</div>
 				<div id="resources">
@@ -160,5 +191,6 @@ else:
 		</body>
 	</html>"""
 
+print output.format(str(playerID))
 #This needs to go at the end of all pages.
 print "</html>"
