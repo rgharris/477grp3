@@ -92,10 +92,10 @@ if True:
 			<link rel="stylesheet" href="styles/catronNormal.css" type="text/css" media="only screen and (min-device-width: 721px)/>-->
 			<style type="text/css">
 				@import url("styles/catronNormal.css");
-				@media screen and (max-device-width: 720px) and (orientation:portrait){
+				@media screen and (max-device-width: 480px) and (orientation:portrait){
 					@import url("styles/catronMobilePortrait.css");
 				}
-				@media screen and (max-device-width: 1280px) and (orientation:landscape){
+				@media screen and (max-device-width: 640px) and (orientation:landscape){
 					@import url("styles/catronMobileLandscape.css");
 				}
 			</style>
