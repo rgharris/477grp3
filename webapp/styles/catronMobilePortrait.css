@@ -81,11 +81,11 @@ div#head h2{
 .button{
 	float:left;
 	border-right:solid 1px #000;
-	width:25%;
+	width:50%;
 	text-align:center;
-	font-size:14pt;
+	font-size:20pt;
 }
-#b4{
+#b2, #b4{
 	border-right: none;
 }
 
