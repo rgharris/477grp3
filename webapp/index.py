@@ -21,7 +21,7 @@
 # Import debugging
 import cgitb
 #Everything else.
-import os, sys, json, http.cookie, time
+import os, sys, json, Cookie, time
 
 #Enable debugging
 cgitb.enable()
@@ -35,8 +35,8 @@ playerID = -1
 #Will make it better later...maybe.
 
 #Get cookies!
-#cookies = os.environ.get('HTTP_COOKIE')
-#cookie = Cookie.SimpleCookie()
+cookies = os.environ.get('HTTP_COOKIE')
+cookie = Cookie.SimpleCookie()
 
 #First start by checking if json files exist. If not, create them.
 #If so, check if they are set to "active". If not, we have this player's ID!
@@ -82,17 +82,17 @@ for i in range(0, 4):
 				#Cookies aren't valid anymore. Reset the cookies string.
 				cookies = ''
 
-#if playerID != -1:
+if playerID != -1:
 	#Set cookie for player ID and last active time.
 	#This should have the effect of just resetting
 	#last active time if the the cookie existed
 	#already.
 	#(Clear cookie var in the process)
-#	cookie = Cookie.SimpleCookie()
-#	cookie['playerid'] = str(playerID)
-#	cookie['lastactive'] = str(time.time())
+	cookie = Cookie.SimpleCookie()
+	cookie['playerid'] = str(playerID)
+	cookie['lastactive'] = str(time.time())
 	#Cookies need to be sent before other headers
-#	print cookie
+	print cookie
 
 
 #################################PAGE GENERATION BELOW##################################
