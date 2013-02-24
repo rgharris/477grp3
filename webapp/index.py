@@ -152,7 +152,7 @@ else:
 					<div id="b3" class="button">
 						Status
 					</div>
-					<div id="b3" class="button">
+					<div id="b4" class="button">
 						End Turn
 					</div>
 				</div>
