@@ -88,3 +88,14 @@ div#head h2{
 #b3{
 	border-right: none;
 }
+
+/*Error pages. Use the same (general) layout, add an error class to the body.*/
+body.error{
+	background-image: url("../images/zenbge1.png", url("../images/zenbge2.png");
+}
+body.error div#head {
+	background-color: rgba(0,0,0,.5);
+}
+body.error div#head h2{
+	color: #FFFDD0;
+}

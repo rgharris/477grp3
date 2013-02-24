@@ -65,10 +65,9 @@ for i in range(0, 4):
 
 print "Content-Type: text/html;charset=utf-8"
 print
-#if playerID == -1:
+if playerID == -1:
 	#We hit all 4 players, so disallow anyone else from joining.
-	#Need to prettify.
-#	print "Error! All four spots appear to be taken! Please wait until the next game."
+	print "Error! All four spots appear to be taken! Please wait until the next game."
 #else:	
 if True:
 	# Need to set cookie with user ID, which is checked above. Should we have an external cgi page to
