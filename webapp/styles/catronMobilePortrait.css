@@ -92,6 +92,9 @@ div#head h2{
 #b3, #b4{
 	border-top: solid 1px #000;
 }
+#b1, #b3{
+	margin-left: 1%;
+}
 
 /*Error pages. Use the same (general) layout, add an error class to the body.*/
 body.error{
