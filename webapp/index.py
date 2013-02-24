@@ -86,7 +86,7 @@ if True:
 			<!-- Required for mobile devices -->
 			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 			<!-- Not really a good practice, but this basically just needs to work in demo. If anyone has any better ideas, PLEASE IMPLEMENT THEM. -->
-			<link rel="stylesheet" href="styles/catronNormal.css" type="text/css" media="screen/>
+			<link rel="stylesheet" href="styles/catronNormal.css" type="text/css" media="screen"/>
 			<link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" media="screen and (device-width: 480px) and (orientation: portrait)/>	
 			<link rel="stylesheet" href="styles/catronMobileLandscape.css" type="text/css" media="screen and (device-width: 640px) and (orientation: landscape)/>
 			<!--<link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" />-->
