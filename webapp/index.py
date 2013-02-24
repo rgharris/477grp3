@@ -83,13 +83,22 @@ else:
 	<html>
 		<head>
 			<!-- Required for mobile devices -->
-			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 			<!-- Not really a good practice, but this basically just needs to work in demo. If anyone has any better ideas, PLEASE IMPLEMENT THEM. -->
 			<!-- Should support up to 720p phones, which works for the iPhone 4s, Galaxy S3, and Galaxy Nexus we'll be testing with. -->
 			<!--<link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" media="only screen and (max-device-width: 720px) and (orientation: portrait)/>	
 			<link rel="stylesheet" href="styles/catronMobileLandscape.css" type="text/css" media="only screen and (max-device-width: 1280px) and (orientation: landscape)/>
 			<link rel="stylesheet" href="styles/catronNormal.css" type="text/css" media="only screen and (min-device-width: 721px)/>-->
-			<link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" />
+			<style type="text/css">
+				@import url("styles/catronNormal.css");
+				@media only screen and (max-device-width: 720px) and (orientation:portrait){
+					@import url("styles/catronMobilePortrait.css");
+				}
+				@media only screen and (max-device-width: 1280px) and (orientation:landscape){
+					@import url("styles/catronMobileLandscape.css");
+				}
+			</style>
+			<!--<link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" />-->
 	
 		</head>
 		<body>
