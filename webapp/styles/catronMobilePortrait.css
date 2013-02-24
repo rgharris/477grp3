@@ -95,8 +95,14 @@ body.error{
 }
 body.error div#head {
 	background-color: rgba(0,0,0,.5);
-	width: 100%;
 }
 body.error div#head h2{
 	color: #FFFDD0;
+	width: 100%;
+}
+body.error div#body {
+	width:100%;
+	text-align:center;
+	color: #FFFDD0;
+	
 }
