@@ -110,7 +110,7 @@ print """<!DOCTYPE HTML>
          <!-- Not really a good practice, but this basically just needs to work in demo. If anyone has any better ideas, PLEASE IMPLEMENT THEM. -->
          <link rel="stylesheet" href="styles/catronNormal.css" type="text/css" media="screen"/>
          <link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" media="screen and (max-device-width: 720px) and (orientation: portrait)"/> 
-         <link rel="stylesheet" href="styles/catronMobileLandscape.css" type="text/css" media="screen and (max-device-width: 1280px) and (orientation: landscape)"/>
+         <link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" media="screen and (max-device-width: 1280px) and (orientation: landscape)"/>
    
       </head>
 """
