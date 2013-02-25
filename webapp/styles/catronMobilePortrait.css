@@ -116,7 +116,6 @@ div#head h2{
 .modal{
     background-color: rgba(0,0,0,0.4);
 	 color: #FFFDD0;
-    display: block;
 	 width: 75%;
 	 height: 30%;
     position: absolute;
