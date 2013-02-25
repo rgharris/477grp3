@@ -41,27 +41,37 @@ playerID = -1
 cookies = os.environ.get('HTTP_COOKIE')
 cookie = Cookie.SimpleCookie()
 
-#First start by checking if json files exist. If not, create them.
-#If so, check if they are set to "active". If not, we have this player's ID!
-for i in range(0, 4):
-	filename=PLAYER_FILE + str(i) + ".json"
-	CUR_PLAYER_FILE = filename
-	#Ignores directories, which is fine, but creates a race condition
-	#if multiple people access the site within a few micro/milliseconds
-	#of each other (not sure which, depends on the speed of the pi).
-	#Need a way to solve this.
-	newPlayer = {'playerName':"Player " + str(i+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'active':time.time(), 'points':0}
-	if not os.path.isfile(filename):
-		#Need a way of doing timeouts without timeouts - arch's ntp service is not reliable, and generally returns Jan 1 1970.
-		with open(filename, 'w') as f:
-			json.dump(newPlayer, f, ensure_ascii=False)	
-		playerID = i
-		playerInfo = newPlayer.copy()
-		break
-	else:
-		#All json files exist, so check cookies!
-		if not cookies:
-			#No cookies. Check if player is active, if not, use this player. If so, carry on.
+#First start by checking and seeing if they have a cookie. If so, check it and use it!
+if cookies:
+	cookie.load(cookies)
+	lastactive = float(cookie['lastactive'].value)
+	if(lastactive + TIMEOUT < time.time()):
+		#No timeout! We can also assume the json file is valid (generally not safe,
+		#but for our purposes, acceptable.)
+		playerID = int(cookie['playerid'].value)
+		CUR_PLAYER_FILE = PLAYER_FILE + str(playerID) + ".json"
+		playerInfo = json.load(open(CUR_PLAYER_FILE)
+
+else:
+	#Next start by checking if json files exist. If not, create them.
+	#If so, check if they are set to "active". If not, we have this player's ID!
+	for i in range(0, 4):
+		filename=PLAYER_FILE + str(i) + ".json"
+		CUR_PLAYER_FILE = filename
+		#Ignores directories, which is fine, but creates a race condition
+		#if multiple people access the site within a few micro/milliseconds
+		#of each other (not sure which, depends on the speed of the pi).
+		#Need a way to solve this.
+		newPlayer = {'playerName':"Player " + str(i+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'active':time.time(), 'points':0}
+		if not os.path.isfile(filename):
+			#Need a way of doing timeouts without timeouts - arch's ntp service is not reliable, and generally returns Jan 1 1970.
+			with open(filename, 'w') as f:
+				json.dump(newPlayer, f, ensure_ascii=False)	
+			playerID = i
+			playerInfo = newPlayer.copy()
+			break
+		else:
+			#All json files exist, so check timeouts!
 			jsonInfo = open(filename)
 			playerInfo = json.load(jsonInfo)
 			jsonInfo.close()
@@ -75,19 +85,6 @@ for i in range(0, 4):
 				break
 			else:
 				continue
-		else:
-			#We have delicious cookies (are they snickerdoodle?).
-			cookie.load(cookies)
-			lastactive = float(cookie['lastactive'].value)
-			if (lastactive + TIMEOUT < time.time()):
-				#We didn't time out! We have the player ID, and the JSON file is still valid.
-				playerID = int(cookie['playerid'].value)
-				CUR_PLAYER_FILE = PLAYER_FILE + str(playerID) + ".json"
-				playerInfo = json.load(open(CUR_PLAYER_FILE))
-				break
-			else:
-				#Cookies aren't valid anymore. Reset the cookies string.
-				cookies = ''
 
 if playerID != -1:
 	#Set cookie for player ID and last active time.
