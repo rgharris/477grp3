@@ -41,18 +41,25 @@ playerID = -1
 cookies = os.environ.get('HTTP_COOKIE')
 cookie = Cookie.SimpleCookie()
 
+#Variable to check if we need to go through each possible file
+checkAll = True
+
 #First start by checking and seeing if they have a cookie. If so, check it and use it!
 if cookies:
 	cookie.load(cookies)
 	lastactive = float(cookie['lastactive'].value)
-	if(lastactive + TIMEOUT < time.time()):
+	if(lastactive + TIMEOUT > time.time()):
+		checkAll = False
 		#No timeout! We can also assume the json file is valid (generally not safe,
 		#but for our purposes, acceptable.)
 		playerID = int(cookie['playerid'].value)
 		CUR_PLAYER_FILE = PLAYER_FILE + str(playerID) + ".json"
 		playerInfo = json.load(open(CUR_PLAYER_FILE))
+	else:
+		#We timed out, reset the cookies string and go through files.
+		cookies = ''
 
-else:
+if checkAll == True:
 	#Next start by checking if json files exist. If not, create them.
 	#If so, check if they are set to "active". If not, we have this player's ID!
 	for i in range(0, 4):
