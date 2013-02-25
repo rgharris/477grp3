@@ -55,6 +55,7 @@ for i in range(0, 4):
 		with open(filename, 'w') as f:
 			json.dump(newPlayer, f, ensure_ascii=False)	
 		playerID = i
+		playerInfo = newPlayer
 		break
 	else:
 		#All json files exist, so check cookies!
