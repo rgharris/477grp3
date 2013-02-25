@@ -118,10 +118,9 @@ div#head h2{
 	 color: #FFFDD0;
     display: inline-block;
     position: absolute;
-	 width: 50%;
+	 width: 75%;
 	 height: 30%;
-	 left: 25%;
-	 top: 15%;
+	 left: 37%;
     opacity: 0;
     text-align: center;
     visibility: hidden;
