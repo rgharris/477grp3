@@ -172,39 +172,39 @@ else:
 			<!--Main Body-->
 			<div id="container">
 				<div id="head">
-					<a href="#getName" id="name_pop"><h2>{0}: 0 Points</h2></a>
+					<a href="#getName" id="name_pop"><h2>{0}: {1} Points</h2></a>
 					<img src="images/settings.png" class="settingsImg" />
 				</div>
 				<div id="resources">
 					<div id="clay" class="resource">
 						<img src="images/clay.png" class="resourceImg"/>
 						<p class="resourceTitle">Clay</p>
-						<p class="amount">10</p>
+						<p class="amount">{2}</p>
 					</div>
 					<div id="ore"  class="resource">
 						<img src="images/ore.png" class="resourceImg"/>
 						<p class="resourceTitle">Ore</p>
-						<p class="amount">10</p>
+						<p class="amount">{3}</p>
 					</div>
 					<div id="sheep" class="resource">
 						<img src="images/sheep.png" class="resourceImg"/>
 						<p class="resourceTitle">Sheep</p>
-						<p class="amount">10</p>
+						<p class="amount">{4}</p>
 					</div>
 					<div id="wheat" class="resource">
 						<img src="images/wheat.png" class="resourceImg"/>
 						<p class="resourceTitle">Wheat</p>
-						<p class="amount">10</p>
+						<p class="amount">{5}</p>
 					</div>
 					<div id="wood" class="resource">
 						<img src="images/wood.png" class="resourceImg"/>
 						<p class="resourceTitle">Wood</p>
-						<p class="amount">10</p>
+						<p class="amount">{6}</p>
 					</div>
 					<div id="cards" class="resource">
 						<img src="images/sea.png" class="resourceImg"/>
 						<p class="resourceTitle">Dev. Cards</p>
-						<p class="amount">10</p>
+						<p class="amount">{7}</p>
 					</div>
 				</div>
 				<div class="clear"></div>
@@ -226,6 +226,6 @@ else:
 		</body>
 	"""
 
-	print output.format(playerInfo['playerName'])
+	print output.format(playerInfo['playerName'], str(playerInfo['points']), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(len(playerInfo['cards'])))
 #This needs to go at the end of all pages.
 print "</html>"
