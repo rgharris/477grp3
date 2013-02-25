@@ -19,11 +19,23 @@ int main (void)
 {
 	sysclk_init();
     board_init();
-	 struct pll_config pcfg;
-	 
+	struct pll_config pcfg;
+	
 	osc_enable(OSC_ID_OSC0);
 	osc_wait_ready(OSC_ID_OSC0);
-	sysclk_set_source(SYSCLK_SRC_OSC0);
+	
+	pll_enable_source(CONFIG_PLL0_SOURCE);
+	pll_config_defaults(&pcfg, 0);
+	pll_config_set_option(&pcfg, PLL_OPT_OUTPUT_DIV);
+	pll_enable(&pcfg, 0);
+	pll_wait_for_lock(0);
+	
+	sysclk_set_prescalers(1,1,1);
+	sysclk_set_source(SYSCLK_SRC_PLL0);
+	
+	//osc_enable(OSC_ID_OSC0);
+	//osc_wait_ready(OSC_ID_OSC0);
+	//sysclk_set_source(SYSCLK_SRC_OSC0);
 	
 	 // pll_config_init(&pcfg, PLL_SRC_OSC0, 1,
 	 //  40000000 / BOARD_OSC0_HZ);

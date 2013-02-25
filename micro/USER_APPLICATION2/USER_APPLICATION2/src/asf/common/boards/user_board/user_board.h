@@ -39,7 +39,22 @@
 #define BOARD_OSC0_IS_XTAL		false
 
 // LED on portA pin 11
-#define LED			AVR32_PIN_PA11
+#define LED			AVR32_PIN_PA18
+
+// RGB 
+#define RGB_CLK		AVR32_PIN_PB10
+#define RGB_DATA	AVR32_PIN_PB11
+
+// RGB COLOURS
+#define RED "FF0000"
+#define GREEN "00FF00"
+#define LIME "00ff7f"
+#define BLUE "0000FF"
+#define ORANGE "ff4500"
+#define PINK "ff69b4"
+#define TEAL "008080"
+#define BLACK "000000"
+#define WHITE "FFFFFF"
 
 // SPI Pins
 #define MOSI		AVR32_PIN_PA14

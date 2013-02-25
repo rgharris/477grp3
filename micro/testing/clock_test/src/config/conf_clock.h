@@ -48,9 +48,9 @@
 //#define CONFIG_SYSCLK_INIT_PBBMASK  (1 << SYSCLK_HMATRIX)
 //#define CONFIG_SYSCLK_INIT_HSBMASK  (1 << SYSCLK_MDMA_HSB)
 
-#define CONFIG_SYSCLK_SOURCE          SYSCLK_SRC_RCSYS
-//#define CONFIG_SYSCLK_SOURCE        SYSCLK_SRC_OSC0
-//#define CONFIG_SYSCLK_SOURCE        SYSCLK_SRC_PLL0
+//#define CONFIG_SYSCLK_SOURCE          SYSCLK_SRC_RCSYS
+//#define CONFIG_SYSCLK_SOURCE          SYSCLK_SRC_OSC0
+#define CONFIG_SYSCLK_SOURCE        SYSCLK_SRC_PLL0
 
 /* Fbus = Fsys / (2 ^ BUS_div) */
 #define CONFIG_SYSCLK_CPU_DIV         0
@@ -64,18 +64,18 @@
 /* Fusb = Fsys / USB_div */
 #define CONFIG_USBCLK_DIV             1 /* Fusb = Fsys/(2 ^ USB_div) */
 
-//#define CONFIG_PLL0_SOURCE          PLL_SRC_OSC0
+#define CONFIG_PLL0_SOURCE          PLL_SRC_OSC0
 //#define CONFIG_PLL0_SOURCE          PLL_SRC_OSC1
 
 /* Fpll0 = (Fclk * PLL_mul) / PLL_div */
-//#define CONFIG_PLL0_MUL             (48000000UL / BOARD_OSC0_HZ)
-//#define CONFIG_PLL0_DIV             1
+#define CONFIG_PLL0_MUL             11//(48000000UL / BOARD_OSC0_HZ)
+#define CONFIG_PLL0_DIV             0
 
-#define   CONFIG_PLL1_SOURCE          PLL_SRC_OSC0
+//#define   CONFIG_PLL1_SOURCE          PLL_SRC_OSC0
 //#define CONFIG_PLL1_SOURCE          PLL_SRC_OSC1
 
 /* Fpll1 = (Fclk * PLL_mul) / PLL_div */
-#define CONFIG_PLL1_MUL               (48000000UL / BOARD_OSC0_HZ)
-#define CONFIG_PLL1_DIV               1
+//#define CONFIG_PLL1_MUL               (48000000UL / BOARD_OSC0_HZ)
+//#define CONFIG_PLL1_DIV               1
 
 #endif /* CONF_CLOCK_H_INCLUDED */
