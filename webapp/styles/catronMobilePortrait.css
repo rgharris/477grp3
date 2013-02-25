@@ -118,7 +118,7 @@ div#head h2{
 	 color: #FFFDD0;
 	 width: 75%;
 	 height: 200px;
-    position: absolute;
+    position: fixed;
 	 left: 12%;
 	 top: 10%;
     opacity: 0;
