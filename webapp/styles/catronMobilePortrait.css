@@ -113,15 +113,15 @@ div#head h2{
     visibility: visible;
     opacity: 1;
 }
-.modal {
+#user{
     background-color: rgba(0,0,0,0.4);
 	 color: #FFFDD0;
     display: inline-block;
     position: fixed;
-	 width: 75%;
-	 height: 50%;
-	 left: 37%;
-	 top: 25%;
+	 width: 50%;
+	 height: 30%;
+	 left: 25%;
+	 top: 15%;
     opacity: 0;
     text-align: center;
     visibility: hidden;
