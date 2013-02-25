@@ -119,15 +119,14 @@ div#head h2{
     display: inline-block;
     position: absolute;
 	 width: 50%;
-	 height: 25%;
+	 min-height: 25%;
 	 left: 25%;
-    top: 5%;
     opacity: 0;
     text-align: center;
     visibility: hidden;
     z-index: 10;
     transition: opacity .5s, top .5s;
-	 border-radius: 5px;
+	 border-radius: 10px;
 }
 .overlay:target+.modal {
     top: 50%;
