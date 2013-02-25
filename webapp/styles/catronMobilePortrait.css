@@ -117,7 +117,8 @@ div#head h2{
     background-color: rgba(0,0,0,0.4);
 	 color: #FFFDD0;
 	 width: 75%;
-	 height: 200px;
+	 height: 30%;
+	 min-height: 190px;
     position: absolute;
 	 left: 12%;
     opacity: 0;
@@ -128,7 +129,7 @@ div#head h2{
 	 border-radius: 10px;
 }
 .overlay:target+.modal {
-    top: 10%;
+    top: 35%;
     opacity: 1;
     visibility: visible;
 }
