@@ -33,11 +33,13 @@
 // External oscillator startup time
 //#define BOARD_XOSC_STARTUP_US  500000
 
-#define BOARD_OSC0_HZ				12000000
+#define BOARD_OSC0_HZ				5000000
 #define BOARD_OSC0_STARTUP_US		1100
-#define BOARD_OSC0_IS_XTAL			true
+#define BOARD_OSC0_IS_XTAL			false
+#define BOARD_OSC0_TYPE             OSC_MODE_EXTERNAL
 
 #define LED						AVR32_PIN_PA11
+//#define XIN0                    AVR32_PIN_PA18
 #define RGB_DATA				AVR32_PIN_PB11
 #define RGB_CLK					AVR32_PIN_PB10
 

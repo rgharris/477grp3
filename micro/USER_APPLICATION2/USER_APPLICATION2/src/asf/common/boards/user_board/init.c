@@ -39,7 +39,6 @@ void board_init(void)
 	 * specific board configuration, found in conf_board.h.
 	 */
 	ioport_init();
-	board_init();
 	sysclk_init();
 	spi_init_pins();
 	spi_init_module();
@@ -47,6 +46,10 @@ void board_init(void)
 	
 	ioport_enable_pin(LED);
 	ioport_set_pin_dir(LED,IOPORT_DIR_OUTPUT);
+	ioport_enable_pin(RGB_CLK);
+	ioport_set_pin_dir(RGB_CLK,IOPORT_DIR_OUTPUT);
+	ioport_enable_pin(RGB_DATA);
+	ioport_set_pin_dir(RGB_DATA,IOPORT_DIR_OUTPUT);
 	
 }
 
