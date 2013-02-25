@@ -106,7 +106,7 @@ if playerID != -1:
 if form.has_key('user'):
 	newUsername = form.getvalue("user", "Player " + str(playerID + 1))
 	playerInfo['playerName'] = cgi.escape(newUsername);
-	with open(CUR_PLAYER_FILE, w) as f:
+	with open(CUR_PLAYER_FILE, 'w') as f:
 		json.dump(playerInfo, f, ensure_ascii=False)
 		f.close()
 
