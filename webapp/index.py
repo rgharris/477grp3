@@ -45,6 +45,7 @@ cookie = Cookie.SimpleCookie()
 #If so, check if they are set to "active". If not, we have this player's ID!
 for i in range(0, 4):
 	filename=PLAYER_FILE + str(i) + ".json"
+	CUR_PLAYER_FILE = filename
 	#Ignores directories, which is fine, but creates a race condition
 	#if multiple people access the site within a few micro/milliseconds
 	#of each other (not sure which, depends on the speed of the pi).
@@ -81,14 +82,12 @@ for i in range(0, 4):
 			if (lastactive + TIMEOUT < time.time()):
 				#We didn't time out! We have the player ID, and the JSON file is still valid.
 				playerID = int(cookie['playerid'].value)
-				playerInfo = json.load(open(PLAYER_FILE + str(playerID) + ".json"))
+				CUR_PLAYER_FILE = PLAYER_FILE + str(playerID) + ".json"
+				playerInfo = json.load(open(CUR_PLAYER_FILE))
 				break
 			else:
 				#Cookies aren't valid anymore. Reset the cookies string.
 				cookies = ''
-
-#Create a variable for this player's json file
-CUR_PLAYER_FILE = PLAYER_FILE + str(playerID) + ".json"
 
 if playerID != -1:
 	#Set cookie for player ID and last active time.
