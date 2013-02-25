@@ -118,8 +118,8 @@ div#head h2{
 	 color: #FFFDD0;
     display: inline-block;
     position: absolute;
-	 width: 50%;
-	 min-height: 25%;
+	 width: 75%;
+	 height: 50%;
 	 left: 25%;
     opacity: 0;
     text-align: center;
@@ -133,6 +133,16 @@ div#head h2{
     opacity: 1;
     visibility: visible;
 }
+.modal input[type="button"].bottom {
+	position:absolute;
+	bottom: 2%;
+	background-color: rgba(0,0,0,0);
+	border: none;
+	border-top: solid 1px rgba(0,0,0,.8);
+	width: 100%;
+	height: 10%;
+}
+	
 
 
 /*Error pages. Use the same (general) layout, add an error class to the body.*/
