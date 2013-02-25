@@ -113,7 +113,7 @@ div#head h2{
     visibility: visible;
     opacity: 1;
 }
-#user{
+.modal{
     background-color: rgba(0,0,0,0.4);
 	 color: #FFFDD0;
     display: inline-block;
