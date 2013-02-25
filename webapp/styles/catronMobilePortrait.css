@@ -120,7 +120,7 @@ div#head h2{
 	 height: 200px;
     position: absolute;
 	 left: 12%;
-	 top: -250px;
+	 top: 10%;
     opacity: 0;
     text-align: center;
     visibility: hidden;
