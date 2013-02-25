@@ -119,10 +119,7 @@ div#head h2{
 	 width: 75%;
 	 height: 200px;
     position: absolute;
-	 /*left: 12%;
-	 top: 10%;*/
-	 left: 0;
-	 top: 0;
+	 left: 12%;
     opacity: 0;
     text-align: center;
     visibility: hidden;
@@ -131,7 +128,7 @@ div#head h2{
 	 border-radius: 10px;
 }
 .overlay:target+.modal {
-    top: 50%;
+    top: 10%;
     opacity: 1;
     visibility: visible;
 }
