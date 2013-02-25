@@ -82,7 +82,7 @@ if checkAll == True:
 			jsonInfo = open(filename)
 			playerInfo = json.load(jsonInfo)
 			jsonInfo.close()
-			if (playerInfo["active"] == 0 or playerInfo["active"] + TIMEOUT > time.time()):
+			if (playerInfo["active"] == 0 or playerInfo["active"] + TIMEOUT < time.time()):
 				#This player is inactive or has timed out, so here we go!
 				playerID = i
 				playerInfo["active"] = time.time();
