@@ -100,7 +100,6 @@ div#head h2{
 .overlay {
     background-color: rgba(0, 0, 0, 0.6);
     bottom: 0;
-    cursor: default;
     left: 0;
     opacity: 0;
     position: fixed;
@@ -108,7 +107,7 @@ div#head h2{
     top: 0;
     visibility: hidden;
     z-index: 1;
-    transition: opacity .5s;
+    transition: opacity 5s;
 }
 .overlay:target {
     visibility: visible;
@@ -165,16 +164,7 @@ div#head h2{
     text-align: left;
     width: 120px;
 }
-.modal input[type="text"], .modal input[type="password"] {
-    border: 1px solid;
-    border-color: #999 #ccc #ccc;
-    margin: 0;
-    padding: 2px;
-    border-radius: 2px;
-}
-.modal input[type="text"]:hover, .modal input[type="password"]:hover {
-    border-color: #555 #888 #888;
-}
+
 
 /*Error pages. Use the same (general) layout, add an error class to the body.*/
 body.error{
