@@ -132,8 +132,8 @@ div#head h2{
     top: 35%;
     opacity: 1;
     visibility: visible;
-	 width: 75%;
-	 height: 30%;
+/*	 width: 75%;
+	 height: 30%;*/
 }
 .modal input[type="submit"].bottom {
 	position:absolute;
