@@ -69,6 +69,7 @@ for i in range(0, 4):
 				playerInfo["active"] = 1
 				with open(filename, 'w') as f:
 					json.dump(newPlayer, f, ensure_ascii=False)
+					f.close()
 				break
 			else:
 				continue
@@ -84,6 +85,9 @@ for i in range(0, 4):
 			else:
 				#Cookies aren't valid anymore. Reset the cookies string.
 				cookies = ''
+
+#Create a variable for this player's json file
+CUR_PLAYER_FILE = PLAYER_FILE + str(playerID) + ".json"
 
 if playerID != -1:
 	#Set cookie for player ID and last active time.
@@ -102,6 +106,9 @@ if playerID != -1:
 if form.has_key('user'):
 	newUsername = form.getvalue("user", "Player " + str(playerID + 1))
 	playerInfo['playerName'] = cgi.escape(newUsername);
+	with open(CUR_PLAYER_FILE, w) as f:
+		json.dump(playerInfo, f, ensure_ascii=False)
+		f.close()
 
 
 
