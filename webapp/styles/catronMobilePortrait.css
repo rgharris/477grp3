@@ -117,7 +117,7 @@ div#head h2{
     background-color: rgba(0,0,0,0.4);
 	 color: #FFFDD0;
     display: inline-block;
-    position: fixed;
+    position: absolute;
 	 width: 50%;
 	 height: 30%;
 	 left: 25%;
