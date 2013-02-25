@@ -95,6 +95,8 @@ if playerID != -1:
 	print cookie
 
 
+
+
 #################################PAGE GENERATION BELOW##################################
 
 #This stuff needs to go at the top of all pages.
@@ -114,7 +116,7 @@ print """<!DOCTYPE HTML>
       </head>
 """
 if playerID == -1:
-	output = """<body class="error">
+	print """<body class="error">
         		 <div id="container">
            		 <div id="head">
                	<h2>Max Players Reached!</h2>
@@ -133,7 +135,7 @@ else:
 	#
 	#I'm working on it.
 
-	output = """<!DOCTYPE HTML>
+	output = """
 		<body>
 			<div id="container">
 				<div id="head">
@@ -189,8 +191,8 @@ else:
 				</div>
 			</div>
 		</body>
-	</html>"""
+	"""
 
-print output.format(str(playerID))
+	print output.format(str(playerID))
 #This needs to go at the end of all pages.
 print "</html>"

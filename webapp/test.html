@@ -1,22 +1,81 @@
 <!DOCTYPE HTML>
-	<html>
-		<head>
-			<!-- Required for mobile devices -->
-			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-			<!-- Not really a good practice, but this basically just needs to work in demo. If anyone has any better ideas, PLEASE IMPLEMENT THEM. -->
-			<link rel="stylesheet" href="styles/catronNormal.css" type="text/css" media="screen"/>
-			<link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" media="screen and (max-device-width: 480px) and (orientation: portrait)"/>	
-			<link rel="stylesheet" href="styles/catronMobileLandscape.css" type="text/css" media="screen and (max-device-width: 640px) and (orientation: landscape)"/>
-	
-		</head>
-		<body class="error">
+   <html>
+      <head>
+         <!-- Required for mobile devices -->
+         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+         <!-- Not really a good practice, but this basically just needs to work in demo. If anyone has any better ideas, PLEASE IMPLEMENT THEM. -->
+         <link rel="stylesheet" href="styles/catronNormal.css" type="text/css" media="screen"/>
+         <link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" media="screen and (max-device-width: 480px) and (orientation: portrait)"/> 
+         <link rel="stylesheet" href="styles/catronMobileLandscape.css" type="text/css" media="screen and (max-device-width: 640px) and (orientation: landscape)"/>
+   
+      </head>
+		<body>
 			<div id="container">
 				<div id="head">
-					<h2>Max Players Reached!</h2>
+					<a href="#getName" id="name_pop"><h2>Player 1: 0 Points</h2></a>
+					<img src="images/settings.png" class="settingsImg" />
 				</div>
-				<div id="body">
-					<p>This game already has the maximum number of players. Enjoy watching this game, and try to join the next one!</p>
+				<div id="resources">
+					<div id="clay" class="resource">
+						<img src="images/clay.png" class="resourceImg"/>
+						<p class="resourceTitle">Clay</p>
+						<p class="amount">10</p>
+					</div>
+					<div id="ore"  class="resource">
+						<img src="images/ore.png" class="resourceImg"/>
+						<p class="resourceTitle">Ore</p>
+						<p class="amount">10</p>
+					</div>
+					<div id="sheep" class="resource">
+						<img src="images/sheep.png" class="resourceImg"/>
+						<p class="resourceTitle">Sheep</p>
+						<p class="amount">10</p>
+					</div>
+					<div id="wheat" class="resource">
+						<img src="images/wheat.png" class="resourceImg"/>
+						<p class="resourceTitle">Wheat</p>
+						<p class="amount">10</p>
+					</div>
+					<div id="wood" class="resource">
+						<img src="images/wood.png" class="resourceImg"/>
+						<p class="resourceTitle">Wood</p>
+						<p class="amount">10</p>
+					</div>
+					<div id="cards" class="resource">
+						<img src="images/sea.png" class="resourceImg"/>
+						<p class="resourceTitle">Dev. Cards</p>
+						<p class="amount">10</p>
+					</div>
+				</div>
+				<div class="clear"></div>
+				<div id="footer">
+					<div id="b1" class="button">
+						Purchase
+					</div>
+					<div id="b2" class="button">
+						Trade
+					</div>
+					<div id="b3" class="button">
+						Status
+					</div>
+					<div id="b4" class="button">
+						End Turn
+					</div>
 				</div>
 			</div>
+
+
+			<!--Modal Boxes-->
+			<a href="#x" class="overlay" id="name_form"></a>
+			<div class="modal">
+				<h2>Please enter your username.</h2>
+				<div>
+					<label for="user">Username</label>
+					<input type="text" id="user" value="" />
+				</div>
+				<input type="button" value="Got it!" />
+				<a class="close" href="#close"></a>
+			</div>
+
 		</body>
 	</html>
