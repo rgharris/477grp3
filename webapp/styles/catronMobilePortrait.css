@@ -133,7 +133,7 @@ div#head h2{
     opacity: 1;
     visibility: visible;
 }
-.modal input[type="button"].bottom {
+.modal input[type="submit"].bottom {
 	position:absolute;
 	bottom: 2%;
 	background-color: rgba(0,0,0,0);
