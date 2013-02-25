@@ -21,10 +21,13 @@
 # Import debugging
 import cgitb
 #Everything else.
-import os, sys, json, Cookie, time
+import os, sys, json, Cookie, time, cgi
 
 #Enable debugging
 cgitb.enable()
+
+#Store form data
+form = cgi.FieldStorage()
 
 #The prefix of the player json files - PLAYER_FILE[num].json
 PLAYER_FILE="player"
@@ -95,6 +98,11 @@ if playerID != -1:
 	print cookie
 
 
+#################################FORM RETRIEVAL BELOW##################################
+if form.has_key('user'):
+	newUsername = form.getvalue("user", "Player " + str(playerID + 1))
+	playerInfo['playerName'] = cgi.escape(newUsername);
+
 
 
 #################################PAGE GENERATION BELOW##################################
@@ -109,8 +117,9 @@ print """<!DOCTYPE HTML>
          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
          <!-- Not really a good practice, but this basically just needs to work in demo. If anyone has any better ideas, PLEASE IMPLEMENT THEM. -->
          <link rel="stylesheet" href="styles/catronNormal.css" type="text/css" media="screen"/>
-         <link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" media="screen and (max-device-width: 720px) and (orientation: portrait)"/> 
-         <link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" media="screen and (max-device-width: 1280px) and (orientation: landscape)"/>
+         <link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" media="screen and (max-device-width: 720px) and (orientation: portrait)"/>
+			<!--Interestingly, whenever the keyboard opens on the S3 (and presumably most android devices), it switches to landscape mode. I don't know how to get around this right now.-->
+         <link rel="stylesheet" href="styles/catronMobileLandsacpe.css" type="text/css" media="screen and (max-device-width: 1280px) and (orientation: landscape)"/>
    
       </head>
 """
@@ -142,7 +151,7 @@ else:
             <form method="post" action="index.py">
             <h2>Please enter your username.</h2>
             <div>
-               <input type="text" id="user" value="" />
+               <input type="text" id="user" name="user" value="{0}" />
             </div>
             <input type="submit" value="Got it!" class="bottom" />
             </form>
@@ -151,7 +160,7 @@ else:
 			<!--Main Body-->
 			<div id="container">
 				<div id="head">
-					<a href="#getName" id="name_pop"><h2>Player {0}: 0 Points</h2></a>
+					<a href="#getName" id="name_pop"><h2>{0}: 0 Points</h2></a>
 					<img src="images/settings.png" class="settingsImg" />
 				</div>
 				<div id="resources">
@@ -205,6 +214,6 @@ else:
 		</body>
 	"""
 
-	print output.format(str(playerID))
+	print output.format(playerInfo['playerName'])
 #This needs to go at the end of all pages.
 print "</html>"
