@@ -116,9 +116,9 @@ div#head h2{
 .modal{
     background-color: rgba(0,0,0,0.4);
 	 color: #FFFDD0;
-	 width: 75%;
-	 height: 30%;
 	 min-height: 190px;
+	 width: 0;
+	 height: 0;
     position: absolute;
 	 left: 12%;
     opacity: 0;
@@ -132,6 +132,8 @@ div#head h2{
     top: 35%;
     opacity: 1;
     visibility: visible;
+	 width: 75%;
+	 height: 30%;
 }
 .modal input[type="submit"].bottom {
 	position:absolute;
