@@ -49,7 +49,7 @@ for i in range(0, 4):
 	#if multiple people access the site within a few micro/milliseconds
 	#of each other (not sure which, depends on the speed of the pi).
 	#Need a way to solve this.
-	newPlayer = {'playerName':"Player " + str(i+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'active':1, 'points':0}
+	newPlayer = {'playerName':"Player " + str(i+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'active':time.time(), 'points':0}
 	if not os.path.isfile(filename):
 		#Need a way of doing timeouts without timeouts - arch's ntp service is not reliable, and generally returns Jan 1 1970.
 		with open(filename, 'w') as f:
@@ -63,10 +63,10 @@ for i in range(0, 4):
 			jsonInfo = open(filename)
 			playerInfo = json.load(jsonInfo)
 			jsonInfo.close()
-			if(playerInfo["active"] == 0):
-				#This player is inactive, so here we go!
+			if(playerInfo["active"] == 0 || playerInfo["active"] + TIMEOUT > time.time()):
+				#This player is inactive or has timed out, so here we go!
 				playerID = i
-				playerInfo["active"] = 1
+				playerInfo["active"] = time.time();
 				with open(filename, 'w') as f:
 					json.dump(newPlayer, f, ensure_ascii=False)
 					f.close()
@@ -77,7 +77,7 @@ for i in range(0, 4):
 			#We have delicious cookies (are they snickerdoodle?).
 			cookie.load(cookies)
 			lastactive = float(cookie['lastactive'].value)
-			if (lastactive + TIMEOUT > time.time()):
+			if (lastactive + TIMEOUT < time.time()):
 				#We didn't time out! We have the player ID, and the JSON file is still valid.
 				playerID = int(cookie['playerid'].value)
 				playerInfo = json.load(open(PLAYER_FILE + str(playerID) + ".json"))
@@ -105,7 +105,8 @@ if playerID != -1:
 #################################FORM RETRIEVAL BELOW##################################
 if form.has_key('user'):
 	newUsername = form.getvalue("user", "Player " + str(playerID + 1))
-	playerInfo['playerName'] = cgi.escape(newUsername);
+	playerInfo['playerName'] = cgi.escape(newUsername)
+	playerInfo['active'] = time.time()
 	with open(CUR_PLAYER_FILE, 'w') as f:
 		json.dump(playerInfo, f, ensure_ascii=False)
 		f.close()
