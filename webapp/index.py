@@ -50,7 +50,7 @@ if cookies:
 		#but for our purposes, acceptable.)
 		playerID = int(cookie['playerid'].value)
 		CUR_PLAYER_FILE = PLAYER_FILE + str(playerID) + ".json"
-		playerInfo = json.load(open(CUR_PLAYER_FILE)
+		playerInfo = json.load(open(CUR_PLAYER_FILE))
 
 else:
 	#Next start by checking if json files exist. If not, create them.
