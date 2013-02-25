@@ -149,7 +149,7 @@ div#head h2{
 .modal input[type="text"] {
 	width: 90%;
 	font-size: 14pt;
-	border: none
+	border: none;
 	background-color: #fffdd0;
 	color: #000;
 }
