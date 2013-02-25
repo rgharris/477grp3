@@ -117,8 +117,8 @@ div#head h2{
     background-color: rgba(0,0,0,0.4);
 	 color: #FFFDD0;
 	 min-height: 190px;
-	 width: 0;
-	 height: 0;
+	 width: 0px;
+	 height: 0px;
     position: absolute;
 	 left: 12%;
     opacity: 0;
