@@ -11,6 +11,19 @@
    
       </head>
 		<body>
+         <!--Modal Boxes-->
+         <a href="#x" class="overlay" id="getName"></a>
+         <div class="modal" id="user">
+            <form method="post" action="index.py">
+            <h2>Please enter your username.</h2>
+            <div>
+               <input type="text" id="user" value="" />
+            </div>
+            <input type="submit" value="Got it!" class="bottom" />
+            </form>
+         </div>
+
+			<!--Main Body-->
 			<div id="container">
 				<div id="head">
 					<a href="#getName" id="name_pop"><h2>Player 1: 0 Points</h2></a>
@@ -64,18 +77,5 @@
 					</div>
 				</div>
 			</div>
-
-			<!--Modal Boxes-->
-			<a href="#x" class="overlay" id="getName"></a>
-			<div class="modal" id="user">
-				<form method="post" action="index.py">
-				<h2>Please enter your username.</h2>
-				<div>
-					<input type="text" id="user" value="" />
-				</div>
-				<input type="submit" value="Got it!" class="bottom" />
-				</form>
-			</div>
-
 		</body>
 	</html>
