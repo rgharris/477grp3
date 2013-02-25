@@ -114,13 +114,14 @@ div#head h2{
     opacity: 1;
 }
 .modal {
-    background-color: rgba(0,0,0,0.3);
+    background-color: rgba(0,0,0,0.4);
 	 color: #FFFDD0;
     display: inline-block;
-    position: absolute;
+    position: fixed;
 	 width: 75%;
 	 height: 50%;
-	 left: 25%;
+	 left: 37%;
+	 bottom: -25%;
     opacity: 0;
     text-align: center;
     visibility: hidden;
