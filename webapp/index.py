@@ -46,7 +46,7 @@ for i in range(0, 4):
 	#if multiple people access the site within a few micro/milliseconds
 	#of each other (not sure which, depends on the speed of the pi).
 	#Need a way to solve this.
-	newPlayer = {'playerName':"player" + str(i), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'active':1, 'points':0}
+	newPlayer = {'playerName':"Player " + str(i+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'active':1, 'points':0}
 	if not os.path.isfile(filename):
 		#Need a way of doing timeouts without timeouts - arch's ntp service is not reliable, and generally returns Jan 1 1970.
 		with open(filename, 'w') as f:
@@ -137,9 +137,22 @@ else:
 
 	output = """
 		<body>
+         <!--Modal Boxes-->
+         <a href="#x" class="overlay" id="getName"></a>
+         <div class="modal" id="user">
+            <form method="post" action="index.py">
+            <h2>Please enter your username.</h2>
+            <div>
+               <input type="text" id="user" value="" />
+            </div>
+            <input type="submit" value="Got it!" class="bottom" />
+            </form>
+         </div>
+		
+			<!--Main Body-->
 			<div id="container">
 				<div id="head">
-					<h2>Player {0}: 0 Points</h2>
+					<a href="#getName" id="name_pop"><h2>Player {0}: 0 Points</h2></a>
 					<img src="images/settings.png" class="settingsImg" />
 				</div>
 				<div id="resources">
