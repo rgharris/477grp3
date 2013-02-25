@@ -114,19 +114,20 @@ div#head h2{
     opacity: 1;
 }
 .modal {
-    background-color: rgba(0,0,0,0.6);
+    background-color: rgba(0,0,0,0.3);
 	 color: #FFFDD0;
     display: inline-block;
     position: absolute;
 	 width: 50%;
 	 height: 25%;
 	 left: 25%;
-    top: 12%;
+    top: 5%;
     opacity: 0;
     text-align: center;
     visibility: hidden;
     z-index: 10;
     transition: opacity .5s, top .5s;
+	 border-radius: 5px;
 }
 .overlay:target+.modal {
     top: 50%;
