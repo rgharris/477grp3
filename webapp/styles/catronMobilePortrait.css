@@ -152,15 +152,16 @@ a.playerName{
 	 display: inline;
 }
 .modal a.bottom {
-	display: block;
-	position: absolute;
-	bottom: 0;
+	display: inline-block;
+	/*position: absolute;
+	bottom: 0;*/
 	background-color: rgba(0,0,0,0);
 	border: none;
 	border-top: solid 1px #fffdd0;
 	width: 100%;
 	height: 20%;
 	line-height: 100%;
+	padding: 10px 0 10px 0;
 	color: #FFFDD0;
 	vertical-align: middle;
 	font-size: 16pt;
