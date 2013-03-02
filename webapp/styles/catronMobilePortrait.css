@@ -102,6 +102,9 @@ ul.gameStatus li{
 	list-style: none;
 	padding-bottom: 10px;
 }
+a.playerName{
+	text-decoration: none;
+}
 
 /*Modal Boxes*/
 .overlay {
