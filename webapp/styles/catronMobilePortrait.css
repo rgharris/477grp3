@@ -153,8 +153,8 @@ a.playerName{
 }
 .modal a.bottom {
 	display: block;
-	position: absolute;
-	bottom: 0;
+/*	position: absolute;
+	bottom: 0;*/
 	background-color: rgba(0,0,0,0);
 	border: none;
 	border-top: solid 1px #fffdd0;
