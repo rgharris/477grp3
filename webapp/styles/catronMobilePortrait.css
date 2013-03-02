@@ -151,13 +151,6 @@ a.playerName{
 	 min-height: 30%;
 	 display: inline;
 }
-.padding {
-	min-height: 30%;
-	height: 30%;
-	max-height: 30%;
-	width: 100%;
-	display: block;
-}
 .modal a.bottom {
 	display: block;
 	position: absolute;
