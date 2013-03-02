@@ -152,7 +152,9 @@ a.playerName{
 	 display: inline;
 }
 .padding {
+	min-height: 30%;
 	height: 30%;
+	max-height: 30%;
 	width: 100%;
 	display: block;
 }
