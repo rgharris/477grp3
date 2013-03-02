@@ -136,10 +136,12 @@ print """<!DOCTYPE HTML>
 			<script>
 				function loadXMLDoc(div,loc)
 				{
+					alert("Pressed!");
 					var xmlhttp;
 					xmlhttp = new XMLHttpRequest();
 					xmlhttp.onreadstatechange=function()
 					{
+						alert("Getting closer!");
 						if(xmlhttp.readyState == 4 && xmlhttp.status==200)
 						{
 							document.getElementById(div).innerHTML=xmlhttp.responseText;
