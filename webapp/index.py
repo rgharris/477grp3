@@ -145,7 +145,7 @@ print """<!DOCTYPE HTML>
 					xmlhttpopen("GET",loc,true);
 					xmlhttp.send();
 				}
-   
+   		</script>
       </head>
 """
 if playerID == -1:
