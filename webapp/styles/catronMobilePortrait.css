@@ -102,9 +102,6 @@ ul.gameStatus li{
 	list-style: none;
 	padding-bottom: 10px;
 }
-ul {
-	margin-bottom: 2%;
-}
 
 a.playerName{
 	text-decoration: none;
@@ -151,7 +148,7 @@ a.playerName{
 .modal a.bottom {
 	display: block;
 	position: absolute;
-	bottom: 2%;
+	bottom: 0;
 	background-color: rgba(0,0,0,0);
 	border: none;
 	border-top: solid 1px #fffdd0;
