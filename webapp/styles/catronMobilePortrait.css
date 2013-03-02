@@ -152,7 +152,7 @@ a.playerName{
 	 display: inline;
 }
 .modal a.bottom {
-	display: inline;
+	display: inline-block;
 /*	position: absolute;
 	bottom: 0;*/
 	background-color: rgba(0,0,0,0);
