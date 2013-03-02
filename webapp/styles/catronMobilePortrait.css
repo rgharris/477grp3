@@ -164,7 +164,7 @@ a.playerName{
 	text-decoration: none;
 }
 
-.modal input[type="submit"].bottom {
+.modal input[type="submit"].bottom, .modal input[type="button"].bottom {
 	position:absolute;
 	bottom: 2%;
 	background-color: rgba(0,0,0,0);
