@@ -140,7 +140,7 @@ ul.gameStatus li{
     opacity: 1;
     visibility: visible;
 	 width: 75%;
-	 min-height: 30%;
+/*	 min-height: 30%;*/
 }
 .modal input[type="submit"].bottom {
 	position:absolute;
