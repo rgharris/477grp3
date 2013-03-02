@@ -138,7 +138,7 @@ print """<!DOCTYPE HTML>
 				{
 					var xmlhttp;
 					xmlhttp = new XMLHttpRequest();
-					xmlhttp.onreadstatechange=function()
+					xmlhttp.onreadystatechange=function()
 					{
 						alert("Getting closer!");
 						if(xmlhttp.readyState == 4 && xmlhttp.status==200)
