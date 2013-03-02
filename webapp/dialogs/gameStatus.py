@@ -8,7 +8,7 @@ import cgitb
 #Everything else.
 import os, sys, cgi, json
 
-PLAYER_FILE="players/"
+PLAYER_FILE="../players/"
 
 for fn in os.listdir(PLAYER_FILE):
 	if os.path.isfile(fn):
