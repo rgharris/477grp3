@@ -30,7 +30,7 @@ cgitb.enable()
 form = cgi.FieldStorage()
 
 #The prefix of the player json files - PLAYER_FILE[num].json
-PLAYER_FILE="player"
+PLAYER_FILE="players/"
 TIMEOUT = 3600 #one hour (3600 seconds)
 playerID = -1
 
@@ -140,11 +140,9 @@ print """<!DOCTYPE HTML>
 					xmlhttp = new XMLHttpRequest();
 					xmlhttp.onreadystatechange=function()
 					{
-						alert("Getting closer!");
 						if(xmlhttp.readyState == 4 && xmlhttp.status==200)
 						{
 							document.getElementById(div).innerHTML=xmlhttp.responseText;
-							alert("div is " + div);
 						}
 					}
 					xmlhttp.open("GET",loc,true);
@@ -226,9 +224,7 @@ else:
 					<div id="b2" class="button">
 						Trade
 					</div>
-					<div id="b3" class="button">
-						Status
-					</div>
+					<a href="#showStatus" id="b3" class="button" onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')">Status</a>
 					<div id="b4" class="button">
 						End Turn
 					</div>
