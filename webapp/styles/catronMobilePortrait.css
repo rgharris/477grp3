@@ -100,7 +100,7 @@ div#head h2{
 }
 ul.gameStatus{
 	margin: 0 auto;
-	padding: none;
+	padding: 0;
 	list-style: none;
 }
 ul.gameStatus li{
