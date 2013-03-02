@@ -138,10 +138,12 @@ print """<!DOCTYPE HTML>
 				{
 					var xmlhttp;
 					xmlhttp = new XMLHttpRequest();
-					xmlhttp.onreadstatechange=function();
-					if(xmlhttp.readyState == 4 && xmlhttp.status==200)
+					xmlhttp.onreadstatechange=function()
 					{
-						document.getElementById(div).innerHTML=xmlhttp.responseText;
+						if(xmlhttp.readyState == 4 && xmlhttp.status==200)
+						{
+							document.getElementById(div).innerHTML=xmlhttp.responseText;
+						}
 					}
 					xmlhttp.open("GET",loc,true);
 					xmlhttp.send();
