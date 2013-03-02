@@ -22,4 +22,4 @@ output = """Content-type: text/html
             </form>
 			"""
 
-print output.format(pairs["user"]);
+print output.format(pairs);
