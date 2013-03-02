@@ -142,7 +142,7 @@ print """<!DOCTYPE HTML>
 					{
 						document.getElementById(div).innerHTML=xmlhttp.responseText;
 					}
-					xmlhttpopen("GET",loc,true);
+					xmlhttp.open("GET",loc,true);
 					xmlhttp.send();
 				}
    		</script>
