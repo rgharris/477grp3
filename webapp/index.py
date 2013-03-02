@@ -181,7 +181,7 @@ else:
 			<!--Main Body-->
 			<div id="container">
 				<div id="head">
-					<a href="#modal" id="name_pop" onclick="loadXMLDoc('modalBox', 'dialogs/username.py?user={0}')"><h2>{0}: {1} Points</h2></a>
+					<a href="#modal" id="name_pop" onclick="loadXMLDoc('ModalBox', 'dialogs/username.py?user={0}')"><h2>{0}: {1} Points</h2></a>
 					<img src="images/settings.png" class="settingsImg" />
 				</div>
 				<div id="resources">
