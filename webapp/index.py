@@ -69,7 +69,7 @@ if checkAll == True:
 		#if multiple people access the site within a few micro/milliseconds
 		#of each other (not sure which, depends on the speed of the pi).
 		#Need a way to solve this.
-		newPlayer = {'playerName':"Player " + str(i+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'active':time.time(), 'points':0}
+		newPlayer = {'playerName':"Player " + str(i+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'active':time.time(), 'awards':{}, 'points':0}
 		if not os.path.isfile(filename):
 			#Need a way of doing timeouts without timeouts - arch's ntp service is not reliable, and generally returns Jan 1 1970.
 			with open(filename, 'w') as f:
@@ -132,6 +132,19 @@ print """<!DOCTYPE HTML>
          <link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" media="screen and (max-device-width: 720px) and (orientation: portrait)"/>
 			<!--Interestingly, whenever the keyboard opens on the S3 (and presumably most android devices), it switches to landscape mode. I don't know how to get around this right now.-->
          <link rel="stylesheet" href="styles/catronMobileLandsacpe.css" type="text/css" media="screen and (max-device-width: 1280px) and (orientation: landscape)"/>
+			<script>
+				function loadXMLDoc(div,loc)
+				{
+					var xmlhttp;
+					xmlhttp = new XMLHttpRequest();
+					xmlhttp.onreadstatechange=function();
+					if(xmlhttp.readyState == 4 && xmlhttp.status==200)
+					{
+						document.getElementById(div).innerHTML=xmlhttp.responseText;
+					}
+					xmlhttpopen("GET",loc,true);
+					xmlhttp.send();
+				}
    
       </head>
 """
@@ -158,21 +171,14 @@ else:
 	output = """
 		<body>
          <!--Modal Boxes-->
-         <a href="#x" class="overlay" id="getName"></a>
-         <div class="modal" id="user">
-            <form method="post" action="index.py">
-            <h2>Please enter your username.</h2>
-            <div>
-               <input type="text" id="user" name="user" value="{0}" />
-            </div>
-            <input type="submit" value="Got it!" class="bottom" />
-            </form>
+         <a href="#x" class="overlay" id="modal"></a>
+         <div class="modal" id="ModalBox">
          </div>
 		
 			<!--Main Body-->
 			<div id="container">
 				<div id="head">
-					<a href="#getName" id="name_pop"><h2>{0}: {1} Points</h2></a>
+					<a href="#modal" id="name_pop" onclick="loadXMLDoc(\\"modalBox\\", \\"dialogs/username.py?user={0}\\")"><h2>{0}: {1} Points</h2></a>
 					<img src="images/settings.png" class="settingsImg" />
 				</div>
 				<div id="resources">
