@@ -159,9 +159,9 @@ a.playerName{
 	border: none;
 	border-top: solid 1px #fffdd0;
 	width: 100%;
-	height: 20%;
+	height: 30%;
 	color: #FFFDD0;
-	vertical-align: center;
+	vertical-align: middle;
 	font-size: 16pt;
 	font-family: 'Arapey', 'Times New Roman', serif;
 	text-decoration: none;
