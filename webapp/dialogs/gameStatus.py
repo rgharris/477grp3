@@ -14,8 +14,7 @@ print "Content-type: text/html;charset=utf-8"
 print
 
 for fn in os.listdir(PLAYER_FILE):
-	if os.path.isfile(fn):
-		print fn
+	print fn
 
 output = """<h2>Game Status</h2>
             <ul class="gameStatus">
