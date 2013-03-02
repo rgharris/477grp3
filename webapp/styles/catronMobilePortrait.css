@@ -146,7 +146,7 @@ a.playerName{
 	 display: inline;
 }
 .padding {
-	height: 23%
+	height: 30%
 }
 .modal a.bottom {
 	display: block;
@@ -164,7 +164,7 @@ a.playerName{
 	text-decoration: none;
 }
 
-.modal input[type="submit"].bottom, .modal input[type="button"].bottom {
+.modal input[type="submit"].bottom {
 	position:absolute;
 	bottom: 2%;
 	background-color: rgba(0,0,0,0);
