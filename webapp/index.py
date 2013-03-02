@@ -130,7 +130,7 @@ print """<!DOCTYPE HTML>
          <!-- Not really a good practice, but this basically just needs to work in demo. If anyone has any better ideas, PLEASE IMPLEMENT THEM. -->
          <!--<link rel="stylesheet" href="styles/catronNormal.css" type="text/css" media="screen"/>
          <link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" media="screen and (max-device-width: 720px) and (orientation: portrait)"/>
-			<!--Interestingly, whenever the keyboard opens on the S3 (and presumably most android devices), it switches to landscape mode. I don't know how to get around this right now.-->
+			<!--Interestingly, whenever the keyboard opens on the S3 (and presumably most android devices), it switches to landscape mode. I don't know how to get around this right now.
          <link rel="stylesheet" href="styles/catronMobileLandsacpe.css" type="text/css" media="screen and (max-device-width: 1280px) and (orientation: landscape)"/>-->
 			<link rel="stylesheet" href="styles/catronMobilePortrait.css" type="text/css" />
 			<script>
