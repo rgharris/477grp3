@@ -143,6 +143,7 @@ print """<!DOCTYPE HTML>
 						if(xmlhttp.readyState == 4 && xmlhttp.status==200)
 						{
 							document.getElementById(div).innerHTML=xmlhttp.responseText;
+							alert("div is " + div);
 						}
 					}
 					xmlhttp.open("GET",loc,true);
