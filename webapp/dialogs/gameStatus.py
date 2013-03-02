@@ -10,13 +10,14 @@ import os, sys, cgi, json
 
 PLAYER_FILE="../players/"
 
+print "Content-type: text/html;charset=utf-8"
+print
+
 for fn in os.listdir(PLAYER_FILE):
 	if os.path.isfile(fn):
 		print fn
 
-output = """Content-type: text/html;charset=utf-8
-
-				<h2>Game Status</h2>
+output = """<h2>Game Status</h2>
             <ul class="gameStatus">
                <li><b>Player 1</b> &nbsp; &nbsp; 2 points</li>
                <li><b>Player 2</b> &nbsp; &nbsp; 4 points<br />
