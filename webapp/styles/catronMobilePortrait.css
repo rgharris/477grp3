@@ -98,6 +98,10 @@ div#head h2{
 #b1, #b3{
 	margin-left: 1%;
 }
+ul.gameStatus li{
+	list-style: none;
+	padding-bottom: 10px;
+}
 
 /*Modal Boxes*/
 .overlay {
