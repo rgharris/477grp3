@@ -102,6 +102,10 @@ ul.gameStatus li{
 	list-style: none;
 	padding-bottom: 10px;
 }
+ul {
+	padding-bottom: 2%;
+}
+
 a.playerName{
 	text-decoration: none;
 }
@@ -154,6 +158,7 @@ a.playerName{
 	width: 100%;
 	height: 20%;
 	color: #FFFDD0;
+	vertical-align: center;
 	font-size: 16pt;
 	font-family: 'Arapey', 'Times New Roman', serif;
 	text-decoration: none;
