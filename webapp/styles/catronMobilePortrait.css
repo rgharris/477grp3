@@ -154,6 +154,7 @@ a.playerName{
 .padding {
 	height: 30%;
 	width: 100%;
+	display: block;
 }
 .modal a.bottom {
 	display: block;
