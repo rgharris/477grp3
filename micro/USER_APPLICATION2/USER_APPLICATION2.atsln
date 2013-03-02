@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Atmel Studio Solution File, Format Version 11.00
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "USER_APPLICATION2", "USER_APPLICATION2\USER_APPLICATION2.cproj", "{0CB2700D-CF36-451E-BB31-1ADC72A31595}"
 EndProject
-Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "SPI_UNIT_TESTS1", "SPI_UNIT_TESTS1\SPI_UNIT_TESTS1.cproj", "{9ED94291-9F1F-41D0-9F7A-895EDF7AFA10}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -15,10 +13,6 @@ Global
 		{0CB2700D-CF36-451E-BB31-1ADC72A31595}.Debug|AVR.Build.0 = Debug|AVR
 		{0CB2700D-CF36-451E-BB31-1ADC72A31595}.Release|AVR.ActiveCfg = Release|AVR
 		{0CB2700D-CF36-451E-BB31-1ADC72A31595}.Release|AVR.Build.0 = Release|AVR
-		{9ED94291-9F1F-41D0-9F7A-895EDF7AFA10}.Debug|AVR.ActiveCfg = Debug|AVR
-		{9ED94291-9F1F-41D0-9F7A-895EDF7AFA10}.Debug|AVR.Build.0 = Debug|AVR
-		{9ED94291-9F1F-41D0-9F7A-895EDF7AFA10}.Release|AVR.ActiveCfg = Release|AVR
-		{9ED94291-9F1F-41D0-9F7A-895EDF7AFA10}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
