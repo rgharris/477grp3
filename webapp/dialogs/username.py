@@ -12,7 +12,8 @@ query=os.environ[ "QUERY_STRING" ]
 
 pairs = cgi.parse_qs(query)
 
-output = """Content-type: text/html
+output = """Content-type: text/html;charset=utf-8
+
             <form method="post" action="index.py">
             <h2>Please enter your username.</h2>
             <div>
