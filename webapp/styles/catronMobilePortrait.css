@@ -126,8 +126,7 @@ a.playerName{
 .modal{
     background-color: rgba(0,0,0,0.4);
 	 color: #FFFDD0;
-	 width: 0px;
-/*	 height: 0px;*/
+	 display: none;
     position: absolute;
 	 left: 12%;
     opacity: 0;
@@ -143,6 +142,7 @@ a.playerName{
     visibility: visible;
 	 width: 75%;
 	 min-height: 30%;
+	 display: inline;
 }
 .modal input[type="submit"].bottom {
 	position:absolute;
