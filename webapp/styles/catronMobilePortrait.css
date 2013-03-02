@@ -86,6 +86,7 @@ div#head h2{
 	font-size:20pt;
 	padding:5px 0 5px 0;
 	display: block;
+	text-decoration: none;
 }
 #b2, #b4{
 	border-right: none;
@@ -134,7 +135,7 @@ div#head h2{
     opacity: 1;
     visibility: visible;
 	 width: 75%;
-	 height: 30%;
+	 min-height: 30%;
 }
 .modal input[type="submit"].bottom {
 	position:absolute;
