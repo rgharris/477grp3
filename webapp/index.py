@@ -224,7 +224,7 @@ else:
 					<div id="b2" class="button">
 						Trade
 					</div>
-					<a href="#showStatus" id="b3" class="button" onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')">Status</a>
+					<a href="#modal" id="b3" class="button" onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')">Status</a>
 					<div id="b4" class="button">
 						End Turn
 					</div>
