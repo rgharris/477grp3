@@ -41,6 +41,10 @@ playerID = -1
 cookies = os.environ.get('HTTP_COOKIE')
 cookie = Cookie.SimpleCookie()
 
+#Throw query string in a var for later.
+query = os.environ.get('QUERY_STRING')
+pairs = cgi.parse_qs(query)
+
 #Variable to check if we need to go through each possible file
 checkAll = True
 
@@ -118,6 +122,39 @@ elif "endTurn" in form:
 	pass
 elif "noEndTurn" in form:
 	pass
+elif "purchase" in form:
+	pass
+elif "doNotPurchase" in form:
+	pass
+elif "settle" in form:
+	if (playerInfo['resources']['wood'] == 0 or playerInfo['resources']['clay'] == 0 or playerInfo['resources']['wheat'] == 0 or playerInfo['resources']['sheep'] == 0):
+		#Redirect to self with query string that identifies lack of resources and type of purchase; query string brings up modal box.
+		print "Location: index.py?resources=false&purchase=settle#modal"
+	else:
+		#Redirect to self - query string identifies resources and type of purchase.
+		print "Location: index.py?resources=true&purchase=settle#modal"
+elif "city" in form:
+	if (playerInfo['resources']['wheat'] < 2 or playerInfo['resources']['ore'] < 3):
+		#Redirect to self with query string that identifies lack of resources and type of purchase; query string brings up modal box.
+		print "Location: index.py?resources=false&purchase=city#modal"
+	else:
+		#Redirect to self - query string identifies resources and type of purchase.
+		print "Location: index.py?resources=true&purchase=city#modal"
+elif "road" in form:
+	if (playerInfo['resources']['clay'] == 0 or playerInfo['resources']['wood'] == 0):
+		#Redirect to self with query string that identifies lack of resources and type of purchase; query string brings up modal box.
+		print "Location: index.py?resources=false&purchase=road#modal"
+	else:
+		#Redirect to self - query string identifies resources and type of purchase.
+		print "Location: index.py?resources=true&purchase=road#modal"
+elif "dev" in form:
+	if (playerInfo['resources']['sheep'] == 0 or playerInfo['resources']['wheat'] == 0 or playerInfo['resources']['ore'] == 0):
+		#Redirect to self with query string that identifies lack of resources and type of purchase; query string brings up modal box.
+		print "Location: index.py?resources=false&purchase=dev#modal"
+	else:
+		#Redirect to self - query string identifies resources and type of purchase.
+		print "Location: index.py?resources=true&purchase=dev#modal"
+
 
 
 
@@ -169,14 +206,17 @@ if playerID == -1:
 	"""
 
 else:
-	#The below HTML is just an example page. It only works in portrait mode on my S3,
-	#and I don't know how it would look on, say, a One X or an iPhone. Additionally,
-	#it doesn't do any setup (get user ID) and none of the buttons work yet.
-	#
-	#I'm working on it.
-
+	script = ""
+	#Go through the query string, and check for queries that would bring up a box. If we see one,
+	#add a script that calls AJAX to bring in the correct box.
+	if pairs.has_key("purchase"):
+		if pairs["resources"] == "false":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?invalid=" + pairs["purchase"] + "</script>"
+		elif pairs["resources"] == "true":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?confirm=" + pairs["purchase"] + "</script>"
 	output = """
 		<body>
+			{0}
          <!--Modal Boxes-->
          <a href="#x" class="overlay" id="modal"></a>
          <div class="modal" id="ModalBox">
@@ -185,39 +225,39 @@ else:
 			<!--Main Body-->
 			<div id="container">
 				<div id="head">
-					<a href="#modal" id="name_pop" onclick="loadXMLDoc('ModalBox', '/dialogs/username.py?user={0}')"><h2>{0}: {1} Points</h2></a>
+					<a href="#modal" id="name_pop" onclick="loadXMLDoc('ModalBox', '/dialogs/username.py?user={1}')"><h2>{1}: {2} Points</h2></a>
 					<img src="images/settings.png" class="settingsImg" />
 				</div>
 				<div id="resources">
 					<div id="clay" class="resource">
 						<img src="images/clay.png" class="resourceImg"/>
 						<p class="resourceTitle">Clay</p>
-						<p class="amount">{2}</p>
+						<p class="amount">{3}</p>
 					</div>
 					<div id="ore"  class="resource">
 						<img src="images/ore.png" class="resourceImg"/>
 						<p class="resourceTitle">Ore</p>
-						<p class="amount">{3}</p>
+						<p class="amount">{4}</p>
 					</div>
 					<div id="sheep" class="resource">
 						<img src="images/sheep.png" class="resourceImg"/>
 						<p class="resourceTitle">Sheep</p>
-						<p class="amount">{4}</p>
+						<p class="amount">{5}</p>
 					</div>
 					<div id="wheat" class="resource">
 						<img src="images/wheat.png" class="resourceImg"/>
 						<p class="resourceTitle">Wheat</p>
-						<p class="amount">{5}</p>
+						<p class="amount">{6}</p>
 					</div>
 					<div id="wood" class="resource">
 						<img src="images/wood.png" class="resourceImg"/>
 						<p class="resourceTitle">Wood</p>
-						<p class="amount">{6}</p>
+						<p class="amount">{7}</p>
 					</div>
 					<div id="cards" class="resource">
 						<img src="images/sea.png" class="resourceImg"/>
 						<p class="resourceTitle">Dev. Cards</p>
-						<p class="amount">{7}</p>
+						<p class="amount">{8}</p>
 					</div>
 				</div>
 				<div class="clear"></div>
@@ -231,6 +271,6 @@ else:
 		</body>
 	"""
 
-	print output.format(playerInfo['playerName'], str(playerInfo['points']), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(len(playerInfo['cards'])))
+	print output.format(script,playerInfo['playerName'], str(playerInfo['points']), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(len(playerInfo['cards'])))
 #This needs to go at the end of all pages.
 print "</html>"

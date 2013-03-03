@@ -25,7 +25,7 @@ if len(pairs) == 0:
 				"""
 else:
 	if pairs.has_key("invalid"):
-		output = "<h2>Purchase Error</h2>\n<p>You don't have enough resources to purchase a " + pairs["invalid"] + "!</p><a href=\"#x\" class=\"bottom\">Got it!</a>"
+		output = "<h2>Purchase Error</h2>\n<p>You don't have enough resources to purchase a " + pairs["invalid"] + "!</p><a href=\"index.py#x\" class=\"bottom\">Got it!</a>"
 	elif pairs.has_key("confirm"):
 		output = "<form method=\"post\" action=\"index.py\">\n<h2>Confirm Purchase</h2>\n"
 		if pairs["confirm"] == "settle":
@@ -36,7 +36,9 @@ else:
 			output.append("<p>Do you wish to purchase a road for 1 wood and 1 clay?</p>\n<input type=\"hidden\" name=\"purchase\" value=\"road\" />")
 		elif pairs["confirm"] == "dev":
 			output.append("<p>Do you wish to purchase a development card for 1 wheat, 1 sheep, and 1 ore?</p>\n<input type=\"hidden\" name=\"purchase\" value=\"dev\" />")
-		output.append("<input type=\"submit\" value=\"Yes I do!\" class=\"bottom half left\" name=\"endTurn\"/><input type=\"submit\" value=\"No I don't!\" class=\"bottom half right\" name=\"noEndTurn\"/>")
+		output.append("<input type=\"submit\" value=\"Yes I do!\" class=\"bottom half left\" name=\"purchase\"/><input type=\"submit\" value=\"No I don't!\" class=\"bottom half right\" name=\"doNotPurchase\"/>")
+	elif pairs.has_key("place"):
+		output = "<h2>Place piece</h2>\n<p>Please place your piece now.</p><a href=\"index.py#x\" class=\"bottom\">Done.</a>"
 
 
 print output
