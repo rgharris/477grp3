@@ -9,7 +9,7 @@
 #include <board.h>
 #include <conf_board.h>
 
-void spi_init_pins(void);
+/*void spi_init_pins(void);
 void spi_init_module(void);
 void seg_init(void);
 
@@ -30,7 +30,7 @@ spi_options_t spi_7seg_options={
 	SPI_MODE_0,
 	// Disable mode fault detection
 	1
-};
+};*/
 
 void board_init(void)
 {
@@ -38,22 +38,19 @@ void board_init(void)
 	 * for, e.g., the I/O pins. The initialization can rely on application-
 	 * specific board configuration, found in conf_board.h.
 	 */
-	ioport_init();
 	sysclk_init();
-	spi_init_pins();
-	spi_init_module();
-	seg_init();
+	ioport_init();
+	//spi_init_pins();
+	//spi_init_module();
+	//seg_init();
 	
-	ioport_enable_pin(LED);
-	ioport_set_pin_dir(LED,IOPORT_DIR_OUTPUT);
 	ioport_enable_pin(RGB_CLK);
 	ioport_set_pin_dir(RGB_CLK,IOPORT_DIR_OUTPUT);
 	ioport_enable_pin(RGB_DATA);
 	ioport_set_pin_dir(RGB_DATA,IOPORT_DIR_OUTPUT);
-	
 }
 
-void seg_init(void)
+/*void seg_init(void)
 {
 	spi_write((&AVR32_SPI),0x0C01);  // normal operation
 	spi_write((&AVR32_SPI),0x0900);  // decode mode off
@@ -93,7 +90,7 @@ void spi_init_module(void) {
 	spi_enable(SPI_7SEG);
 }
 
-/*void spi_init_module(void)
+void spi_init_module(void)
 {
 	struct spi_device spi_device_conf = {
 		.id = CS0

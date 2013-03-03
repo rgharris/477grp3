@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Prowess", "Prowess\Prowess.cproj", "{F07A17AE-6780-4E23-90AA-7A4A9E717CA0}"
+EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "USER_APPLICATION2", "..\USER_APPLICATION2\USER_APPLICATION2\USER_APPLICATION2.cproj", "{0CB2700D-CF36-451E-BB31-1ADC72A31595}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F07A17AE-6780-4E23-90AA-7A4A9E717CA0}.Debug|AVR.ActiveCfg = Debug|AVR
+		{F07A17AE-6780-4E23-90AA-7A4A9E717CA0}.Debug|AVR.Build.0 = Debug|AVR
+		{F07A17AE-6780-4E23-90AA-7A4A9E717CA0}.Release|AVR.ActiveCfg = Release|AVR
+		{F07A17AE-6780-4E23-90AA-7A4A9E717CA0}.Release|AVR.Build.0 = Release|AVR
+		{0CB2700D-CF36-451E-BB31-1ADC72A31595}.Debug|AVR.ActiveCfg = Debug|AVR
+		{0CB2700D-CF36-451E-BB31-1ADC72A31595}.Debug|AVR.Build.0 = Debug|AVR
+		{0CB2700D-CF36-451E-BB31-1ADC72A31595}.Release|AVR.ActiveCfg = Release|AVR
+		{0CB2700D-CF36-451E-BB31-1ADC72A31595}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
