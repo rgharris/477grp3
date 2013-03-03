@@ -209,12 +209,11 @@ else:
 	script = ""
 	#Go through the query string, and check for queries that would bring up a box. If we see one,
 	#add a script that calls AJAX to bring in the correct box.
-	script = str(pairs)
 	if pairs.has_key("purchase"):
-		if pairs["resources"] == "false":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?invalid=" + pairs["purchase"] + "</script>"
-		elif pairs["resources"] == "true":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?confirm=" + pairs["purchase"] + "</script>"
+		if pairs["resources"][0] == "false":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?invalid=" + pairs["purchase"][0] + "</script>"
+		elif pairs["resources"][0] == "true":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?confirm=" + pairs["purchase"][0] + "</script>"
 	output = """
 		<body>
 			{0}
