@@ -211,9 +211,9 @@ else:
 	#add a script that calls AJAX to bring in the correct box.
 	if pairs.has_key("purchase"):
 		if pairs["resources"][0] == "false":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?invalid=" + pairs["purchase"][0] + "</script>"
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?invalid=" + pairs["purchase"][0] + "')</script>"
 		elif pairs["resources"][0] == "true":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?confirm=" + pairs["purchase"][0] + "</script>"
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?confirm=" + pairs["purchase"][0] + "')</script>"
 	output = """
 		<body>
 			{0}
