@@ -25,7 +25,8 @@ if len(pairs) == 0:
 				"""
 else:
 	if pairs.has_key("invalid"):
-		output = "<h2>Purchase Error</h2>\n<p>You don't have enough resources to purchase a " + pairs["invalid"][0] + "!</p><a href=\"index.py#x\" class=\"bottom\">Got it!</a>"
+		humanMap = {"settle":"settlement", "city":"city", "road":"road", "dev":"development card"}
+		output = "<h2>Purchase Error</h2>\n<p>You don't have enough resources to purchase a " + humanMap[pairs["invalid"][0]] + "!</p><a href=\"index.py#x\" class=\"bottom\">Got it!</a>"
 	elif pairs.has_key("confirm"):
 		output = "<form method=\"post\" action=\"index.py\">\n<h2>Confirm Purchase</h2>\n"
 		if pairs["confirm"][0] == "settle":
