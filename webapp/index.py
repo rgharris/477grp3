@@ -222,12 +222,8 @@ else:
 				</div>
 				<div class="clear"></div>
 				<div id="footer">
-					<div id="b1" class="button">
-						Purchase
-					</div>
-					<div id="b2" class="button">
-						Trade
-					</div>
+					<a href="#modal" id="b1" class="button" onclick="loadXMLDoc('ModalBox', '/dialogs/purchase.py')">Purchase</a>
+					<a href="#modal" id="b2" class="button" onclick="loadXMLDoc('ModalBox', '/dialogs/trade.py')">Trade</a>
 					<a href="#modal" id="b3" class="button" onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')">Status</a>
 					<a href="#modal" id="b4" class="button" onclick="loadXMLDoc('ModalBox', '/dialogs/endTurn.py')">End Turn</a>
 				</div>

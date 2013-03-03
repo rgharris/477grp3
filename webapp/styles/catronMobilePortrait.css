@@ -185,6 +185,9 @@ a.playerName{
 .modal input[type="submit"].half{
 	width: 50%;
 }
+.modal input[type="submit"].top{
+	bottom:22%;
+}
 .modal input[type="submit"].left{
 	left:0;
 }
