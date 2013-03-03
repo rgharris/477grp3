@@ -17,7 +17,7 @@ print "\t<ul class=\"gameStatus\">\n"
 for fn in os.listdir(PLAYER_FILE):
 	jsonInfo = open(PLAYER_FILE + fn)
 	playerInfo = json.load(jsonInfo)
-	print "\t\t<li><b>" + playerInfo["playerName"] + "</b> &nbsp; &nbsp; " + str(playerInfo["points"])
+	print "\t\t<li><b>" + playerInfo["playerName"] + "</b> &nbsp; &nbsp; " + str(playerInfo["points"]) + " points"
 	if len(playerInfo["awards"]) > 0:
 		if len(playerInfo["awards"]) == 1 and playerInfo["awards"][0] == "road":
 			print "<br />\n\t\t<i>Has the longest road</i>"
