@@ -15,7 +15,7 @@ print
 print "<h2>Game Status</h2>\n"
 print "\t<ul class=\"gameStatus\">\n"
 for fn in os.listdir(PLAYER_FILE):
-	jsonInfo = open(PLAYER_FILE . fn)
+	jsonInfo = open(PLAYER_FILE + fn)
 	playerInfo = json.load(jsonInfo)
 	print "\t\t<li><b>" + playerInfo["playerName"] + "</b> &nbsp; &nbsp; " + playerInfo["points"]
 	if len(playerInfo["awards"]) > 0:
