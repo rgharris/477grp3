@@ -114,6 +114,10 @@ if form.has_key('user'):
 	with open(CUR_PLAYER_FILE, 'w') as f:
 		json.dump(playerInfo, f, ensure_ascii=False)
 		f.close()
+elif "endTurn" in form:
+	pass
+elif "noEndTurn" in form:
+	pass
 
 
 
@@ -225,9 +229,7 @@ else:
 						Trade
 					</div>
 					<a href="#modal" id="b3" class="button" onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')">Status</a>
-					<div id="b4" class="button">
-						End Turn
-					</div>
+					<a href="#modal" id="b4" class="button" onclick="loadXMLDoc('ModalBox', '/dialogs/endTurn.py')">End Turn</a>
 				</div>
 			</div>
 		</body>

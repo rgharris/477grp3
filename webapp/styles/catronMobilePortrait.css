@@ -182,6 +182,16 @@ a.playerName{
 	font-family: 'Arapey', 'Times New Roman', serif;
 }
 
+.modal input[type="submit"].half{
+	width: 50%;
+}
+.modal input[type="submit"].left{
+	left:0;
+}
+.modal input[type="submit"].right{
+	right:0;
+}
+
 .modal input[type="text"] {
 	width: 90%;
 	font-size: 16pt;
