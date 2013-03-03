@@ -18,4 +18,4 @@ output = """Content-type: text/html;charset=utf-8
             </form>
 			"""
 
-print output.format(pairs['user'][0]);
+print output;
