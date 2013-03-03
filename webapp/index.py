@@ -21,8 +21,19 @@
 # Import debugging
 import cgitb
 #Everything else.
-import os, sys, json, Cookie, time, cgi
+import os, sys, json, Cookie, time, cgi, random
 
+#######################Various functions#######################
+#Weighted random number - used for picking a development card
+#Discovered at http://eli.thegreenplace.net/2010/01/22/weighted-random-generation-in-python/
+def weighted_choice_sub(weights):
+	rnd = random.random() * sum(weights)
+	for i, w in enumerate(weights):
+		rnd -= w
+		if rnd < 0:
+			return i
+
+####################PRE DISPLAY IS BELOW###################
 #Enable debugging
 cgitb.enable()
 
@@ -31,6 +42,7 @@ form = cgi.FieldStorage()
 
 #The prefix of the player json files - PLAYER_FILE[num].json
 PLAYER_FILE="players/"
+DEV_CARD_FILE="players/dev.json"
 TIMEOUT = 3600 #one hour (3600 seconds)
 playerID = -1
 
@@ -122,8 +134,19 @@ elif "endTurn" in form:
 	pass
 elif "noEndTurn" in form:
 	pass
-elif "purchase" in form:
-	pass
+elif "confirmPurchase" in form:
+	purchaseItem = form.getvalue("purchase")
+	if(purchaseItem == "settle"):
+	elif(purchaseItem == "city"):
+	elif(purchaseItem == "road"):
+	elif(purchaseItem == "dev"):
+		#Store current available dev cards in external json store.
+		if not os.path.isfile(DEV_CARD_FILE):
+			with open(DEV_CARD_FILE, 'w') as f:
+				newDevBase = {'weights':[.56,.24,.2], 'knights':14, 'progress':6, 'victory':5}
+				json.dump(newDevBase, f, ensure_ascii=False)
+		else:
+			devBase = json.load(open(DEV_CARD_FILE))
 elif "doNotPurchase" in form:
 	pass
 elif "settle" in form:
