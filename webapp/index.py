@@ -69,7 +69,7 @@ if checkAll == True:
 		#if multiple people access the site within a few micro/milliseconds
 		#of each other (not sure which, depends on the speed of the pi).
 		#Need a way to solve this.
-		newPlayer = {'playerName':"Player " + str(i+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'active':time.time(), 'awards':{}, 'points':0}
+		newPlayer = {'playerName':"Player " + str(i+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'active':time.time(), 'awards':[], 'points':0}
 		if not os.path.isfile(filename):
 			#Need a way of doing timeouts without timeouts - arch's ntp service is not reliable, and generally returns Jan 1 1970.
 			with open(filename, 'w') as f:
