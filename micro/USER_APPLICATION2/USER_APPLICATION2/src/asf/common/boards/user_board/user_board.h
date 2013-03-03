@@ -20,26 +20,18 @@
 // Uncomment and set correct values if external oscillator is used.
 
 // External oscillator frequency
-//#define BOARD_XOSC_HZ          8000000
+#define BOARD_XOSC_HZ			12000000
 
 // External oscillator type.
 //!< External clock signal
-//#define BOARD_XOSC_TYPE        XOSC_TYPE_EXTERNAL
+#define BOARD_XOSC_TYPE        XOSC_TYPE_EXTERNAL
 //!< 32.768 kHz resonator on TOSC
 //#define BOARD_XOSC_TYPE        XOSC_TYPE_32KHZ
 //!< 0.4 to 16 MHz resonator on XTALS
 //#define BOARD_XOSC_TYPE        XOSC_TYPE_XTAL
 
 // External oscillator startup time
-//#define BOARD_XOSC_STARTUP_US  500000
-
-// Internal oscillator
-#define BOARD_OSC0_HZ			12000000
-#define BOARD_OSC0_STARTUP_US	1100
-#define BOARD_OSC0_IS_XTAL		false
-
-// LED on portA pin 11
-#define LED			AVR32_PIN_PA18
+#define BOARD_XOSC_STARTUP_US  500000
 
 // RGB 
 #define RGB_CLK		AVR32_PIN_PB10
@@ -56,7 +48,7 @@
 #define BLACK "000000"
 #define WHITE "FFFFFF"
 
-// SPI Pins
+/*// SPI Pins
 #define MOSI		AVR32_PIN_PA14
 #define SCK			AVR32_PIN_PA15
 #define CS0			AVR32_PIN_PA16
@@ -65,6 +57,6 @@
 
 // SPI
 #define SPI_7SEG    (&AVR32_SPI)
-#define SPI_7SEG_CS (0)
+#define SPI_7SEG_CS (0)*/
 
 #endif // USER_BOARD_H

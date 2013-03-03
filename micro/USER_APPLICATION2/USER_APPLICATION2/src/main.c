@@ -1,8 +1,10 @@
 /**
  * \file
  *
- * \brief Empty user application template
- *
+ * \brief Cycles a selected RGB by
+ *        RED-YELLOW-GREEN-CYAN-BLUE-MAGENTA 
+ *        Simply edit DRIVER_ADDRESS, RGB_ADDRESS, and TRANS_TIME
+ *        to test RGBs on the PCB. THANKS!
  */
 
 /*
@@ -12,9 +14,13 @@
 #include <asf.h>
 #include <avr32/uc3b064.h>
 
+#define DRIVER_ADDRESS	7 // A number 0-6
+//#define RGB_ADDRESS		0 // A number 0-2
+#define TRANS_TIME		0 // A number 0-4ish
+
 //prototypes
-void blinkLED(uint32_t led);
-void seg_write(uint16_t);
+//void blinkLED(uint32_t led);
+//void seg_write(uint16_t);
 void clockRGB();
 void lightRGB(int deviceAddress,  int colorAddress, int brightness, int transTime);
 
@@ -49,20 +55,23 @@ int main (void)
 	// Deselect the slave
 	spi_unselectChip(SPI_7SEG,SPI_7SEG_CS);
     */
+	lightRGB(DRIVER_ADDRESS, 40, 0, TRANS_TIME);
+	lightRGB(DRIVER_ADDRESS, 42, 0, TRANS_TIME);
+	lightRGB(DRIVER_ADDRESS, 44, 0, TRANS_TIME);
 
 	while(1) {
 	  // int deviceAddress,  int colorAddress, int brightness, int transTime
-	  lightRGB(0, 0, 15, 4);
+	  lightRGB(DRIVER_ADDRESS, 40, 15, TRANS_TIME);
 	  delay_ms(1000);
-	  lightRGB(0, 16, 0, 4);
+	  lightRGB(DRIVER_ADDRESS, 44, 0, TRANS_TIME);
 	  delay_ms(1000);
-	  lightRGB(0, 8, 15, 4);
+	  lightRGB(DRIVER_ADDRESS, 42, 15, TRANS_TIME);
 	  delay_ms(1000);
-	  lightRGB(0, 0,  0, 4);
+	  lightRGB(DRIVER_ADDRESS, 40,  0, TRANS_TIME);
 	  delay_ms(1000);
-	  lightRGB(0, 16, 15, 4);
+	  lightRGB(DRIVER_ADDRESS, 44, 15, TRANS_TIME);
 	  delay_ms(1000);
-	  lightRGB(0, 8,  0, 4);
+	  lightRGB(DRIVER_ADDRESS, 42,  0, TRANS_TIME);
 	  delay_ms(1000);
 	}
 }
@@ -79,14 +88,6 @@ void seg_write(uint16_t spi_data)
 	ioport_set_pin_level(LOAD,true);
 	delay_us(100);
 }*/
-
-void blinkLED(uint32_t led)
-{
-	ioport_set_pin_level(led,true);
-	delay_ms(500);
-	ioport_set_pin_level(led,false);
-	delay_ms(500);
-}
 
 void clockRGB()
 {
