@@ -37,7 +37,7 @@ else:
 			output = output + "<p>Do you wish to purchase a road for 1 wood and 1 clay?</p>\n<input type=\"hidden\" name=\"purchase\" value=\"road\" />"
 		elif pairs["confirm"][0] == "dev":
 			output = output + "<p>Do you wish to purchase a development card for 1 wheat, 1 sheep, and 1 ore?</p>\n<input type=\"hidden\" name=\"purchase\" value=\"dev\" />"
-		output.append("<input type=\"submit\" value=\"Yes I do!\" class=\"bottom half left\" name=\"confirmPurchase\"/><input type=\"submit\" value=\"No I don't!\" class=\"bottom half right\" name=\"doNotPurchase\"/>")
+		output = output + "<input type=\"submit\" value=\"Yes I do!\" class=\"bottom half left\" name=\"confirmPurchase\"/><input type=\"submit\" value=\"No I don't!\" class=\"bottom half right\" name=\"doNotPurchase\"/>"
 	elif pairs.has_key("place"):
 		output = "<h2>Place piece</h2>\n<p>Please place your piece now.</p><a href=\"index.py#x\" class=\"bottom\">Done.</a>"
 	elif pairs.has_key("obtained"):
