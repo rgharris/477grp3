@@ -182,6 +182,9 @@ elif "confirmPurchase" in form:
 		#We're done, output the player to the json file and the current availablity to the devBase file.
 		#Change active time.
 		playerInfo['active'] = time.time();
+		playerInfo['resources']['wheat'] = playerInfo['resources']['wheat'] - 1
+		playerInfo['resources']['sheep'] = playerInfo['resources']['sheep'] - 1
+		playerInfo['resources']['ore'] = playerInfo['resources']['ore'] - 1
 		with open(CUR_PLAYER_FILE, 'w') as f:
 			json.dump(playerInfo, f, ensure_ascii=False)
 			f.close()
