@@ -154,7 +154,7 @@ elif "confirmPurchase" in form:
 	elif(purchaseItem == "road"):
 		pass
 	elif(purchaseItem == "dev"):
-		newDevBase = {'expire':time.time()+TIMEOUT, 'knights':14, 'monopoly':2, 'road':2, 'plenty':2 'victory':5}
+		newDevBase = {'expire':time.time()+TIMEOUT, 'knights':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}
 		#Store current available dev cards in external json store.
 		if not os.path.isfile(DEV_CARD_FILE):
 			with open(DEV_CARD_FILE, 'w') as f:
