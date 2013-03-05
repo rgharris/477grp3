@@ -343,6 +343,6 @@ else:
 		</body>
 	"""
 
-	print output.format(script,playerInfo['playerName'], str(playerInfo['points']), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(len(playerInfo['cards'])))
+	print output.format(script,playerInfo['playerName'], str(playerInfo['points']), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(len(playerInfo['cards']) + len(playerInfo['onHold'])))
 #This needs to go at the end of all pages.
 print "</html>"
