@@ -192,6 +192,9 @@ elif "confirmPurchase" in form:
 		devBase['expire'] = time.time()+TIMEOUT
 		#Change the amount of that type of card available.
 		devBase[list[randNum]] = devBase[list[randNum]] - 1
+		with open(DEV_CARD_FILE, 'w') as f:
+			json.dump(devBase, f, ensure_ascii=False)
+			f.close()
 		#NOW We're done. Redirect to modal box to show what they got.
 		print "Location: index.py?obtained=" + list[randNum] + "#modal"
 elif "doNotPurchase" in form:
