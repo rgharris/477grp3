@@ -42,7 +42,7 @@ else:
 		output = "<h2>Place piece</h2>\n<p>Please place your piece now.</p><a href=\"index.py#x\" class=\"bottom\">Done.</a>"
 	elif pairs.has_key("obtained"):
 		humanMap = {"knights":"Knight", "monopoly":"Monopoly", "road":"Road Building", "plenty":"Year of Plenty", "victory":"Victory Point"}
-		if pairs["obtained"][0] != victory:
+		if pairs["obtained"][0] != "victory":
 			output = "<h2>Development Card!</h2>\n<p>You have received a " + humanMap[pairs["obtained"][0]] + " card! You can play it any time, starting next turn, by selecting the \"Dev Cards\" item on the resource screen.</p><a href=\"index.py#x\" class=\"bottom\">Got it!</a>"
 		else:
 			output = "<h2>Victory Card!</h2>\n<p>Congratulations! You are one step closer to victory! You have obtained a victory point card. No one will see this victory point until the end of the game, and it will not show up in the status screen. It will only show up on your main point count next to your name.</p><a href=\"index.py#x\" class=\"bottom\">Awesome!</a>"
