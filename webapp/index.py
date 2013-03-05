@@ -137,8 +137,11 @@ elif "noEndTurn" in form:
 elif "confirmPurchase" in form:
 	purchaseItem = form.getvalue("purchase")
 	if(purchaseItem == "settle"):
+		pass
 	elif(purchaseItem == "city"):
+		pass
 	elif(purchaseItem == "road"):
+		pass
 	elif(purchaseItem == "dev"):
 		#Store current available dev cards in external json store.
 		if not os.path.isfile(DEV_CARD_FILE):
