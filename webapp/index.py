@@ -85,7 +85,18 @@ if checkAll == True:
 		#if multiple people access the site within a few micro/milliseconds
 		#of each other (not sure which, depends on the speed of the pi).
 		#Need a way to solve this.
-		newPlayer = {'playerName':"Player " + str(i+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'active':time.time(), 'awards':[], 'points':0}
+		
+		#Dictionary Setup:
+		#
+		#playerName: The player's username. Defaults to Player X, where X is their player ID + 1.
+		#resources: A dictionary that contains the resources the player has available. Resources are ore, wheat, sheep, clay, and wood, which correspond to the keys.
+		#The amount available is the value.
+		#cards: Available development cards to play. Victory point cards are not played, but are also stored here.
+		#onHold: Development cards not yet available to play. These are development point cards picked up this turn.
+		#active: The last time this file was written to. Times out after a period of time to allow overwriting, just in case the board is turned off and not back on.
+		#awards: This is where Longest Road and Largest Army are stored. A simple list.
+		#points: The player's current score, minus their Victory Point cards.
+		newPlayer = {'playerName':"Player " + str(i+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'onHold':{}, 'active':time.time(), 'awards':[], 'points':0}
 		if not os.path.isfile(filename):
 			#Need a way of doing timeouts without timeouts - arch's ntp service is not reliable, and generally returns Jan 1 1970.
 			with open(filename, 'w') as f:
@@ -143,13 +154,43 @@ elif "confirmPurchase" in form:
 	elif(purchaseItem == "road"):
 		pass
 	elif(purchaseItem == "dev"):
+		newDevBase = {'expire':time.time()+TIMEOUT, 'knights':14, 'monopoly':2, 'road':2, 'plenty':2 'victory':5}
 		#Store current available dev cards in external json store.
 		if not os.path.isfile(DEV_CARD_FILE):
 			with open(DEV_CARD_FILE, 'w') as f:
-				newDevBase = {'weights':[.56,.24,.2], 'knights':14, 'progress':6, 'victory':5}
 				json.dump(newDevBase, f, ensure_ascii=False)
+				devBase = newDevBase.copy()
 		else:
-			devBase = json.load(open(DEV_CARD_FILE))
+			jsonInfo = open(DEV_CARD_FILE)
+			devBase = json.load(jsonInfo)
+			jsonInfo.close()
+			if devBase['expire'] < time.time():
+				with open(DEV_CARD_FILE, 'w') as f:
+					json.dump(newDevBase, f, ensure_ascii=False)
+					devBase = newDevBase.copy()
+		#Make sure the next two lists are in the same order!
+		#If there are no cards available of a particular kind, it's weight will be '0', thus making it
+		#impossible to be selected.
+		weights = [devBase['knights'], devBase['monopoly'], devBase['road'], devBase['plenty'], devBase['victory']]
+		list = ['knights','monopoly','road','plenty','victory']
+		#This will return an integer between 0 and 4. The order is the same as the list above.
+		randNum = weighted_choice_sub(weights)
+		if list[randNum] in playerInfo['cards']:
+			playerInfo['onHold'][list[randNum]] = playerInfo['onHold'][list[randNum]]+1
+		else:
+			playerInfo['onHold'][list[randNum]] = 1
+		#We're done, output the player to the json file and the current availablity to the devBase file.
+		#Change active time.
+		playerInfo['active'] = time.time();
+		with open(CUR_PLAYER_FILE, 'w') as f:
+			json.dump(playerInfo, f, ensure_ascii=False)
+			f.close()
+		#Change expiry time
+		devBase['expire'] = time.time()+TIMEOUT
+		#Change the amount of that type of card available.
+		devBase[list[randNum]] = devBase[list[randNum]] - 1
+		#NOW We're done. Redirect to modal box to show what they got.
+		print "Location: index.py?obtained=" + list[randNum] + "#modal"
 elif "doNotPurchase" in form:
 	pass
 elif "settle" in form:
@@ -240,6 +281,8 @@ else:
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?invalid=" + pairs["purchase"][0] + "')</script>"
 		elif pairs["resources"][0] == "true":
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?confirm=" + pairs["purchase"][0] + "')</script>"
+	elif pairs.has_key("obtained"):
+		script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?obtained=" + pairs["obtained"][0] + "')</script>"
 	output = """
 		<body>
 			{0}
