@@ -171,6 +171,9 @@ elif "confirmPurchase" in form:
 		playerInfo['resources']['clay'] = playerInfo['resources']['clay'] - 1
 		######TODO: At this point we need to do a longest road check.
 		######We also need to notify the board that a piece needs placed.
+		with open(CUR_PLAYER_FILE, 'w') as f:
+			json.dump(playerInfo, f, ensure_ascii=False)
+			f.close()
 		print "Location: index.py?place=piece#modal"
 	elif(purchaseItem == "dev"):
 		newDevBase = {'expire':time.time()+TIMEOUT, 'knights':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}
@@ -328,6 +331,8 @@ else:
 	elif pairs.has_key("development"):
 		if pairs["development"][0] == "none":
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?development=none')</script>"
+	elif pairs.has_key("place"):
+		script = "<script>loadXMLDoc('modalBox', '/dialogs/purchase.py?place=piece')</script>"
 	output = """
 		<body>
 			{0}
