@@ -68,33 +68,26 @@ checkAll = True
 if cookies:
 	cookie.load(cookies)
 	lastactive = float(cookie['lastactive'].value)
-	debug = debug + '1\n'
 	if(lastactive + TIMEOUT > time.time()):
 		#Ok, the player didn't time out. Did their json file?
-		debug = debug + 'no timeout.\n'
 		playerID = int(cookie['playerid'].value)
 		if os.path.isfile(PLAYER_FILE + str(playerID) + ".json"):
-			debug = debug + 'file exists.\n'
 			jsonInfo = open(PLAYER_FILE + str(playerID) + ".json")
 			checkInfo = json.load(jsonInfo)
 			jsonInfo.close
 			if (checkInfo['active'] + TIMEOUT > time.time()):
 				#The json file exists and also didn't time out! Great!
-				debug = debug + 'file did not timeout.\n'
 				checkAll = False
 				playerID = int(cookie['playerid'].value)
 				CUR_PLAYER_FILE = PLAYER_FILE + str(playerID) + ".json"
 				playerInfo = json.load(open(CUR_PLAYER_FILE))
 			else:
 				cookies = ''
-				debug = debug + 'file timed out.\n'
 		else:
 				cookies = ''
-				debug = debug + 'file does not exist.\n'
 	else:
 		#We timed out, reset the cookies string and go through files.
 		cookies = ''
-		debug = debug + 'player timed out.\n'
 
 if checkAll == True:
 	#Next start by checking if json files exist. If not, create them.
@@ -217,7 +210,7 @@ elif "confirmPurchase" in form:
 			json.dump(devBase, f, ensure_ascii=False)
 			f.close()
 		#NOW We're done. Redirect to modal box to show what they got.
-		print "Location: index.py?obtained=" + list[randNum] + "#modal"
+		print "Location: index.py?obtained=" + cardList[randNum] + "#modal"
 elif "doNotPurchase" in form:
 	pass
 elif "settle" in form:
