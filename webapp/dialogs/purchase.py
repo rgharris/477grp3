@@ -39,7 +39,7 @@ else:
 			output = output + "<p>Do you wish to purchase a development card for 1 wheat, 1 sheep, and 1 ore?</p>\n<input type=\"hidden\" name=\"purchase\" value=\"dev\" />"
 		output = output + "<input type=\"submit\" value=\"Yes I do!\" class=\"bottom half left\" name=\"confirmPurchase\"/><input type=\"submit\" value=\"No I don't!\" class=\"bottom half right\" name=\"doNotPurchase\"/>"
 	elif pairs.has_key("place"):
-		output = "<h2>Place piece</h2>\n<p>Please place your piece now.</p><a href=\"index.py#x\" class=\"bottom\">Done.</a>"
+		output = "<h2>Place piece</h2>\n<p>Please place your piece now.</p><!--TODO:This needs removed when we're communicating with the board.--><a href=\"index.py#x\" class=\"bottom\">Done.</a>"
 	elif pairs.has_key("obtained"):
 		humanMap = {"knights":"Knight", "monopoly":"Monopoly", "road":"Road Building", "plenty":"Year of Plenty", "victory":"Victory Point"}
 		if pairs["obtained"][0] != "victory":

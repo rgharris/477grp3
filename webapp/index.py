@@ -166,7 +166,12 @@ elif "confirmPurchase" in form:
 	elif(purchaseItem == "city"):
 		pass
 	elif(purchaseItem == "road"):
-		pass
+		playerInfo['active'] = time.time()
+		playerInfo['resources']['wood'] = playerInfo['resources']['wood'] - 1
+		playerInfo['resources']['clay'] = playerInfo['resources']['clay'] - 1
+		######TODO: At this point we need to do a longest road check.
+		######We also need to notify the board that a piece needs placed.
+		print "Location: index.py?place=piece#modal"
 	elif(purchaseItem == "dev"):
 		newDevBase = {'expire':time.time()+TIMEOUT, 'knights':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}
 		#Store current available dev cards in external json store.
