@@ -332,7 +332,7 @@ else:
 		if pairs["development"][0] == "none":
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?development=none')</script>"
 	elif pairs.has_key("place"):
-		script = "<script>loadXMLDoc('modalBox', '/dialogs/purchase.py?place=piece')</script>"
+		script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?place=piece')</script>"
 	output = """
 		<body>
 			{0}
