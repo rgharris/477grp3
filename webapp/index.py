@@ -70,7 +70,7 @@ if cookies:
 			jsonInfo = open(PLAYER_FILE + str(playerID) + ".json")
 			checkInfo = json.load(jsonInfo)
 			jsonInfo.close
-			if checkInfo['active'] + TIMEOUT > time.time()):
+			if (checkInfo['active'] + TIMEOUT > time.time()):
 				#The json file exists and also didn't time out! Great!
 				checkAll = False
 				playerID = int(cookie['playerid'].value)
