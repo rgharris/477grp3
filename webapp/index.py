@@ -189,7 +189,7 @@ elif "confirmPurchase" in form:
 		cardList = ['knights','monopoly','road','plenty','victory']
 		if sum(weights) == 0:
 			#If the sum of weights is 0, that means there are 0 cards in our deck. Nothing to draw!
-			print "Location: index.py?devlopment=none#modal"
+			print "Location: index.py?development=none#modal"
 		else:
 			#This will return an integer between 0 and 4. The order is the same as the lists above.
 			randNum = weighted_choice_sub(weights)
@@ -240,6 +240,10 @@ elif "road" in form:
 		print "Location: index.py?resources=true&purchase=road#modal"
 elif "dev" in form:
 	if (playerInfo['resources']['sheep'] == 0 or playerInfo['resources']['wheat'] == 0 or playerInfo['resources']['ore'] == 0):
+		#Redirect to self with query string that identifies lack of resources and type of purchase; query string brings up modal box.
+		print "Location: index.py?resources=false&purchase=dev#modal"
+	else:
+		#Redirect to self - query string identifies resources and type of purchase.
 		if os.path.isfile(DEV_CARD_FILE):
 			jsonInfo = open(DEV_CARD_FILE)
 			devBase = json.load(jsonInfo)
@@ -248,15 +252,12 @@ elif "dev" in form:
 				if devBase['knights'] + devBase['monopoly'] + devBase['road'] + devBase['plenty'] + devBase['victory'] == 0:
 					print "Location: index.py?development=none#modal"
 				else:
-					#Redirect to self with query string that identifies lack of resources and type of purchase; query string brings up modal box.
-					print "Location: index.py?resources=false&purchase=dev#modal"
+					print "Location: index.py?resources=true&purchase=dev#modal"
 			else:
-				print "Location: index.py?resources=false&purchase=dev#modal"
+				print "Location: index.py?resources=true&purchase=dev#modal"
 		else:
-			print "Location: index.py?resources=false&purchase=dev#modal"
-	else:
-		#Redirect to self - query string identifies resources and type of purchase.
-		print "Location: index.py?resources=true&purchase=dev#modal"
+			print "Location: index.py?resources=true&purchase=dev#modal"
+
 
 
 
