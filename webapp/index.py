@@ -360,7 +360,7 @@ else:
 		</body>
 	"""
 
-	print output.format(script,playerInfo['playerName'], str(playerInfo['points']), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())))
+	print output.format(script,playerInfo['playerName'], str(playerInfo['points'] + playerInfo['onHold']['victory'] + playerInfo['cards']['victory']), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())))
 #This needs to go at the end of all pages.
 print "</html>"
 #Debug variable, prints after main html. Most browsers will still render.
