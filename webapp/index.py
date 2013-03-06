@@ -187,30 +187,34 @@ elif "confirmPurchase" in form:
 		#impossible to be selected.
 		weights = [devBase['knights'], devBase['monopoly'], devBase['road'], devBase['plenty'], devBase['victory']]
 		cardList = ['knights','monopoly','road','plenty','victory']
-		#This will return an integer between 0 and 4. The order is the same as the list above.
-		randNum = weighted_choice_sub(weights)
-		if cardList[randNum] in playerInfo['onHold']:
-			playerInfo['onHold'][cardList[randNum]] = playerInfo['onHold'][cardList[randNum]]+1
+		if sum(weights) == 0:
+			#If the sum of weights is 0, that means there are 0 cards in our deck. Nothing to draw!
+			print "Location: index.py?devlopment=none#modal"
 		else:
-			playerInfo['onHold'][cardList[randNum]] = 1
-		#We're done, output the player to the json file and the current availablity to the devBase file.
-		#Change active time.
-		playerInfo['active'] = time.time();
-		playerInfo['resources']['wheat'] = playerInfo['resources']['wheat'] - 1
-		playerInfo['resources']['sheep'] = playerInfo['resources']['sheep'] - 1
-		playerInfo['resources']['ore'] = playerInfo['resources']['ore'] - 1
-		with open(CUR_PLAYER_FILE, 'w') as f:
-			json.dump(playerInfo, f, ensure_ascii=False)
-			f.close()
-		#Change expiry time
-		devBase['expire'] = time.time()+TIMEOUT
-		#Change the amount of that type of card available.
-		devBase[cardList[randNum]] = devBase[cardList[randNum]] - 1
-		with open(DEV_CARD_FILE, 'w') as f:
-			json.dump(devBase, f, ensure_ascii=False)
-			f.close()
-		#NOW We're done. Redirect to modal box to show what they got.
-		print "Location: index.py?obtained=" + cardList[randNum] + "#modal"
+			#This will return an integer between 0 and 4. The order is the same as the lists above.
+			randNum = weighted_choice_sub(weights)
+			if cardList[randNum] in playerInfo['onHold']:
+				playerInfo['onHold'][cardList[randNum]] = playerInfo['onHold'][cardList[randNum]]+1
+			else:
+				playerInfo['onHold'][cardList[randNum]] = 1
+			#We're done, output the player to the json file and the current availablity to the devBase file.
+			#Change active time.
+			playerInfo['active'] = time.time();
+			playerInfo['resources']['wheat'] = playerInfo['resources']['wheat'] - 1
+			playerInfo['resources']['sheep'] = playerInfo['resources']['sheep'] - 1
+			playerInfo['resources']['ore'] = playerInfo['resources']['ore'] - 1
+			with open(CUR_PLAYER_FILE, 'w') as f:
+				json.dump(playerInfo, f, ensure_ascii=False)
+				f.close()
+			#Change expiry time
+			devBase['expire'] = time.time()+TIMEOUT
+			#Change the amount of that type of card available.
+			devBase[cardList[randNum]] = devBase[cardList[randNum]] - 1
+			with open(DEV_CARD_FILE, 'w') as f:
+				json.dump(devBase, f, ensure_ascii=False)
+				f.close()
+			#NOW We're done. Redirect to modal box to show what they got.
+			print "Location: index.py?obtained=" + cardList[randNum] + "#modal"
 elif "doNotPurchase" in form:
 	pass
 elif "settle" in form:
@@ -303,6 +307,9 @@ else:
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?confirm=" + pairs["purchase"][0] + "')</script>"
 	elif pairs.has_key("obtained"):
 		script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?obtained=" + pairs["obtained"][0] + "')</script>"
+	elif pairs.has_key("development"):
+		if pairs["development"][0] == "none":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?development=none')</script>"
 	output = """
 		<body>
 			{0}

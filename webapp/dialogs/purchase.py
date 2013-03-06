@@ -46,6 +46,9 @@ else:
 			output = "<h2>Development Card!</h2>\n<p>You have received a " + humanMap[pairs["obtained"][0]] + " card! You can play it any time, starting next turn, by selecting the \"Dev Cards\" item on the resource screen.</p><a href=\"index.py#x\" class=\"bottom\">Got it!</a>"
 		else:
 			output = "<h2>Victory Card!</h2>\n<p>Congratulations! You are one step closer to victory! You have obtained a victory point card. No one will see this victory point until the end of the game, and it will not show up in the status screen. It will only show up on your main point count next to your name.</p><a href=\"index.py#x\" class=\"bottom\">Awesome!</a>"
+	elif pairs.has_key("development"):
+		if pairs["development"][0] == "none":
+			output = "<h2>No development cards!</h2>\n<p>There are no development cards to draw! Pick another thing to purchase, if you are able.</p><a href=\"index.py#x\" class=\"bottom\">Got it.</a>"
 
 
 print output
