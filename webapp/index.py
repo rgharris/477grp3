@@ -162,9 +162,28 @@ elif "noEndTurn" in form:
 elif "confirmPurchase" in form:
 	purchaseItem = form.getvalue("purchase")
 	if(purchaseItem == "settle"):
-		pass
+		playerInfo['active'] = time.time()
+		playerInfo['resources']['wood'] = playerInfo['resources']['wood'] - 1
+		playerInfo['resources']['clay'] = playerInfo['resources']['clay'] - 1
+		playerInfo['resources']['sheep'] = playerInfo['resources']['sheep'] - 1
+		playerInfo['resources']['wheat'] = playerInfo['resources']['wheat'] - 1
+		playerInfo['points'] = playerInfo['points'] + 1
+		######We also need to notify the board that a piece needs placed.
+		with open(CUR_PLAYER_FILE, 'w') as f:
+			json.dump(playerInfo, f, ensure_ascii=False)
+			f.close()
+		print "Location: index.py?place=piece#modal"
 	elif(purchaseItem == "city"):
-		pass
+		playerInfo['active'] = time.time()
+		playerInfo['resources']['wheat'] = playerInfo['resources']['wheat'] - 2
+		playerInfo['resources']['ore'] = playerInfo['resources']['ore'] - 3
+		#Since a city must be placed where a settlement was, it's only 1 additional point
+		playerInfo['points'] = playerInfo['points'] + 1
+		######We also need to notify the board that a piece needs placed.
+		with open(CUR_PLAYER_FILE, 'w') as f:
+			json.dump(playerInfo, f, ensure_ascii=False)
+			f.close()
+		print "Location: index.py?place=piece#modal"
 	elif(purchaseItem == "road"):
 		playerInfo['active'] = time.time()
 		playerInfo['resources']['wood'] = playerInfo['resources']['wood'] - 1
