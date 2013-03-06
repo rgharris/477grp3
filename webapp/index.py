@@ -65,12 +65,21 @@ if cookies:
 	cookie.load(cookies)
 	lastactive = float(cookie['lastactive'].value)
 	if(lastactive + TIMEOUT > time.time()):
-		checkAll = False
-		#No timeout! We can also assume the json file is valid (generally not safe,
-		#but for our purposes, acceptable.)
-		playerID = int(cookie['playerid'].value)
-		CUR_PLAYER_FILE = PLAYER_FILE + str(playerID) + ".json"
-		playerInfo = json.load(open(CUR_PLAYER_FILE))
+		#Ok, the player didn't time out. Did their json file?
+		if os.path.isfile(PLAYER_FILE + str(playerID) + ".json"):
+			jsonInfo = open(PLAYER_FILE + str(playerID) + ".json")
+			checkInfo = json.load(jsonInfo)
+			jsonInfo.close
+			if checkInfo['active'] + TIMEOUT > time.time()):
+				#The json file exists and also didn't time out! Great!
+				checkAll = False
+				playerID = int(cookie['playerid'].value)
+				CUR_PLAYER_FILE = PLAYER_FILE + str(playerID) + ".json"
+				playerInfo = json.load(open(CUR_PLAYER_FILE))
+			else:
+				cookies = ''
+		else:
+				cookies = ''
 	else:
 		#We timed out, reset the cookies string and go through files.
 		cookies = ''
@@ -172,13 +181,13 @@ elif "confirmPurchase" in form:
 		#If there are no cards available of a particular kind, it's weight will be '0', thus making it
 		#impossible to be selected.
 		weights = [devBase['knights'], devBase['monopoly'], devBase['road'], devBase['plenty'], devBase['victory']]
-		list = ['knights','monopoly','road','plenty','victory']
+		cardList = ['knights','monopoly','road','plenty','victory']
 		#This will return an integer between 0 and 4. The order is the same as the list above.
 		randNum = weighted_choice_sub(weights)
-		if list[randNum] in playerInfo['cards']:
-			playerInfo['onHold'][list[randNum]] = playerInfo['onHold'][list[randNum]]+1
+		if cardList[randNum] in playerInfo['onHold']:
+			playerInfo['onHold'][cardList[randNum]] = playerInfo['onHold'][cardList[randNum]]+1
 		else:
-			playerInfo['onHold'][list[randNum]] = 1
+			playerInfo['onHold'][cardList[randNum]] = 1
 		#We're done, output the player to the json file and the current availablity to the devBase file.
 		#Change active time.
 		playerInfo['active'] = time.time();
@@ -191,7 +200,7 @@ elif "confirmPurchase" in form:
 		#Change expiry time
 		devBase['expire'] = time.time()+TIMEOUT
 		#Change the amount of that type of card available.
-		devBase[list[randNum]] = devBase[list[randNum]] - 1
+		devBase[cardList[randNum]] = devBase[cardList[randNum]] - 1
 		with open(DEV_CARD_FILE, 'w') as f:
 			json.dump(devBase, f, ensure_ascii=False)
 			f.close()
