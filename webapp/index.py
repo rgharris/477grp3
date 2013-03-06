@@ -37,6 +37,10 @@ def weighted_choice_sub(weights):
 #Enable debugging
 cgitb.enable()
 
+#Debug variable, append strings for debugging to this variable
+#and they will be output after the main HTML.
+debug = ''
+
 #Store form data
 form = cgi.FieldStorage()
 
@@ -64,25 +68,32 @@ checkAll = True
 if cookies:
 	cookie.load(cookies)
 	lastactive = float(cookie['lastactive'].value)
+	debug = debug + '1\n'
 	if(lastactive + TIMEOUT > time.time()):
 		#Ok, the player didn't time out. Did their json file?
+		debug = debug + 'no timeout.\n'
 		if os.path.isfile(PLAYER_FILE + str(playerID) + ".json"):
+			debug = debug + 'file exists.\n'
 			jsonInfo = open(PLAYER_FILE + str(playerID) + ".json")
 			checkInfo = json.load(jsonInfo)
 			jsonInfo.close
 			if (checkInfo['active'] + TIMEOUT > time.time()):
 				#The json file exists and also didn't time out! Great!
+				debug = debug + 'file did not timeout.\n'
 				checkAll = False
 				playerID = int(cookie['playerid'].value)
 				CUR_PLAYER_FILE = PLAYER_FILE + str(playerID) + ".json"
 				playerInfo = json.load(open(CUR_PLAYER_FILE))
 			else:
 				cookies = ''
+				debug = debug + 'file timed out.\n'
 		else:
 				cookies = ''
+				debug = debug + 'file does not exist.\n'
 	else:
 		#We timed out, reset the cookies string and go through files.
 		cookies = ''
+		debug = debug + 'player timed out.\n'
 
 if checkAll == True:
 	#Next start by checking if json files exist. If not, create them.
@@ -358,3 +369,5 @@ else:
 	print output.format(script,playerInfo['playerName'], str(playerInfo['points']), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())))
 #This needs to go at the end of all pages.
 print "</html>"
+#Debug variable, prints after main html. Most browsers will still render.
+print debug
