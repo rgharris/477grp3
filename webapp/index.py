@@ -72,6 +72,7 @@ if cookies:
 	if(lastactive + TIMEOUT > time.time()):
 		#Ok, the player didn't time out. Did their json file?
 		debug = debug + 'no timeout.\n'
+		playerID = int(cookie['playerid'].value)
 		if os.path.isfile(PLAYER_FILE + str(playerID) + ".json"):
 			debug = debug + 'file exists.\n'
 			jsonInfo = open(PLAYER_FILE + str(playerID) + ".json")
