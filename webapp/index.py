@@ -331,6 +331,7 @@ print """<!DOCTYPE HTML>
 					{
 						if(xmlhttp.readyState == 4 && xmlhttp.status == 200)
 						{
+							alert(xmlhttp.responseText);
 							if(xmlhttp.responseText == "1")
 							{
 								location.reload(true);
