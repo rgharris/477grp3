@@ -340,6 +340,7 @@ print """<!DOCTYPE HTML>
 					xmlhttp.open("GET", "/chkRefresh/chk.py?id=" + playerID, true);
 					xmlhttp.send();
 				}
+				
    		</script>
       </head>
 """
@@ -373,7 +374,9 @@ else:
 	elif pairs.has_key("place"):
 		script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?place=piece')</script>"
 	output = """
-		<body onLoad="javascript:setInterval(heartbeat({9}), 5000)">
+		<body>
+			<!--Need to pause when modal is active...this is just testing now.-->
+			<script>setInterval("heartbeat({9})", 5000)</script>
 			{0}
          <!--Modal Boxes-->
          <a href="#x" class="overlay" id="modal"></a>
