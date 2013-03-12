@@ -63,6 +63,7 @@ def writeJson(jfile, info):
 	with open(jfile, 'w') as f:
 		json.dump(info, f, ensure_ascii=False)
 		f.close()
+	return info
 
 def createPlayer(playerFile, playerID):
 		#Dictionary Setup:
