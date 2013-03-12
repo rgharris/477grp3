@@ -333,7 +333,6 @@ print """<!DOCTYPE HTML>
 						{
 							if(xmlhttp.responseText == 1)
 							{
-								alert("Reload!");
 								location.reload(true);
 							}
 						}
