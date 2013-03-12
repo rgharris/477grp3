@@ -22,8 +22,10 @@
 import cgitb
 #Everything else.
 import os, sys, json, Cookie, time, cgi, random
+#Enable debugging
+cgitb.enable()
 
-#######################Various functions#######################
+#####################USEFUL FUNCTIONS###########################
 #Weighted random number - used for picking a development card
 #Discovered at http://eli.thegreenplace.net/2010/01/22/weighted-random-generation-in-python/
 def weighted_choice_sub(weights):
@@ -33,10 +35,84 @@ def weighted_choice_sub(weights):
 		if rnd < 0:
 			return i
 
-####################PRE DISPLAY IS BELOW###################
-#Enable debugging
-cgitb.enable()
+def cookieChk(cookies, playerFile, timeout):
+	cookie.load(cookies)
+	#"cookies" exist, but don't contain our cookies.
+	if 'lastactive' not in cookie or 'playerid' not in cookie:
+		return ('','')
+	lastactive = float(cookie['lastactive'].value)
+	#We have timed out.
+	if (lastactive + timeout <= time.time()):
+		return ('','')
+	playerID = int(cookie['playerid'].value)
+	#The player file doesn't exist, so make a new one.
+	if not os.path.isfile(playerFile + str(playerID) + ".json"):
+		return ('','')
+	jsonInfo = open(playerFile + str(playerID) + ".json")
+	checkInfo = json.load(jsonInfo)
+	jsonInfo.close
+	#The file has timed out.
+	if (checkInfo['active'] + timeout <= time.time()):
+		return ('','')
+	playerID = int(cookie['playerid'].value)
+	playerInfo = json.load(open(playerFile + str(playerID) + ".json"))
+	return (playerID, playerInfo)
 
+def writeJson(jfile, info):
+	info['active'] = time.time()
+	with open(jfile, 'w') as f:
+		json.dump(info, f, ensure_ascii=False)
+		f.close()
+
+def createPlayer(playerFile, playerID):
+		#Dictionary Setup:
+		#playerName: The player's username. Defaults to Player X, where X is their player ID + 1.
+		#resources: A dictionary that contains the resources the player has available. 
+		#	Resources are ore, wheat, sheep, clay, and wood, which correspond to the keys.
+		#The amount available is the value.
+		#cards: Available development cards to play. Victory point cards are not played, but are also stored here.
+		#onHold: Development cards not yet available to play. These are development point cards picked up this turn.
+		#active: The last time this file was written to. Times out after a period of time to allow overwriting, 
+		#	just in case the board is turned off and not back on.
+		#awards: This is where Longest Road and Largest Army are stored. A simple list.
+		#points: The player's current score, minus their Victory Point cards.
+	newPlayer = {'playerName':"Player " + playerID, 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'onHold':{}, 'active':time.time(), 'awards':[], 'points':0}
+	writeJson(playerFile, newPlayer)
+	return newPlayer
+
+def readJson(jfile):
+	jsonInfo = open(jfile)
+	info = json.load(jsonInfo)
+	jsonInfo.close()
+	return info
+
+def resetRefresh(playerID):
+	f = open("./chkRefresh/" + playerID, 'w')
+	f.write("0")
+	f.close()
+
+def payForPurchase(playerInfo, resourceDict):
+	for resource in resourceDict:
+		playerInfo['resources'][resource] = playerInfo['resources'][resource] - resourceDict[resource]
+	return playerInfo
+
+def chkResources(playerInfo, resourceDict):
+	for resource in resourceDict:
+		if playerInfo['resources'][resource] < resourceDict[resource]:
+			return False
+	return True
+
+def chkDeck(deckFile, timeout):
+		if not os.path.isfile(deckFile):
+			return True
+		devBase = readJson(deckFile)
+		if devBase['active'] + timeout <= time.time():
+			return True
+		if sum(devBase.values())-devBase['active']) >= 0:
+			return True
+		return False
+
+####################PRE DISPLAY IS BELOW###################
 #Debug variable, append strings for debugging to this variable
 #and they will be output after the main HTML.
 debug = ''
@@ -44,14 +120,10 @@ debug = ''
 #Store form data
 form = cgi.FieldStorage()
 
-#The prefix of the player json files - PLAYER_FILE[num].json
+#Some basic "constants"
 PLAYER_FILE="players/"
 DEV_CARD_FILE="players/dev.json"
 TIMEOUT = 3600 #one hour (3600 seconds)
-playerID = -1
-
-#Starting with really crappy python to get a feel for the process.
-#Will make it better later...maybe.
 
 #Get cookies!
 cookies = os.environ.get('HTTP_COOKIE')
@@ -61,81 +133,33 @@ cookie = Cookie.SimpleCookie()
 query = os.environ.get('QUERY_STRING')
 pairs = cgi.parse_qs(query)
 
-#Variable to check if we need to go through each possible file
-checkAll = True
-
 #First start by checking and seeing if they have a cookie. If so, check it and use it!
 if cookies:
-	cookie.load(cookies)
-	if 'lastactive' in cookie and 'playerid' in cookie:
-		lastactive = float(cookie['lastactive'].value)
-		if(lastactive + TIMEOUT > time.time()):
-			#Ok, the player didn't time out. Did their json file?
-			playerID = int(cookie['playerid'].value)
-			if os.path.isfile(PLAYER_FILE + str(playerID) + ".json"):
-				jsonInfo = open(PLAYER_FILE + str(playerID) + ".json")
-				checkInfo = json.load(jsonInfo)
-				jsonInfo.close
-				if (checkInfo['active'] + TIMEOUT > time.time()):
-					#The json file exists and also didn't time out! Great!
-					checkAll = False
-					playerID = int(cookie['playerid'].value)
-					CUR_PLAYER_FILE = PLAYER_FILE + str(playerID) + ".json"
-					playerInfo = json.load(open(CUR_PLAYER_FILE))
-				else:
-					cookies = ''
-			else:
-				cookies = ''
-		else:
-			cookies = ''
-	else:
-		#We timed out, reset the cookies string and go through files.
-		cookies = ''
+	playerID, playerInfo = cookieChk(cookies, PLAYER_FILE, TIMEOUT)
 
-if checkAll == True:
+if playerInfo == '':
+	playerID = -1
 	#Next start by checking if json files exist. If not, create them.
 	#If so, check if they are set to "active". If not, we have this player's ID!
 	for i in range(0, 4):
-		filename=PLAYER_FILE + str(i) + ".json"
-		CUR_PLAYER_FILE = filename
-		#Ignores directories, which is fine, but creates a race condition
-		#if multiple people access the site within a few micro/milliseconds
-		#of each other (not sure which, depends on the speed of the pi).
-		#Need a way to solve this.
-		
-		#Dictionary Setup:
-		#
-		#playerName: The player's username. Defaults to Player X, where X is their player ID + 1.
-		#resources: A dictionary that contains the resources the player has available. Resources are ore, wheat, sheep, clay, and wood, which correspond to the keys.
-		#The amount available is the value.
-		#cards: Available development cards to play. Victory point cards are not played, but are also stored here.
-		#onHold: Development cards not yet available to play. These are development point cards picked up this turn.
-		#active: The last time this file was written to. Times out after a period of time to allow overwriting, just in case the board is turned off and not back on.
-		#awards: This is where Longest Road and Largest Army are stored. A simple list.
-		#points: The player's current score, minus their Victory Point cards.
-		newPlayer = {'playerName':"Player " + str(i+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'onHold':{}, 'active':time.time(), 'awards':[], 'points':0}
-		if not os.path.isfile(filename):
-			#Need a way of doing timeouts without timeouts - arch's ntp service is not reliable, and generally returns Jan 1 1970.
-			with open(filename, 'w') as f:
-				json.dump(newPlayer, f, ensure_ascii=False)	
+		playerFile = PLAYER_FILE + str(i) + ".json"
+		if not os.path.isfile(playerFile):
 			playerID = i
-			playerInfo = newPlayer.copy()
+			playerInfo = createPlayer(playerFile, playerID)
 			break
 		else:
 			#All json files exist, so check timeouts!
-			jsonInfo = open(filename)
-			playerInfo = json.load(jsonInfo)
-			jsonInfo.close()
+			playerInfo = readJson(playerFile)
 			if (playerInfo["active"] == 0 or playerInfo["active"] + TIMEOUT < time.time()):
 				#This player is inactive or has timed out, so here we go!
 				playerID = i
-				playerInfo["active"] = time.time();
-				with open(filename, 'w') as f:
-					json.dump(newPlayer, f, ensure_ascii=False)
-					f.close()
+				playerInfo = createPlayer(playerFile, playerID)				
 				break
 			else:
 				continue
+
+#This will make it easy later.
+playerFile = PLAYER_FILE + str(playerID) + ".json"
 
 if playerID != -1:
 	#Set cookie for player ID and last active time.
@@ -149,69 +173,54 @@ if playerID != -1:
 	#Cookies need to be sent before other headers
 	print cookie
 
+#Now that we've set the cookie, we need to simply overwrite
+#the "autorefresh" file with a 0, so it doesn't autorefresh again.
+resetRefresh(playerID)
+
 
 #################################FORM RETRIEVAL BELOW##################################
 if form.has_key('user'):
 	newUsername = form.getvalue("user", "Player " + str(playerID + 1))
 	playerInfo['playerName'] = cgi.escape(newUsername)
-	playerInfo['active'] = time.time()
-	with open(CUR_PLAYER_FILE, 'w') as f:
-		json.dump(playerInfo, f, ensure_ascii=False)
-		f.close()
+	writeJson(playerFile, playerInfo)
 elif "endTurn" in form:
 	pass
 elif "noEndTurn" in form:
 	pass
 elif "confirmPurchase" in form:
 	purchaseItem = form.getvalue("purchase")
+
 	if(purchaseItem == "settle"):
-		playerInfo['active'] = time.time()
-		playerInfo['resources']['wood'] = playerInfo['resources']['wood'] - 1
-		playerInfo['resources']['clay'] = playerInfo['resources']['clay'] - 1
-		playerInfo['resources']['sheep'] = playerInfo['resources']['sheep'] - 1
-		playerInfo['resources']['wheat'] = playerInfo['resources']['wheat'] - 1
+		playerInfo = payForPurchase(playerInfo, {'wood':1, 'clay':1, 'sheep':1, 'wheat':1})
 		playerInfo['points'] = playerInfo['points'] + 1
-		######We also need to notify the board that a piece needs placed.
-		with open(CUR_PLAYER_FILE, 'w') as f:
-			json.dump(playerInfo, f, ensure_ascii=False)
-			f.close()
+		writeJson(playerFile, playerInfo)
+		#Notify board to place piece.
 		print "Location: index.py?place=piece#modal"
+
 	elif(purchaseItem == "city"):
-		playerInfo['active'] = time.time()
-		playerInfo['resources']['wheat'] = playerInfo['resources']['wheat'] - 2
-		playerInfo['resources']['ore'] = playerInfo['resources']['ore'] - 3
+		playerInfo = payForPurchase(playerInfo, {'wheat':2, 'ore':3})
 		#Since a city must be placed where a settlement was, it's only 1 additional point
 		playerInfo['points'] = playerInfo['points'] + 1
-		######We also need to notify the board that a piece needs placed.
-		with open(CUR_PLAYER_FILE, 'w') as f:
-			json.dump(playerInfo, f, ensure_ascii=False)
-			f.close()
+		writeJson(playerFile, playerInfo)
+		#Notify board to place piece.
 		print "Location: index.py?place=piece#modal"
+
 	elif(purchaseItem == "road"):
-		playerInfo['active'] = time.time()
-		playerInfo['resources']['wood'] = playerInfo['resources']['wood'] - 1
-		playerInfo['resources']['clay'] = playerInfo['resources']['clay'] - 1
+		playerInfo = payForPurchase(playerInfo, {'wood':1, 'clay':1})
 		######TODO: At this point we need to do a longest road check.
-		######We also need to notify the board that a piece needs placed.
-		with open(CUR_PLAYER_FILE, 'w') as f:
-			json.dump(playerInfo, f, ensure_ascii=False)
-			f.close()
+		writeJson(playerFile, playerInfo)
+		#Notify board to place piece.
 		print "Location: index.py?place=piece#modal"
+
 	elif(purchaseItem == "dev"):
-		newDevBase = {'expire':time.time()+TIMEOUT, 'knights':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}
+		newDevBase = {'active':time.time(), 'knights':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}
 		#Store current available dev cards in external json store.
 		if not os.path.isfile(DEV_CARD_FILE):
-			with open(DEV_CARD_FILE, 'w') as f:
-				json.dump(newDevBase, f, ensure_ascii=False)
-				devBase = newDevBase.copy()
+			devBase = writeJson(DEV_CARD_FILE, newDevBase)
 		else:
-			jsonInfo = open(DEV_CARD_FILE)
-			devBase = json.load(jsonInfo)
-			jsonInfo.close()
-			if devBase['expire'] < time.time():
-				with open(DEV_CARD_FILE, 'w') as f:
-					json.dump(newDevBase, f, ensure_ascii=False)
-					devBase = newDevBase.copy()
+			devBase = readJson(DEV_CARD_FILE)
+			if devBase['active']+TIMEOUT < time.time():
+				devBase = writeJson(DEV_CARD_FILE, newDevBase)
 		#Make sure the next two lists are in the same order!
 		#If there are no cards available of a particular kind, it's weight will be '0', thus making it
 		#impossible to be selected.
@@ -228,63 +237,45 @@ elif "confirmPurchase" in form:
 			else:
 				playerInfo['onHold'][cardList[randNum]] = 1
 			#We're done, output the player to the json file and the current availablity to the devBase file.
-			#Change active time.
-			playerInfo['active'] = time.time();
-			playerInfo['resources']['wheat'] = playerInfo['resources']['wheat'] - 1
-			playerInfo['resources']['sheep'] = playerInfo['resources']['sheep'] - 1
-			playerInfo['resources']['ore'] = playerInfo['resources']['ore'] - 1
-			with open(CUR_PLAYER_FILE, 'w') as f:
-				json.dump(playerInfo, f, ensure_ascii=False)
-				f.close()
-			#Change expiry time
-			devBase['expire'] = time.time()+TIMEOUT
+			playerInfo = payForPurchase(playerInfo, {'wheat':1, 'sheep':1, 'ore':1})
+			writeJson(playerFile, playerInfo)
 			#Change the amount of that type of card available.
 			devBase[cardList[randNum]] = devBase[cardList[randNum]] - 1
-			with open(DEV_CARD_FILE, 'w') as f:
-				json.dump(devBase, f, ensure_ascii=False)
-				f.close()
+			writeJson(DEV_CARD_FILE, devBase)
 			#NOW We're done. Redirect to modal box to show what they got.
 			print "Location: index.py?obtained=" + cardList[randNum] + "#modal"
+
 elif "doNotPurchase" in form:
 	pass
 elif "settle" in form:
-	if (playerInfo['resources']['wood'] == 0 or playerInfo['resources']['clay'] == 0 or playerInfo['resources']['wheat'] == 0 or playerInfo['resources']['sheep'] == 0):
+	if (chkResources(playerInfo, {'wood':1, 'clay':1, 'wheat':1, 'sheep':1}) == False):
 		#Redirect to self with query string that identifies lack of resources and type of purchase; query string brings up modal box.
 		print "Location: index.py?resources=false&purchase=settle#modal"
 	else:
 		#Redirect to self - query string identifies resources and type of purchase.
 		print "Location: index.py?resources=true&purchase=settle#modal"
 elif "city" in form:
-	if (playerInfo['resources']['wheat'] < 2 or playerInfo['resources']['ore'] < 3):
+	if (chkResources(playerInfo, {'wheat':2, 'ore':3}) == False):
 		#Redirect to self with query string that identifies lack of resources and type of purchase; query string brings up modal box.
 		print "Location: index.py?resources=false&purchase=city#modal"
 	else:
 		#Redirect to self - query string identifies resources and type of purchase.
 		print "Location: index.py?resources=true&purchase=city#modal"
 elif "road" in form:
-	if (playerInfo['resources']['clay'] == 0 or playerInfo['resources']['wood'] == 0):
+	if (chkResources(playerInfo, {'clay':1, 'wood':1}) == False):
 		#Redirect to self with query string that identifies lack of resources and type of purchase; query string brings up modal box.
 		print "Location: index.py?resources=false&purchase=road#modal"
 	else:
 		#Redirect to self - query string identifies resources and type of purchase.
 		print "Location: index.py?resources=true&purchase=road#modal"
 elif "dev" in form:
-	if (playerInfo['resources']['sheep'] == 0 or playerInfo['resources']['wheat'] == 0 or playerInfo['resources']['ore'] == 0):
+	if (chkResources(playerInfo, {'sheep':1, 'wheat':1, 'ore':1}) == False):
 		#Redirect to self with query string that identifies lack of resources and type of purchase; query string brings up modal box.
 		print "Location: index.py?resources=false&purchase=dev#modal"
 	else:
 		#Redirect to self - query string identifies resources and type of purchase.
-		if os.path.isfile(DEV_CARD_FILE):
-			jsonInfo = open(DEV_CARD_FILE)
-			devBase = json.load(jsonInfo)
-			jsonInfo.close()
-			if devBase['expire'] > time.time():
-				if devBase['knights'] + devBase['monopoly'] + devBase['road'] + devBase['plenty'] + devBase['victory'] == 0:
-					print "Location: index.py?development=none#modal"
-				else:
-					print "Location: index.py?resources=true&purchase=dev#modal"
-			else:
-				print "Location: index.py?resources=true&purchase=dev#modal"
+		if chkDeck(DEV_CARD_FILE) == False:
+			print "Location: index.py?development=none#modal"
 		else:
 			print "Location: index.py?resources=true&purchase=dev#modal"
 
