@@ -67,7 +67,7 @@ checkAll = True
 #First start by checking and seeing if they have a cookie. If so, check it and use it!
 if cookies:
 	cookie.load(cookies)
-	if cookie['lastactive']:
+	if 'lastactive' in cookie and 'playerid' in cookie:
 		lastactive = float(cookie['lastactive'].value)
 		if(lastactive + TIMEOUT > time.time()):
 			#Ok, the player didn't time out. Did their json file?
