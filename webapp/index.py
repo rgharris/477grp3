@@ -76,7 +76,7 @@ def createPlayer(playerFile, playerID):
 		#	just in case the board is turned off and not back on.
 		#awards: This is where Longest Road and Largest Army are stored. A simple list.
 		#points: The player's current score, minus their Victory Point cards.
-	newPlayer = {'playerName':"Player " + str(playerID), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'onHold':{}, 'active':time.time(), 'awards':[], 'points':0}
+	newPlayer = {'playerName':"Player " + str(playerID+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'onHold':{}, 'active':time.time(), 'awards':[], 'points':0}
 	writeJson(playerFile, newPlayer)
 	return newPlayer
 
