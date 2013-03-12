@@ -108,7 +108,7 @@ def chkDeck(deckFile, timeout):
 		devBase = readJson(deckFile)
 		if devBase['active'] + timeout <= time.time():
 			return True
-		if sum(devBase.values())-devBase['active']) >= 0:
+		if sum(devBase.values())-devBase['active'] >= 0:
 			return True
 		return False
 
