@@ -274,7 +274,7 @@ elif "dev" in form:
 		print "Location: index.py?resources=false&purchase=dev#modal"
 	else:
 		#Redirect to self - query string identifies resources and type of purchase.
-		if chkDeck(DEV_CARD_FILE) == False:
+		if chkDeck(DEV_CARD_FILE,TIMEOUT) == False:
 			print "Location: index.py?development=none#modal"
 		else:
 			print "Location: index.py?resources=true&purchase=dev#modal"
