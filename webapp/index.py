@@ -67,24 +67,27 @@ checkAll = True
 #First start by checking and seeing if they have a cookie. If so, check it and use it!
 if cookies:
 	cookie.load(cookies)
-	lastactive = float(cookie['lastactive'].value)
-	if(lastactive + TIMEOUT > time.time()):
-		#Ok, the player didn't time out. Did their json file?
-		playerID = int(cookie['playerid'].value)
-		if os.path.isfile(PLAYER_FILE + str(playerID) + ".json"):
-			jsonInfo = open(PLAYER_FILE + str(playerID) + ".json")
-			checkInfo = json.load(jsonInfo)
-			jsonInfo.close
-			if (checkInfo['active'] + TIMEOUT > time.time()):
-				#The json file exists and also didn't time out! Great!
-				checkAll = False
-				playerID = int(cookie['playerid'].value)
-				CUR_PLAYER_FILE = PLAYER_FILE + str(playerID) + ".json"
-				playerInfo = json.load(open(CUR_PLAYER_FILE))
+	if cookie['lastactive']:
+		lastactive = float(cookie['lastactive'].value)
+		if(lastactive + TIMEOUT > time.time()):
+			#Ok, the player didn't time out. Did their json file?
+			playerID = int(cookie['playerid'].value)
+			if os.path.isfile(PLAYER_FILE + str(playerID) + ".json"):
+				jsonInfo = open(PLAYER_FILE + str(playerID) + ".json")
+				checkInfo = json.load(jsonInfo)
+				jsonInfo.close
+				if (checkInfo['active'] + TIMEOUT > time.time()):
+					#The json file exists and also didn't time out! Great!
+					checkAll = False
+					playerID = int(cookie['playerid'].value)
+					CUR_PLAYER_FILE = PLAYER_FILE + str(playerID) + ".json"
+					playerInfo = json.load(open(CUR_PLAYER_FILE))
+				else:
+					cookies = ''
 			else:
 				cookies = ''
 		else:
-				cookies = ''
+			cookies = ''
 	else:
 		#We timed out, reset the cookies string and go through files.
 		cookies = ''
@@ -320,6 +323,23 @@ print """<!DOCTYPE HTML>
 					xmlhttp.open("GET",loc,true);
 					xmlhttp.send();
 				}
+				function heartbeat(playerID)
+				{
+					var xmlhttp;
+					xmlhttp = new XMLHttpRequest();
+					xmlhttp.onreadystatechange=function()
+					{
+						if(xmlhttp.readyState == 4 && xmlhttp.status == 200)
+						{
+							if(xmlhttp.responseText == "1")
+							{
+								location.reload(true);
+							}
+						}
+					}
+					xmlhttp.open("GET", "/chkRefresh/chk.py?id=" + playerID, true);
+					xmlhttp.send();
+				}
    		</script>
       </head>
 """
@@ -353,7 +373,7 @@ else:
 	elif pairs.has_key("place"):
 		script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?place=piece')</script>"
 	output = """
-		<body>
+		<body onLoad="javascript:setInterval(heartbeat({9}), 5000)">
 			{0}
          <!--Modal Boxes-->
          <a href="#x" class="overlay" id="modal"></a>
@@ -415,7 +435,7 @@ else:
 	if 'victory' in playerInfo['cards']:
 		curPoints = curPoints + playerInfo['onHold']['cards']
 
-	print output.format(script,playerInfo['playerName'], str(curPoints), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())))
+	print output.format(script,playerInfo['playerName'], str(curPoints), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())),playerID)
 #This needs to go at the end of all pages.
 print "</html>"
 #Debug variable, prints after main html. Most browsers will still render.
