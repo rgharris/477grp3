@@ -87,7 +87,7 @@ def readJson(jfile):
 	return info
 
 def resetRefresh(playerID):
-	f = open("./chkRefresh/" + playerID, 'w')
+	f = open("./chkRefresh/" + str(playerID), 'w')
 	f.write("0")
 	f.close()
 
