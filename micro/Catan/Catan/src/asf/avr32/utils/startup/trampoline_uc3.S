@@ -1,9 +1,16 @@
-/**
+/*****************************************************************************
+ *
  * \file
  *
- * \brief Chip-specific system clock manager configuration
+ * \brief AVR32 UC3 ISP trampoline.
  *
- * Copyright (c) 2011 Atmel Corporation. All rights reserved.
+ * In order to be able to program a project with both BatchISP and JTAGICE mkII
+ * without having to take the general-purpose fuses into consideration, add this
+ * file to the project and change the program entry point to _trampoline.
+ *
+ * The pre-programmed ISP will be erased if JTAGICE mkII is used.
+ *
+ * Copyright (c) 2009 Atmel Corporation. All rights reserved.
  *
  * \asf_license_start
  *
@@ -39,43 +46,31 @@
  *
  * \asf_license_stop
  *
- */
-#ifndef CONF_CLOCK_H_INCLUDED
-#define CONF_CLOCK_H_INCLUDED
+ ******************************************************************************/
 
-//#define CONFIG_SYSCLK_INIT_CPUMASK  (1 << SYSCLK_SYSTIMER)
-//#define CONFIG_SYSCLK_INIT_PBAMASK  (1 << SYSCLK_USART0)
-//#define CONFIG_SYSCLK_INIT_PBBMASK  (1 << SYSCLK_HMATRIX)
-//#define CONFIG_SYSCLK_INIT_HSBMASK  (1 << SYSCLK_MDMA_HSB)
 
-//#define CONFIG_SYSCLK_SOURCE          SYSCLK_SRC_RCSYS
-//#define CONFIG_SYSCLK_SOURCE        SYSCLK_SRC_OSC0
-#define CONFIG_SYSCLK_SOURCE        SYSCLK_SRC_PLL0
+#include "trampoline_uc3.h"
 
-/* Fbus = Fsys / (2 ^ BUS_div) */
-#define CONFIG_SYSCLK_CPU_DIV         0
-#define CONFIG_SYSCLK_PBA_DIV         0
-#define CONFIG_SYSCLK_PBB_DIV         0
 
-//#define CONFIG_USBCLK_SOURCE        USBCLK_SRC_OSC0
-//#define CONFIG_USBCLK_SOURCE        USBCLK_SRC_PLL0
-//#define CONFIG_USBCLK_SOURCE          USBCLK_SRC_PLL1
+//! @{
+//! \verbatim
 
-/* Fusb = Fsys / USB_div */
-//#define CONFIG_USBCLK_DIV             1 /* Fusb = Fsys/(2 ^ USB_div) */
 
-#define CONFIG_PLL0_SOURCE          PLL_SRC_OSC0
-//#define CONFIG_PLL0_SOURCE          PLL_SRC_OSC1
+  // This must be linked @ 0x80000000 if it is to be run upon reset.
+  .section  .reset, "ax", @progbits
 
-/* Fpll0 = (Fclk * PLL_mul) / PLL_div */
-#define CONFIG_PLL0_MUL             (48000000UL / BOARD_OSC0_HZ)
-#define CONFIG_PLL0_DIV             1
 
-//#define   CONFIG_PLL1_SOURCE          PLL_SRC_OSC0
-//#define CONFIG_PLL1_SOURCE          PLL_SRC_OSC1
+  .global _trampoline
+  .type _trampoline, @function
+_trampoline:
+  // Jump to program start.
+  rjmp    program_start
 
-/* Fpll1 = (Fclk * PLL_mul) / PLL_div */
-//#define CONFIG_PLL1_MUL               (48000000UL / BOARD_OSC0_HZ)
-//#define CONFIG_PLL1_DIV               1
+  .org  PROGRAM_START_OFFSET
+program_start:
+  // Jump to the C runtime startup routine.
+  lda.w   pc, _stext
 
-#endif /* CONF_CLOCK_H_INCLUDED */
+
+//! \endverbatim
+//! @}

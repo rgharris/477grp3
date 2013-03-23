@@ -1,9 +1,9 @@
 /**
  * \file
  *
- * \brief Chip-specific system clock manager configuration
+ * \brief INTC software driver API for AVR UC3 devices.
  *
- * Copyright (c) 2011 Atmel Corporation. All rights reserved.
+ * Copyright (c) 2009-2011 Atmel Corporation. All rights reserved.
  *
  * \asf_license_start
  *
@@ -40,42 +40,45 @@
  * \asf_license_stop
  *
  */
-#ifndef CONF_CLOCK_H_INCLUDED
-#define CONF_CLOCK_H_INCLUDED
 
-//#define CONFIG_SYSCLK_INIT_CPUMASK  (1 << SYSCLK_SYSTIMER)
-//#define CONFIG_SYSCLK_INIT_PBAMASK  (1 << SYSCLK_USART0)
-//#define CONFIG_SYSCLK_INIT_PBBMASK  (1 << SYSCLK_HMATRIX)
-//#define CONFIG_SYSCLK_INIT_HSBMASK  (1 << SYSCLK_MDMA_HSB)
+#ifndef _INTC_H_
+#define _INTC_H_
 
-//#define CONFIG_SYSCLK_SOURCE          SYSCLK_SRC_RCSYS
-//#define CONFIG_SYSCLK_SOURCE        SYSCLK_SRC_OSC0
-#define CONFIG_SYSCLK_SOURCE        SYSCLK_SRC_PLL0
+#include "compiler.h"
 
-/* Fbus = Fsys / (2 ^ BUS_div) */
-#define CONFIG_SYSCLK_CPU_DIV         0
-#define CONFIG_SYSCLK_PBA_DIV         0
-#define CONFIG_SYSCLK_PBB_DIV         0
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-//#define CONFIG_USBCLK_SOURCE        USBCLK_SRC_OSC0
-//#define CONFIG_USBCLK_SOURCE        USBCLK_SRC_PLL0
-//#define CONFIG_USBCLK_SOURCE          USBCLK_SRC_PLL1
+/**
+ * \defgroup intc_group INTC Software Driver API for AVR UC3
+ *
+ * This is a software module to register interrupt handlers at any specified
+ * interrupt level to any interrupt line managed by the INTC module in AVR UC3
+ * devices.
+ * @{
+ */
 
-/* Fusb = Fsys / USB_div */
-//#define CONFIG_USBCLK_DIV             1 /* Fusb = Fsys/(2 ^ USB_div) */
+//! Maximal number of interrupt request lines per group.
+#define AVR32_INTC_MAX_NUM_IRQS_PER_GRP      32
 
-#define CONFIG_PLL0_SOURCE          PLL_SRC_OSC0
-//#define CONFIG_PLL0_SOURCE          PLL_SRC_OSC1
+//! Number of interrupt priority levels.
+#define AVR32_INTC_NUM_INT_LEVELS            (1 << AVR32_INTC_IPR_INTLEVEL_SIZE)
 
-/* Fpll0 = (Fclk * PLL_mul) / PLL_div */
-#define CONFIG_PLL0_MUL             (48000000UL / BOARD_OSC0_HZ)
-#define CONFIG_PLL0_DIV             1
 
-//#define   CONFIG_PLL1_SOURCE          PLL_SRC_OSC0
-//#define CONFIG_PLL1_SOURCE          PLL_SRC_OSC1
+#ifdef __AVR32_ABI_COMPILER__
+// (Automatically defined when compiling for AVR UC3, not when assembling).
 
-/* Fpll1 = (Fclk * PLL_mul) / PLL_div */
-//#define CONFIG_PLL1_MUL               (48000000UL / BOARD_OSC0_HZ)
-//#define CONFIG_PLL1_DIV               1
+extern void INTC_init_interrupts(void);
+extern void INTC_register_interrupt(__int_handler handler, uint32_t irq,
+		uint32_t int_level);
 
-#endif /* CONF_CLOCK_H_INCLUDED */
+#endif  // __AVR32_ABI_COMPILER__
+
+//! @}
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif  // _INTC_H_

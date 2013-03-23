@@ -139,7 +139,7 @@ const U8 test_pattern[] =  {
 U8  s_status_cmd = TWI_MEM_IDLE; // State variable
 U8  s_u8_addr_pos;               // Offset in the address value (because we receive the address one Byte at a time)
 U32 s_u32_addr;                  // The current address in the virtual mem
-U8  s_memory[TWI_MEM_SIZE]={12,13,14,15,0};  // Content of the Virtual mem
+U8  s_memory[TWI_MEM_SIZE]={0};  // Content of the Virtual mem
 
 
 /*! \brief Manage the received data on TWI
@@ -191,7 +191,7 @@ static U8 twi_slave_tx( void )
    {
       u8_value = s_memory[s_u32_addr-VIRTUALMEM_ADDR_START];
    }else{
-      u8_value = s_u32_addr;
+      u8_value = 0xFF;
    }
    s_u32_addr++;  // Update to next position
    return u8_value;
@@ -219,6 +219,7 @@ int main(void)
   twi_options_t opt;
   twi_slave_fct_t twi_slave_fct;
   int status;
+  double total = 0;
 
   // Initialize and enable interrupt
   irq_initialize_vectors();
@@ -238,6 +239,7 @@ int main(void)
   twi_slave_fct.stop = &twi_slave_stop;
   status = twi_slave_init(&AVR32_TWI, &opt, &twi_slave_fct );
   // check init result
+  s_memory[7] = (rand() % 6) + 1;
   if (status == TWI_SUCCESS)
   {
     // display test result to user
@@ -251,6 +253,13 @@ int main(void)
     //print_dbg("slave start:\tFAIL\r\n");
 	ioport_set_pin_level(CLKOUT,IOPORT_PIN_LEVEL_LOW);
   }
-
+  
+  for (int i=0; i<255; i++) {
+	  srand(i);
+	  s_memory[0] = (rand() % 6) + 1;
+	  s_memory[s_memory[0]]++;
+	  delay_ms(10);
+  }
+ 
   while(1);
 }

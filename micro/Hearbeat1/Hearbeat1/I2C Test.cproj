@@ -3,7 +3,7 @@
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>6.0</ProjectVersion>
-    <ProjectGuid>{64ac3b30-889b-466c-90c9-74ebb59f5134}</ProjectGuid>
+    <ProjectGuid>{e697195f-f41a-4236-be45-a218a6c26bd7}</ProjectGuid>
     <Name>$(MSBuildProjectName)</Name>
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <RootNamespace>$(MSBuildProjectName)</RootNamespace>
@@ -14,7 +14,7 @@
           <option id="common.boards" value="Add" config="" content-id="Atmel.ASF" />
           <option id="common.services.ioport" value="Add" config="" content-id="Atmel.ASF" />
           <option id="avr32.drivers.gpio" value="Add" config="" content-id="Atmel.ASF" />
-          <option id="common.services.basic.spi_master" value="Add" config="standard_spi" content-id="Atmel.ASF" />
+          <option id="avr32.drivers.twi" value="Add" config="" content-id="Atmel.ASF" />
         </options>
         <configurations>
           <configuration key="config.avr32.utils.trampoline" value="yes" default="yes" content-id="Atmel.ASF" />
@@ -61,12 +61,9 @@
           <file path="src/asf/common/services/ioport/uc3/ioport.h" framework="" version="" source="common\services\ioport\uc3\ioport.h" changed="False" content-id="Atmel.ASF" />
           <file path="src/asf/avr32/drivers/gpio/gpio.c" framework="" version="" source="avr32\drivers\gpio\gpio.c" changed="False" content-id="Atmel.ASF" />
           <file path="src/asf/avr32/drivers/gpio/gpio.h" framework="" version="" source="avr32\drivers\gpio\gpio.h" changed="False" content-id="Atmel.ASF" />
-          <file path="src/asf/avr32/drivers/spi/spi.c" framework="" version="" source="avr32\drivers\spi\spi.c" changed="False" content-id="Atmel.ASF" />
-          <file path="src/asf/avr32/drivers/spi/spi.h" framework="" version="" source="avr32\drivers\spi\spi.h" changed="False" content-id="Atmel.ASF" />
-          <file path="src/asf/common/services/spi/uc3_spi/spi_master.c" framework="" version="" source="common\services\spi\uc3_spi\spi_master.c" changed="False" content-id="Atmel.ASF" />
-          <file path="src/asf/common/services/spi/spi_master.h" framework="" version="" source="common\services\spi\spi_master.h" changed="False" content-id="Atmel.ASF" />
-          <file path="src/asf/common/services/spi/uc3_spi/spi_master.h" framework="" version="" source="common\services\spi\uc3_spi\spi_master.h" changed="False" content-id="Atmel.ASF" />
-          <file path="src/config/conf_spi_master.h" framework="" version="" source="common\services\spi\uc3_spi\module_config\conf_spi_master.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/asf/avr32/drivers/twi/twi.c" framework="" version="" source="avr32\drivers\twi\twi.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/asf/avr32/drivers/twi/twi.h" framework="" version="" source="avr32\drivers\twi\twi.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/config/conf_twi.h" framework="" version="" source="avr32\drivers\twi\module_config\conf_twi.h" changed="False" content-id="Atmel.ASF" />
         </files>
         <documentation help="http://asf.atmel.com/docs/3.5.1/common.applications.user_application.user_board.uc3b/html/index.html" />
       </framework-data>
@@ -143,8 +140,7 @@
             <Value>../src/asf/common/services/clock</Value>
             <Value>../src/asf/common/services/ioport</Value>
             <Value>../src/asf/avr32/drivers/gpio</Value>
-            <Value>../src/asf/avr32/drivers/spi</Value>
-            <Value>../src/asf/common/services/spi</Value>
+            <Value>../src/asf/avr32/drivers/twi</Value>
           </ListValues>
         </avr32gcc.compiler.directories.IncludePaths>
         <avr32gcc.compiler.optimization.level>Optimize for size (-Os)</avr32gcc.compiler.optimization.level>
@@ -172,8 +168,7 @@
             <Value>../src/asf/common/services/clock</Value>
             <Value>../src/asf/common/services/ioport</Value>
             <Value>../src/asf/avr32/drivers/gpio</Value>
-            <Value>../src/asf/avr32/drivers/spi</Value>
-            <Value>../src/asf/common/services/spi</Value>
+            <Value>../src/asf/avr32/drivers/twi</Value>
           </ListValues>
         </avr32gcc.assembler.general.IncludePaths>
         <avr32gcc.preprocessingassembler.general.AssemblerFlags>-DBOARD=USER_BOARD -mrelax</avr32gcc.preprocessingassembler.general.AssemblerFlags>
@@ -192,8 +187,7 @@
             <Value>../src/asf/common/services/clock</Value>
             <Value>../src/asf/common/services/ioport</Value>
             <Value>../src/asf/avr32/drivers/gpio</Value>
-            <Value>../src/asf/avr32/drivers/spi</Value>
-            <Value>../src/asf/common/services/spi</Value>
+            <Value>../src/asf/avr32/drivers/twi</Value>
           </ListValues>
         </avr32gcc.preprocessingassembler.general.IncludePaths>
       </Avr32Gcc>
@@ -230,8 +224,7 @@
             <Value>../src/asf/common/services/clock</Value>
             <Value>../src/asf/common/services/ioport</Value>
             <Value>../src/asf/avr32/drivers/gpio</Value>
-            <Value>../src/asf/avr32/drivers/spi</Value>
-            <Value>../src/asf/common/services/spi</Value>
+            <Value>../src/asf/avr32/drivers/twi</Value>
           </ListValues>
         </avr32gcc.compiler.directories.IncludePaths>
         <avr32gcc.compiler.optimization.level>Optimize (-O1)</avr32gcc.compiler.optimization.level>
@@ -260,8 +253,7 @@
             <Value>../src/asf/common/services/clock</Value>
             <Value>../src/asf/common/services/ioport</Value>
             <Value>../src/asf/avr32/drivers/gpio</Value>
-            <Value>../src/asf/avr32/drivers/spi</Value>
-            <Value>../src/asf/common/services/spi</Value>
+            <Value>../src/asf/avr32/drivers/twi</Value>
           </ListValues>
         </avr32gcc.assembler.general.IncludePaths>
         <avr32gcc.preprocessingassembler.general.AssemblerFlags>-DBOARD=USER_BOARD -mrelax</avr32gcc.preprocessingassembler.general.AssemblerFlags>
@@ -280,8 +272,7 @@
             <Value>../src/asf/common/services/clock</Value>
             <Value>../src/asf/common/services/ioport</Value>
             <Value>../src/asf/avr32/drivers/gpio</Value>
-            <Value>../src/asf/avr32/drivers/spi</Value>
-            <Value>../src/asf/common/services/spi</Value>
+            <Value>../src/asf/avr32/drivers/twi</Value>
           </ListValues>
         </avr32gcc.preprocessingassembler.general.IncludePaths>
       </Avr32Gcc>
@@ -310,10 +301,10 @@
     <Compile Include="src\asf\avr32\drivers\intc\intc.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\asf\avr32\drivers\spi\spi.c">
+    <Compile Include="src\asf\avr32\drivers\twi\twi.c">
       <SubType>compile</SubType>
     </Compile>
-    <None Include="src\asf\avr32\drivers\spi\spi.h">
+    <None Include="src\asf\avr32\drivers\twi\twi.h">
       <SubType>compile</SubType>
     </None>
     <Compile Include="src\asf\avr32\utils\startup\startup_uc3.S">
@@ -361,16 +352,7 @@
     <None Include="src\asf\common\services\ioport\uc3\ioport.h">
       <SubType>compile</SubType>
     </None>
-    <None Include="src\asf\common\services\spi\spi_master.h">
-      <SubType>compile</SubType>
-    </None>
-    <Compile Include="src\asf\common\services\spi\uc3_spi\spi_master.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <None Include="src\asf\common\services\spi\uc3_spi\spi_master.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\config\conf_spi_master.h">
+    <None Include="src\config\conf_twi.h">
       <SubType>compile</SubType>
     </None>
     <Compile Include="src\main.c">
@@ -436,7 +418,7 @@
     <Folder Include="src\asf\avr32\drivers\flashc\" />
     <Folder Include="src\asf\avr32\drivers\gpio\" />
     <Folder Include="src\asf\avr32\drivers\intc\" />
-    <Folder Include="src\asf\avr32\drivers\spi\" />
+    <Folder Include="src\asf\avr32\drivers\twi\" />
     <Folder Include="src\asf\avr32\utils\" />
     <Folder Include="src\asf\avr32\utils\header_files\" />
     <Folder Include="src\asf\avr32\utils\preprocessor\" />
@@ -449,8 +431,6 @@
     <Folder Include="src\asf\common\services\clock\uc3b0_b1\" />
     <Folder Include="src\asf\common\services\ioport\" />
     <Folder Include="src\asf\common\services\ioport\uc3\" />
-    <Folder Include="src\asf\common\services\spi\" />
-    <Folder Include="src\asf\common\services\spi\uc3_spi\" />
     <Folder Include="src\asf\common\utils\" />
     <Folder Include="src\asf\common\utils\interrupt\" />
     <Folder Include="src\config\" />

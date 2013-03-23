@@ -3,7 +3,7 @@
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>6.0</ProjectVersion>
-    <ProjectGuid>{e697195f-f41a-4236-be45-a218a6c26bd7}</ProjectGuid>
+    <ProjectGuid>{08109bb3-96e8-4dbb-b657-5230d63c6a71}</ProjectGuid>
     <Name>$(MSBuildProjectName)</Name>
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <RootNamespace>$(MSBuildProjectName)</RootNamespace>
@@ -11,16 +11,21 @@
     <AsfFrameworkConfig>
       <framework-data>
   <options>
-    <option id="common.boards" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="common.services.ioport" value="Add" config="" content-id="Atmel.ASF" />
     <option id="avr32.drivers.gpio" value="Add" config="" content-id="Atmel.ASF" />
     <option id="avr32.drivers.twi" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="avr32.drivers.flashc" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="common.boards" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="common.services.delay" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="common.services.ioport" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="common.services.basic.spi_master" value="Add" config="standard_spi" content-id="Atmel.ASF" />
   </options>
   <configurations>
     <configuration key="config.avr32.utils.trampoline" value="yes" default="yes" content-id="Atmel.ASF" />
     <configuration key="config.avr32.utils.gccstartup" value="yes" default="yes" content-id="Atmel.ASF" />
     <configuration key="config.utils.interrupt.intc" value="yes" default="yes" content-id="Atmel.ASF" />
     <configuration key="config.avr32.drivers.intc.exception" value="yes" default="yes" content-id="Atmel.ASF" />
+    <configuration key="config.avr32.services.dsplib.optimized" value="device_optimized" default="device_optimized" content-id="Atmel.ASF" />
+    <configuration key="config.avr32.services.dsplib.optimization" value="speed" default="speed" content-id="Atmel.ASF" />
   </configurations>
   <files>
     <file path="src/asf/avr32/drivers/intc/exception.S" framework="" version="3.5.1" source="avr32/drivers/intc/exception.S" changed="False" content-id="Atmel.ASF" />
@@ -64,6 +69,14 @@
     <file path="src/asf/avr32/drivers/twi/twi.c" framework="" version="" source="avr32\drivers\twi\twi.c" changed="False" content-id="Atmel.ASF" />
     <file path="src/asf/avr32/drivers/twi/twi.h" framework="" version="" source="avr32\drivers\twi\twi.h" changed="False" content-id="Atmel.ASF" />
     <file path="src/config/conf_twi.h" framework="" version="" source="avr32\drivers\twi\module_config\conf_twi.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/asf/avr32/drivers/cpu/cycle_counter/cycle_counter.h" framework="" version="" source="avr32\drivers\cpu\cycle_counter\cycle_counter.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/asf/avr32/drivers/spi/spi.c" framework="" version="" source="avr32\drivers\spi\spi.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/asf/avr32/drivers/spi/spi.h" framework="" version="" source="avr32\drivers\spi\spi.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/asf/common/services/delay/delay.h" framework="" version="" source="common\services\delay\delay.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/asf/common/services/spi/uc3_spi/spi_master.c" framework="" version="" source="common\services\spi\uc3_spi\spi_master.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/asf/common/services/spi/spi_master.h" framework="" version="" source="common\services\spi\spi_master.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/asf/common/services/spi/uc3_spi/spi_master.h" framework="" version="" source="common\services\spi\uc3_spi\spi_master.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/config/conf_spi_master.h" framework="" version="" source="common\services\spi\uc3_spi\module_config\conf_spi_master.h" changed="False" content-id="Atmel.ASF" />
   </files>
   <documentation help="http://asf.atmel.com/docs/3.5.1/common.applications.user_application.user_board.uc3b/html/index.html" />
 </framework-data>
@@ -85,19 +98,19 @@
     <avrtoolinterface>JTAG</avrtoolinterface>
     <avrtool>com.atmel.avrdbg.tool.avrdragon</avrtool>
     <com_atmel_avrdbg_tool_avrdragon>
-      <ToolType xmlns="">com.atmel.avrdbg.tool.avrdragon</ToolType>
-      <ToolName xmlns="">AVR Dragon</ToolName>
-      <ToolNumber xmlns="">00A200035507</ToolNumber>
-      <KeepTimersRunning xmlns="">true</KeepTimersRunning>
-      <OverrideVtor xmlns="">false</OverrideVtor>
-      <OverrideVtorValue xmlns="">
+      <ToolType>com.atmel.avrdbg.tool.avrdragon</ToolType>
+      <ToolName>AVR Dragon</ToolName>
+      <ToolNumber>00A200035116</ToolNumber>
+      <KeepTimersRunning>true</KeepTimersRunning>
+      <OverrideVtor>false</OverrideVtor>
+      <OverrideVtorValue>
       </OverrideVtorValue>
-      <Channel xmlns="">
+      <Channel>
         <host>127.0.0.1</host>
-        <port>49918</port>
+        <port>2284</port>
         <ssl>False</ssl>
       </Channel>
-      <ToolOptions xmlns="">
+      <ToolOptions>
         <InterfaceName>JTAG</InterfaceName>
         <InterfaceProperties>
           <JtagDbgClock>200000</JtagDbgClock>
@@ -141,6 +154,11 @@
       <Value>../src/asf/common/services/ioport</Value>
       <Value>../src/asf/avr32/drivers/gpio</Value>
       <Value>../src/asf/avr32/drivers/twi</Value>
+      <Value>../src/asf/avr32/drivers/cpu/cycle_counter</Value>
+      <Value>../src/asf/avr32/drivers/spi</Value>
+      <Value>../src/asf/common/services/delay</Value>
+      <Value>../src/asf/common/services/spi/uc3_spi</Value>
+      <Value>../src/asf/common/services/spi</Value>
     </ListValues>
   </avr32gcc.compiler.directories.IncludePaths>
   <avr32gcc.compiler.optimization.level>Optimize for size (-Os)</avr32gcc.compiler.optimization.level>
@@ -169,6 +187,11 @@
       <Value>../src/asf/common/services/ioport</Value>
       <Value>../src/asf/avr32/drivers/gpio</Value>
       <Value>../src/asf/avr32/drivers/twi</Value>
+      <Value>../src/asf/avr32/drivers/cpu/cycle_counter</Value>
+      <Value>../src/asf/avr32/drivers/spi</Value>
+      <Value>../src/asf/common/services/delay</Value>
+      <Value>../src/asf/common/services/spi/uc3_spi</Value>
+      <Value>../src/asf/common/services/spi</Value>
     </ListValues>
   </avr32gcc.assembler.general.IncludePaths>
   <avr32gcc.preprocessingassembler.general.AssemblerFlags>-DBOARD=USER_BOARD -mrelax</avr32gcc.preprocessingassembler.general.AssemblerFlags>
@@ -188,6 +211,11 @@
       <Value>../src/asf/common/services/ioport</Value>
       <Value>../src/asf/avr32/drivers/gpio</Value>
       <Value>../src/asf/avr32/drivers/twi</Value>
+      <Value>../src/asf/avr32/drivers/cpu/cycle_counter</Value>
+      <Value>../src/asf/avr32/drivers/spi</Value>
+      <Value>../src/asf/common/services/delay</Value>
+      <Value>../src/asf/common/services/spi/uc3_spi</Value>
+      <Value>../src/asf/common/services/spi</Value>
     </ListValues>
   </avr32gcc.preprocessingassembler.general.IncludePaths>
 </Avr32Gcc>
@@ -225,6 +253,11 @@
       <Value>../src/asf/common/services/ioport</Value>
       <Value>../src/asf/avr32/drivers/gpio</Value>
       <Value>../src/asf/avr32/drivers/twi</Value>
+      <Value>../src/asf/avr32/drivers/cpu/cycle_counter</Value>
+      <Value>../src/asf/avr32/drivers/spi</Value>
+      <Value>../src/asf/common/services/delay</Value>
+      <Value>../src/asf/common/services/spi/uc3_spi</Value>
+      <Value>../src/asf/common/services/spi</Value>
     </ListValues>
   </avr32gcc.compiler.directories.IncludePaths>
   <avr32gcc.compiler.optimization.level>Optimize (-O1)</avr32gcc.compiler.optimization.level>
@@ -254,6 +287,11 @@
       <Value>../src/asf/common/services/ioport</Value>
       <Value>../src/asf/avr32/drivers/gpio</Value>
       <Value>../src/asf/avr32/drivers/twi</Value>
+      <Value>../src/asf/avr32/drivers/cpu/cycle_counter</Value>
+      <Value>../src/asf/avr32/drivers/spi</Value>
+      <Value>../src/asf/common/services/delay</Value>
+      <Value>../src/asf/common/services/spi/uc3_spi</Value>
+      <Value>../src/asf/common/services/spi</Value>
     </ListValues>
   </avr32gcc.assembler.general.IncludePaths>
   <avr32gcc.preprocessingassembler.general.AssemblerFlags>-DBOARD=USER_BOARD -mrelax</avr32gcc.preprocessingassembler.general.AssemblerFlags>
@@ -273,6 +311,11 @@
       <Value>../src/asf/common/services/ioport</Value>
       <Value>../src/asf/avr32/drivers/gpio</Value>
       <Value>../src/asf/avr32/drivers/twi</Value>
+      <Value>../src/asf/avr32/drivers/cpu/cycle_counter</Value>
+      <Value>../src/asf/avr32/drivers/spi</Value>
+      <Value>../src/asf/common/services/delay</Value>
+      <Value>../src/asf/common/services/spi/uc3_spi</Value>
+      <Value>../src/asf/common/services/spi</Value>
     </ListValues>
   </avr32gcc.preprocessingassembler.general.IncludePaths>
 </Avr32Gcc>
@@ -283,6 +326,9 @@
     <GenerateEepFile>True</GenerateEepFile>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="src\asf\avr32\drivers\cpu\cycle_counter\cycle_counter.h">
+      <SubType>compile</SubType>
+    </None>
     <Compile Include="src\asf\avr32\drivers\flashc\flashc.c">
       <SubType>compile</SubType>
     </Compile>
@@ -301,6 +347,12 @@
     <Compile Include="src\asf\avr32\drivers\intc\intc.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\asf\avr32\drivers\spi\spi.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\asf\avr32\drivers\spi\spi.h">
+      <SubType>compile</SubType>
+    </None>
     <Compile Include="src\asf\avr32\drivers\twi\twi.c">
       <SubType>compile</SubType>
     </Compile>
@@ -353,6 +405,21 @@
       <SubType>compile</SubType>
     </None>
     <None Include="src\config\conf_twi.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\common\services\delay\delay.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\asf\common\services\spi\spi_master.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\asf\common\services\spi\uc3_spi\spi_master.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\asf\common\services\spi\uc3_spi\spi_master.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\config\conf_spi_master.h">
       <SubType>compile</SubType>
     </None>
     <Compile Include="src\main.c">
@@ -415,9 +482,12 @@
     <Folder Include="src\asf\" />
     <Folder Include="src\asf\avr32\" />
     <Folder Include="src\asf\avr32\drivers\" />
+    <Folder Include="src\asf\avr32\drivers\cpu\" />
+    <Folder Include="src\asf\avr32\drivers\cpu\cycle_counter\" />
     <Folder Include="src\asf\avr32\drivers\flashc\" />
     <Folder Include="src\asf\avr32\drivers\gpio\" />
     <Folder Include="src\asf\avr32\drivers\intc\" />
+    <Folder Include="src\asf\avr32\drivers\spi\" />
     <Folder Include="src\asf\avr32\drivers\twi\" />
     <Folder Include="src\asf\avr32\utils\" />
     <Folder Include="src\asf\avr32\utils\header_files\" />
@@ -429,8 +499,11 @@
     <Folder Include="src\asf\common\services\" />
     <Folder Include="src\asf\common\services\clock\" />
     <Folder Include="src\asf\common\services\clock\uc3b0_b1\" />
+    <Folder Include="src\asf\common\services\delay\" />
     <Folder Include="src\asf\common\services\ioport\" />
     <Folder Include="src\asf\common\services\ioport\uc3\" />
+    <Folder Include="src\asf\common\services\spi\" />
+    <Folder Include="src\asf\common\services\spi\uc3_spi\" />
     <Folder Include="src\asf\common\utils\" />
     <Folder Include="src\asf\common\utils\interrupt\" />
     <Folder Include="src\config\" />

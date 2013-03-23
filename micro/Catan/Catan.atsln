@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Atmel Studio Solution File, Format Version 11.00
-Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Hearbeat1", "Hearbeat1\Hearbeat1.cproj", "{E697195F-F41A-4236-BE45-A218A6C26BD7}"
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Catan", "Catan\Catan.cproj", "{08109BB3-96E8-4DBB-B657-5230D63C6A71}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|AVR = Release|AVR
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E697195F-F41A-4236-BE45-A218A6C26BD7}.Debug|AVR.ActiveCfg = Debug|AVR
-		{E697195F-F41A-4236-BE45-A218A6C26BD7}.Debug|AVR.Build.0 = Debug|AVR
-		{E697195F-F41A-4236-BE45-A218A6C26BD7}.Release|AVR.ActiveCfg = Release|AVR
-		{E697195F-F41A-4236-BE45-A218A6C26BD7}.Release|AVR.Build.0 = Release|AVR
+		{08109BB3-96E8-4DBB-B657-5230D63C6A71}.Debug|AVR.ActiveCfg = Debug|AVR
+		{08109BB3-96E8-4DBB-B657-5230D63C6A71}.Debug|AVR.Build.0 = Debug|AVR
+		{08109BB3-96E8-4DBB-B657-5230D63C6A71}.Release|AVR.ActiveCfg = Release|AVR
+		{08109BB3-96E8-4DBB-B657-5230D63C6A71}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

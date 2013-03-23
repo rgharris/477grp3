@@ -1,9 +1,10 @@
-/**
+/*****************************************************************************
+ *
  * \file
  *
- * \brief Chip-specific system clock manager configuration
+ * \brief Preprocessor stringizing utils.
  *
- * Copyright (c) 2011 Atmel Corporation. All rights reserved.
+ * Copyright (c) 2009 Atmel Corporation. All rights reserved.
  *
  * \asf_license_start
  *
@@ -39,43 +40,45 @@
  *
  * \asf_license_stop
  *
+ ******************************************************************************/
+
+
+#ifndef _STRINGZ_H_
+#define _STRINGZ_H_
+
+/**
+ * \defgroup group_avr32_utils_stringz Preprocessor - Stringize
+ *
+ * \ingroup group_avr32_utils
+ *
+ * \{
  */
-#ifndef CONF_CLOCK_H_INCLUDED
-#define CONF_CLOCK_H_INCLUDED
 
-//#define CONFIG_SYSCLK_INIT_CPUMASK  (1 << SYSCLK_SYSTIMER)
-//#define CONFIG_SYSCLK_INIT_PBAMASK  (1 << SYSCLK_USART0)
-//#define CONFIG_SYSCLK_INIT_PBBMASK  (1 << SYSCLK_HMATRIX)
-//#define CONFIG_SYSCLK_INIT_HSBMASK  (1 << SYSCLK_MDMA_HSB)
+/*! \brief Stringize.
+ *
+ * Stringize a preprocessing token, this token being allowed to be \#defined.
+ *
+ * May be used only within macros with the token passed as an argument if the token is \#defined.
+ *
+ * For example, writing STRINGZ(PIN) within a macro \#defined by PIN_NAME(PIN)
+ * and invoked as PIN_NAME(PIN0) with PIN0 \#defined as A0 is equivalent to
+ * writing "A0".
+ */
+#define STRINGZ(x)                                #x
 
-//#define CONFIG_SYSCLK_SOURCE          SYSCLK_SRC_RCSYS
-//#define CONFIG_SYSCLK_SOURCE        SYSCLK_SRC_OSC0
-#define CONFIG_SYSCLK_SOURCE        SYSCLK_SRC_PLL0
+/*! \brief Absolute stringize.
+ *
+ * Stringize a preprocessing token, this token being allowed to be \#defined.
+ *
+ * No restriction of use if the token is \#defined.
+ *
+ * For example, writing ASTRINGZ(PIN0) anywhere with PIN0 \#defined as A0 is
+ * equivalent to writing "A0".
+ */
+#define ASTRINGZ(x)                               STRINGZ(x)
 
-/* Fbus = Fsys / (2 ^ BUS_div) */
-#define CONFIG_SYSCLK_CPU_DIV         0
-#define CONFIG_SYSCLK_PBA_DIV         0
-#define CONFIG_SYSCLK_PBB_DIV         0
+/**
+ * \}
+ */
 
-//#define CONFIG_USBCLK_SOURCE        USBCLK_SRC_OSC0
-//#define CONFIG_USBCLK_SOURCE        USBCLK_SRC_PLL0
-//#define CONFIG_USBCLK_SOURCE          USBCLK_SRC_PLL1
-
-/* Fusb = Fsys / USB_div */
-//#define CONFIG_USBCLK_DIV             1 /* Fusb = Fsys/(2 ^ USB_div) */
-
-#define CONFIG_PLL0_SOURCE          PLL_SRC_OSC0
-//#define CONFIG_PLL0_SOURCE          PLL_SRC_OSC1
-
-/* Fpll0 = (Fclk * PLL_mul) / PLL_div */
-#define CONFIG_PLL0_MUL             (48000000UL / BOARD_OSC0_HZ)
-#define CONFIG_PLL0_DIV             1
-
-//#define   CONFIG_PLL1_SOURCE          PLL_SRC_OSC0
-//#define CONFIG_PLL1_SOURCE          PLL_SRC_OSC1
-
-/* Fpll1 = (Fclk * PLL_mul) / PLL_div */
-//#define CONFIG_PLL1_MUL               (48000000UL / BOARD_OSC0_HZ)
-//#define CONFIG_PLL1_DIV               1
-
-#endif /* CONF_CLOCK_H_INCLUDED */
+#endif  // _STRINGZ_H_

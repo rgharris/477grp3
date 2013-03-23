@@ -1,9 +1,9 @@
 /**
- * \file
+ * \file *********************************************************************
  *
- * \brief Chip-specific system clock manager configuration
+ * \brief Spi Master configuration template file
  *
- * Copyright (c) 2011 Atmel Corporation. All rights reserved.
+ * Copyright (c) 2010 Atmel Corporation. All rights reserved.
  *
  * \asf_license_start
  *
@@ -40,42 +40,25 @@
  * \asf_license_stop
  *
  */
-#ifndef CONF_CLOCK_H_INCLUDED
-#define CONF_CLOCK_H_INCLUDED
 
-//#define CONFIG_SYSCLK_INIT_CPUMASK  (1 << SYSCLK_SYSTIMER)
-//#define CONFIG_SYSCLK_INIT_PBAMASK  (1 << SYSCLK_USART0)
-//#define CONFIG_SYSCLK_INIT_PBBMASK  (1 << SYSCLK_HMATRIX)
-//#define CONFIG_SYSCLK_INIT_HSBMASK  (1 << SYSCLK_MDMA_HSB)
+#ifndef CONF_SPI_MASTER_H_INCLUDED
+#define CONF_SPI_MASTER_H_INCLUDED
 
-//#define CONFIG_SYSCLK_SOURCE          SYSCLK_SRC_RCSYS
-//#define CONFIG_SYSCLK_SOURCE        SYSCLK_SRC_OSC0
-#define CONFIG_SYSCLK_SOURCE        SYSCLK_SRC_PLL0
+/* Possibility to change low-level configurations here */
 
-/* Fbus = Fsys / (2 ^ BUS_div) */
-#define CONFIG_SYSCLK_CPU_DIV         0
-#define CONFIG_SYSCLK_PBA_DIV         0
-#define CONFIG_SYSCLK_PBB_DIV         0
+//! Default Config Spi Master Delay BCS
+// #define CONFIG_SPI_MASTER_DELAY_BCS            0
 
-//#define CONFIG_USBCLK_SOURCE        USBCLK_SRC_OSC0
-//#define CONFIG_USBCLK_SOURCE        USBCLK_SRC_PLL0
-//#define CONFIG_USBCLK_SOURCE          USBCLK_SRC_PLL1
+//! Default Config Spi Master Bits per Transfer Definition
+// #define CONFIG_SPI_MASTER_BITS_PER_TRANSFER    8
 
-/* Fusb = Fsys / USB_div */
-//#define CONFIG_USBCLK_DIV             1 /* Fusb = Fsys/(2 ^ USB_div) */
+//! Default Config Spi Master Delay BCT
+// #define CONFIG_SPI_MASTER_DELAY_BCT            0
 
-#define CONFIG_PLL0_SOURCE          PLL_SRC_OSC0
-//#define CONFIG_PLL0_SOURCE          PLL_SRC_OSC1
+//! Default Config Spi Master Delay BS
+// #define CONFIG_SPI_MASTER_DELAY_BS             0
 
-/* Fpll0 = (Fclk * PLL_mul) / PLL_div */
-#define CONFIG_PLL0_MUL             (48000000UL / BOARD_OSC0_HZ)
-#define CONFIG_PLL0_DIV             1
+//! Default Config Spi Master Dummy Field
+// #define CONFIG_SPI_MASTER_DUMMY                0xFF
 
-//#define   CONFIG_PLL1_SOURCE          PLL_SRC_OSC0
-//#define CONFIG_PLL1_SOURCE          PLL_SRC_OSC1
-
-/* Fpll1 = (Fclk * PLL_mul) / PLL_div */
-//#define CONFIG_PLL1_MUL               (48000000UL / BOARD_OSC0_HZ)
-//#define CONFIG_PLL1_DIV               1
-
-#endif /* CONF_CLOCK_H_INCLUDED */
+#endif /* CONF_SPI_MASTER_H_INCLUDED */
