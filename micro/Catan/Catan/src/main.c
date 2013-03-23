@@ -254,12 +254,28 @@ int main(void)
 	ioport_set_pin_level(CLKOUT,IOPORT_PIN_LEVEL_LOW);
   }
   
-  for (int i=0; i<255; i++) {
+  /*for (int i=0; i<255; i++) {
 	  srand(i);
 	  s_memory[0] = (rand() % 6) + 1;
 	  s_memory[s_memory[0]]++;
 	  delay_ms(10);
-  }
- 
-  while(1);
+  }*/
+  int temp;
+  int previous = 0;
+  ioport_get_pin_level(PUSHBUTTON);
+  while(1){
+	  if (!previous && !ioport_get_pin_level(PUSHBUTTON)) {
+		  temp = Get_sys_count();
+		  s_memory[0] = (temp >> 24) & 0xFF;
+		  s_memory[1] = (temp >> 16) & 0xFF;
+		  s_memory[2] = (temp >> 8) & 0xFF;
+		  s_memory[3] = (temp >> 0) & 0xFF;
+		  previous = 1;
+		  delay_ms(25);
+		}
+	if (previous && ioport_get_pin_level(PUSHBUTTON)) {
+		previous = 0;
+	}		
+  }		
+ while(1);
 }

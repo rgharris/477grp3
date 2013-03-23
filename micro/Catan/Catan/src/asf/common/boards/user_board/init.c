@@ -16,4 +16,7 @@ void board_init(void)
 	ioport_enable_pin(CLKOUT);
 	ioport_set_pin_dir(CLKOUT, IOPORT_DIR_OUTPUT);
 	ioport_set_pin_level(CLKOUT, IOPORT_PIN_LEVEL_LOW);
+	ioport_enable_pin(PUSHBUTTON);
+	ioport_set_pin_dir(PUSHBUTTON, IOPORT_DIR_INPUT);
+	//ioport_set_pin_level(CLKOUT, IOPORT_PIN_LEVEL_LOW);
 }

@@ -19,7 +19,7 @@
 //#define RGB_ADDRESS		0 // A number 0-2
 #define TRANS_TIME		0 // A number 0-4ish
 
-#define TESTCOL			HE_COL0	// Multiplexer to test
+#define TESTCOL			HE_COL17	// Multiplexer to test
 
 //prototypes
 //void blinkLED(uint32_t led);
