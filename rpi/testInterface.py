@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 #This file is a quick and easy CLI for communicating with
 #the microcontroller over i2c.
@@ -30,23 +30,23 @@ def i2cReadData(address):
 		read_num = bus.transaction(i2c.writing_bytes(address, NBYTEREGISTER), i2c.reading(address, 1))
 		#Now we read that many bytes, starting at the first register
 		read_result = bus.transaction(i2c.writing_bytes(address, STARTREGISTER), i2c.reading(address, read_num))
-	print read_result
+	print(read_result)
 
 def i2cWriteData(address):
-	print "Type q to quit writing."
+	print("Type q to quit writing.")
 	tosend = raw_input('To Microcontroller (format is register:bytes):')
 	while (tosend != "q"):
 		register,bytes = tosend.split(':',1)
 		#Setup I2C Master object to set RPI as master
 		with i2c.I2CMaster() as bus:
 			bus.transaction(i2c.writing(address,register + bytes))
-		print "Complete."
-		print
-		print "Press any key to send command, CTRL+C to exit."
+		print("Complete.")
+		print()
+		print("Press any key to send command, CTRL+C to exit.")
 	
 def runTerminal(address):
 	#Setup terminal
-	print "Press any key to send command, CTRL+C to exit."
+	print("Press any key to send command, CTRL+C to exit.")
 	dataFlag = HeaderPin(GPIOPIN, Pin.In, Pin.Rising)
 	#Setup epoll, sort of like C's select statement
 	epoll = select.epoll()
