@@ -24,7 +24,7 @@ CLEARVALUE = 0x00
 STARTREGISTER = 0x00
 
 def i2cReadData(address):
-	print("Receiving data...")
+	print "Receiving data..."
 	with i2c.I2CMaster() as bus:
 		#First, read to see how many bytes to read. Yeah, I know...
 		read_num = bus.transaction(i2c.writing_bytes(address, NBYTEREGISTER), i2c.reading(address, 1))
@@ -34,7 +34,7 @@ def i2cReadData(address):
 
 def i2cWriteData(address):
 	print("Type q to quit writing.")
-	tosend = input('To Microcontroller (format is register:bytes):')
+	tosend = raw_input('To Microcontroller (format is register:bytes):')
 	while (tosend != "q"):
 		register,bytes = tosend.split(':',1)
 		#Setup I2C Master object to set RPI as master
@@ -76,7 +76,7 @@ def runTerminal(address):
 
 if __name__ == "__main__":
 	if (len(sys.argv) != 2):
-		print("Usage: " + sys.argv[0] + " address")
-		print("Address should be in 0xYY format, with YY being the hex address.")
+		print "Usage: " + sys.argv[0] + " address"
+		print "Address should be in 0xYY format, with YY being the hex address."
 	else:
 		runTerminal(sys.argv[1])
