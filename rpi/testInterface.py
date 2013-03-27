@@ -50,30 +50,31 @@ def runTerminal(address):
 	#dataFlag = Pin(GPIOPIN, direction=In, interrupt="rising")
 	dataFlag = pins.pin(GPIOPIN, In, Rising)
 	#Setup epoll, sort of like C's select statement
-	epoll = select.epoll()
-	#Register the pin, wait for level changes
-	epoll.register(dataFlag, select.EPOLLIN | select.EPOLLET)
-	#Register standard input (the keyboard), wait for input
-	#Since we're going to do something on keypress, we won't be able
-	#to grab events from the micro while typing. This is fine, because
-	#it won't be an issue in the interface - reading and writing will be
-	#independant.
-	#
-	#Should we just have a function in the "ttl" file (which doesn't exist yet)
-	#that's called on the web interface that checks the GPIO level? If so,
-	#that would make things easier (no need to write a daemon for this), but
-	#it would mean there's up to 5 seconds (or whatever the ttl refresh value is)
-	#where the pi could not react to the micro.
-	#Something to think about.
-	epoll.register(sys.stdin, select.EPOLLIN)
-	#Endless loop waiting for something.
-	while True:
-		events = epoll.poll()
-		for fileno, event in events:
-			if fileno == sys.stdin.fileno():
-				i2cWriteData(address)
-			if fileno == pin.fileno():
-				i2cReadData(address)
+	with dataFlag:
+		epoll = select.epoll()
+		#Register the pin, wait for level changes
+		epoll.register(dataFlag, select.EPOLLIN | select.EPOLLET)
+		#Register standard input (the keyboard), wait for input
+		#Since we're going to do something on keypress, we won't be able
+		#to grab events from the micro while typing. This is fine, because
+		#it won't be an issue in the interface - reading and writing will be
+		#independant.
+		#
+		#Should we just have a function in the "ttl" file (which doesn't exist yet)
+		#that's called on the web interface that checks the GPIO level? If so,
+		#that would make things easier (no need to write a daemon for this), but
+		#it would mean there's up to 5 seconds (or whatever the ttl refresh value is)
+		#where the pi could not react to the micro.
+		#Something to think about.
+		epoll.register(sys.stdin, select.EPOLLIN)
+		#Endless loop waiting for something.
+		while True:
+			events = epoll.poll()
+			for fileno, event in events:
+				if fileno == sys.stdin.fileno():
+					i2cWriteData(address)
+				if fileno == pin.fileno():
+					i2cReadData(address)
 
 if __name__ == "__main__":
 	if (len(sys.argv) != 2):
