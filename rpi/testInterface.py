@@ -47,9 +47,8 @@ def i2cWriteData(address):
 def runTerminal(address):
 	#Setup terminal
 	print("Press any key to send command, CTRL+C to exit.")
-	########THIS DOESN'T WORK. NO IDEA WHY.
-	#dataFlag = Pin(GPIOPIN, direction=In, interrupt="rising")
-	dataFlag = Pin(GPIOPIN, In)
+	dataFlag = Pin(GPIOPIN, direction=In, interrupt="rising")
+	#dataFlag = Pin(GPIOPIN, In)
 	#Setup epoll, sort of like C's select statement
 	epoll = select.epoll()
 	#Register the pin, wait for level changes
