@@ -6,7 +6,7 @@
 #Parameters: address of the i2c slave.
 import time, os, sys, select
 import quick2wire.i2c as i2c
-from quick2wire.gpio import pins, Pin, In, Out, Both
+from quick2wire.gpio import pins, Pin, In, Out, Both, Rising
 from quick2wire.selector import Selector
 
 #The pin used to throw an I2C interrupt
@@ -48,7 +48,7 @@ def runTerminal(address):
 	#Setup terminal
 	print("Press any key to send command, CTRL+C to exit.")
 	#dataFlag = Pin(GPIOPIN, direction=In, interrupt="rising")
-	dataFlag = pins.pin(GPIOPIN, In, pins.pin.Rising)
+	dataFlag = pins.pin(GPIOPIN, In, Rising)
 	#Setup epoll, sort of like C's select statement
 	epoll = select.epoll()
 	#Register the pin, wait for level changes
