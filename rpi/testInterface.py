@@ -73,7 +73,7 @@ def runTerminal(address):
 			for fileno, event in events:
 				if fileno == sys.stdin.fileno():
 					i2cWriteData(address)
-				if fileno == pin.fileno():
+				if fileno == dataFlag.fileno():
 					i2cReadData(address)
 
 if __name__ == "__main__":
