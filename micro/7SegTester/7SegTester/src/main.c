@@ -62,7 +62,7 @@ int main (void)
 	spi_deselect_device(SPI,&RARITY);
 	
 	spi_select_device(SPI,&RARITY);
-	spiData[0] = reverse(0x07);
+	spiData[0] = reverse(0x07); // 0x07 for all digits
 	spiData[1] = reverse(0x0B);
 	spi_write_packet(SPI,(spiData),2);
 	spi_write_packet(SPI,(spiData),2);
@@ -72,7 +72,7 @@ int main (void)
 	spi_deselect_device(SPI,&RARITY);
 	
 	spiData[0] = reverse(0xFF);
-	for (int i=1;i<8;i++) {
+	for (int i=1;i<=8;i++) {
 	  spi_select_device(SPI,&RARITY); 
 	  spiData[1] = reverse(i);
 	  spi_write_packet(SPI,(spiData),2);

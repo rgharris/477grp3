@@ -90,14 +90,14 @@
     <com_atmel_avrdbg_tool_avrdragon>
       <ToolType>com.atmel.avrdbg.tool.avrdragon</ToolType>
       <ToolName>AVR Dragon</ToolName>
-      <ToolNumber>00A200035116</ToolNumber>
+      <ToolNumber>00A200035507</ToolNumber>
       <KeepTimersRunning>true</KeepTimersRunning>
       <OverrideVtor>false</OverrideVtor>
       <OverrideVtorValue>
       </OverrideVtorValue>
       <Channel>
         <host>127.0.0.1</host>
-        <port>2284</port>
+        <port>4450</port>
         <ssl>False</ssl>
       </Channel>
       <ToolOptions>

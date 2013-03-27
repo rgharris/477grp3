@@ -33,5 +33,9 @@
 // External oscillator startup time
 #define BOARD_XOSC_STARTUP_US  500000
 
+// Port Definitions
+#define AVR32_PORT_A			0
+#define AVR32_PORT_B			1
+
 
 #endif // USER_BOARD_H
