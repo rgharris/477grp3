@@ -17,7 +17,7 @@ print "Content-type: text/html;charset=utf-8\n\n"
 if len(pairs) == 0:
 	output = """<form method="post" action="index.py">
       	      <h2>Trade</h2>
-					<p>For:</p>
+					For:
 					<input type="number" class="modalNumber" name="tradeNumber" min="1" max="99"/> &nbsp; <select class="modalSelect">
 						<option value="none">Select Resource</option>
 						<option value="clay">Clay</option>
@@ -25,7 +25,7 @@ if len(pairs) == 0:
 						<option value="wheat">Wheat</option>
 						<option value="sheep">Sheep</option>
 						<option value="wood">Wood</option></select><br />
-					<p>You want:</p>
+					You want:
 					<input type="number" class="modalNumber" name="forNumber" min="1" max="99"/><select class="modalSelect">
 						<option value="none">Select Resource</option>
 						<option value="clay">Clay</option>
