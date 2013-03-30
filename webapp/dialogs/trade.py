@@ -33,8 +33,8 @@ if len(pairs) == 0:
 						<option value="wheat">Wheat</option>
 						<option value="sheep">Sheep</option>
 						<option value="wood">Wood</option></select>
-					<input type="submit" value="No deal!" class="bottom half right" name="noDeal" />
-					<input type="submit" value="Deal!" class="bottom half left" name="deal" />
+					<input type="submit" value="No Deal!" class="bottom half left" name="noDeal" />
+					<input type="submit" value="Deal!" class="bottom half right" name="deal" />
 	        	   </form>
 				"""
 else:
