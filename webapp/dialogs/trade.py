@@ -26,7 +26,7 @@ if len(pairs) == 0:
 						<option value="sheep">Sheep</option>
 						<option value="wood">Wood</option></select><br />
 					Get:
-					<input type="number" class="modalNumber" name="forNumber" min="1" max="99"/><select class="modalSelect">
+					<input type="number" class="modalNumber" name="forNumber" min="1" max="99"/> &nbsp; <select class="modalSelect">
 						<option value="none">Select Resource</option>
 						<option value="clay">Clay</option>
 						<option value="ore">Ore</option>
