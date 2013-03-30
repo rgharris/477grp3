@@ -137,6 +137,8 @@ pairs = cgi.parse_qs(query)
 #First start by checking and seeing if they have a cookie. If so, check it and use it!
 if cookies:
 	playerID, playerInfo = cookieChk(cookies, PLAYER_FILE, TIMEOUT)
+else:
+	playerInfo = ''
 
 if playerInfo == '':
 	playerID = -1
