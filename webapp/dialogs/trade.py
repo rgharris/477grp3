@@ -17,13 +17,15 @@ print "Content-type: text/html;charset=utf-8\n\n"
 if len(pairs) == 0:
 	output = """<form method="post" action="index.py">
       	      <h2>Trade</h2>
-					<input type="number" class="modalNumber" name="tradeNumber" min="1" max="99"/><select class="modalSelect">
+					For:<br />
+					<input type="number" class="modalNumber" name="tradeNumber" min="1" max="99"/> &nbsp; <select class="modalSelect">
 						<option value="none">Select Resource</option>
 						<option value="clay">Clay</option>
 						<option value="ore">Ore</option>
 						<option value="wheat">Wheat</option>
 						<option value="sheep">Sheep</option>
-						<option value="wood">Wood</option></select>
+						<option value="wood">Wood</option></select><br />
+					You want:<br />
 					<input type="number" class="modalNumber" name="forNumber" min="1" max="99"/><select class="modalSelect">
 						<option value="none">Select Resource</option>
 						<option value="clay">Clay</option>
