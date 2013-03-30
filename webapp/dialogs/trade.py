@@ -18,12 +18,14 @@ if len(pairs) == 0:
 	output = """<form method="post" action="index.py">
       	      <h2>Trade</h2>
 					<input type="text" class="modalNumber" name="tradeNumber" /><select class="modalSelect">
+						<option value="none">Select Resource</option>
 						<option value="clay">Clay</option>
 						<option value="ore">Ore</option>
 						<option value="wheat">Wheat</option>
 						<option value="sheep">Sheep</option>
 						<option value="wood">Wood</option></select>
 					<input type="text" class="modalNumber" name="forNumber" /><select class="modalSelect">
+						<option value="none">Select Resource</option>
 						<option value="clay">Clay</option>
 						<option value="ore">Ore</option>
 						<option value="wheat">Wheat</option>

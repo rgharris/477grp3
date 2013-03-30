@@ -197,7 +197,7 @@ a.playerName{
 }
 
 .modal input[type="text"] {
-	width: 90%;
+	/*width: 90%;*/
 	font-size: 16pt;
 	border: none;
 	background-color: #fffdd0;
@@ -205,7 +205,7 @@ a.playerName{
 	font-family: 'Arapey', 'Times New Roman', serif;
 }
 
-.modal input[type="text"] .modalNumber {
+.modal .modalNumber {
 	width: 10%;
 }
 
