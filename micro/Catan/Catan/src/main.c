@@ -4,7 +4,7 @@
 
 #include <asf.h>
 #include <RarityDisplay.h>
-//#include <I2C.h>
+#include <I2C.h>
 #include <RGB.h>
 
 
@@ -12,10 +12,9 @@ int main(void)
 {
 	int i,j;
 
-	
 	// Hall Effect Sensor
 	ioport_port_mask_t RowReturn;
-	ioport_port_mask_t ColPins[]= {HE_COL0,HE_COL1,HE_COL2,HE_COL3,HE_COL4,HE_COL5,HE_COL6,HE_COL7, HE_COL8,HE_COL9,HE_COL10,HE_COL11,HE_COL12,HE_COL13,HE_COL14,HE_COL15,HE_COL16,HE_COL17};
+	int ColPins[]= {HE_COL0,HE_COL1,HE_COL2,HE_COL3,HE_COL4,HE_COL5,HE_COL6,HE_COL7, HE_COL8,HE_COL9,HE_COL10,HE_COL11,HE_COL12,HE_COL13,HE_COL14,HE_COL15,HE_COL16,HE_COL17};
 	int magnetfound = 0;
 	
 	// Initialize the board
@@ -46,12 +45,12 @@ int main(void)
 			for (j=0;j<18;j++)
 			{
 				rgb_hex_set(j,WHEAT);
-				//display_error(j,i,0);
+				//rarity_display_error(j,i,0);
 				
 				if (RowReturn & 1<<ColPins[j])
 				{
 					rgb_hex_set(j,ORE);
-					display_error(j,i,0);
+					rarity_display_error(j,i,0);
 					delay_ms(1000);
 					rarity_clear_all();
 				}

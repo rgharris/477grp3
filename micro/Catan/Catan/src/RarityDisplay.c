@@ -1,31 +1,31 @@
 /*
- * RarityDisplay.c
- *
- * Created: 3/28/2013 6:16:25 PM
- *  Author: team3
- */ 
+* RarityDisplay.c
+*
+* Created: 3/28/2013 6:16:25 PM
+*  Author: team3
+*/
 
 
 /*
- * RarityDisplay.c
- *
- * Uses: This interface will provide a layer of abstraction to
- * Set the seven segments on the board.
- * Toplevel functions will include:
- *   rarity_init()
- *     - initialize the driver mode of operation for all drivers on the board
- *   rarity_set(uint hex_num, uint rarity_value)
- *     - will take a value 0-18 and set that display to the desired rarity value
- *     - sends no ops to other positions
- *     - not sure if will be used
- *   rarity_set_all(uint *rarity_value_arr)
- *     - pointer to the array that stores all the hex rarities for the entire game
- *     - can be used after an error piece is fixed to correct the rarity display
- *   rarity_disp_error(uint error_position)
- *     - will take the error position and find the corresponding hex and display the error code
- * Created: 3/27/2013 7:34:26 PM
- *  Author: team3
- */ 
+* RarityDisplay.c
+*
+* Uses: This interface will provide a layer of abstraction to
+* Set the seven segments on the board.
+* Toplevel functions will include:
+*   rarity_init()
+*     - initialize the driver mode of operation for all drivers on the board
+*   rarity_set(uint hex_num, uint rarity_value)
+*     - will take a value 0-18 and set that display to the desired rarity value
+*     - sends no ops to other positions
+*     - not sure if will be used
+*   rarity_set_all(uint *rarity_value_arr)
+*     - pointer to the array that stores all the hex rarities for the entire game
+*     - can be used after an error piece is fixed to correct the rarity display
+*   rarity_disp_error(uint error_position)
+*     - will take the error position and find the corresponding hex and display the error code
+* Created: 3/27/2013 7:34:26 PM
+*  Author: team3
+*/
 
 #include <RarityDisplay.h>
 
@@ -38,7 +38,6 @@
 // IntHigh (0x0A,0x0F): Set the intensity of the display to maximum
 // scanLimit (0x0B,0x07): Set the scan limit to 7, meaning all 7segs can be used
 void rarity_init()
-
 {
 	uint8_t spiData[2];
 	struct spi_device RARITY = {
@@ -84,7 +83,7 @@ void rarity_init()
 	
 	// Scan all digits on all drivers
 	spi_select_device(SPI,&RARITY);
-	spiData[0] = reverse(0x07); 
+	spiData[0] = reverse(0x07);
 	spiData[1] = reverse(0x0B);
 	spi_write_packet(SPI,(spiData),2);
 	spi_write_packet(SPI,(spiData),2);
@@ -95,8 +94,12 @@ void rarity_init()
 }
 
 
-void display_error(unsigned int hex_num, unsigned int position, unsigned int isCity){
-	// Sets the 2 digit seven segment display for a single hexagon
+// This routine will display an appropriate error on the board via the 7 segment displays
+//  based on the given hex number and position. The parameter 'isCity' is ignored unless
+//  the position corresponds to a city/settlement piece. If hex_num is 18, then the position
+//  parameter doesn't affect anything (it is assumed the piece is the middle thief).
+void rarity_display_error(unsigned int hex_num, unsigned int position, unsigned int isCity){
+	
 	uint8_t spiData[2];
 	struct spi_device RARITY = {
 		.id =  SPI_NPCS
@@ -107,33 +110,15 @@ void display_error(unsigned int hex_num, unsigned int position, unsigned int isC
 	unsigned int tens_digit;
 	unsigned int ones_digit;
 	uint8_t nopSpiData = {0x0, 0x0};
-	// Do we perhaps need a new function to do error codes on the hexes? I think that might be best, considering C-T won't actually
-	// be displayed, here.
-	//
-	// Or maybe we need to have a simple check if the rarity passed is, say, 20 or greater, and use a different decode map.
-	// I've moved the error map out for this purpose.
+
 	//                    {  0 ,  1 ,  2 ,  3 ,  4 ,  5 ,  6 ,  7 ,  8 ,  9 }
 	uint8_t digit_map[] = {0x7E,0x30,0x6D,0x79,0x33,0x5B,0x5F,0x70,0x7F,0x7B};
-	/*
-	Move To new function	
-	// "error" mappings will be done with numbers greater than 100. 
-	// Roads:		100-106
-	// Cities:		110-116
-	// Settlements:	120-126
-	// Thief:		137
-	// For cities/settlements/thiefs (i.e. 10's digit greater than 0), position = 2 * 1's digit
-	// For roads, position = 2* 1's digit + 1
-	// This isn't the best way, but it should work.
-	//							{ "r", "C", "S", "T"}
-	uint8_t piece_type_map[] =	{0x05,0x7E,0x5B,0x70}
-	//							{ TRs, TRr, Rs, BRr,  BRs, Br, BLs,  BLr,  Ls, TLr, TLs, Tr,  T }
-	uint8_t position_map[] =	{0x60,0x20,0x30,0x10,0x18,0x08,0x0C,0x04,0x06,0x02,0x42,0x40,0x70};
-	*/	
-	//							{ "r", "C", "S", "T"}
-	//uint8_t piece_type_map[] =	{0x05,0x7E,0x5B,0x70}
-	//							{ TRs, TRr, Rs, BRr,  BRs, Br, BLs,  BLr,  Ls, TLr, TLs, Tr}//, T }
-	uint8_t position_map[] = {0x60,0x20,0x30,0x10,0x18,0x08,0x0C,0x04,0x06,0x02,0x42,0x40};//,0x70};
+	//					     { TRs, TRr, Rs, BRr,  BRs, Br, BLs,  BLr,  Ls, TLr, TLs,  Tr}
+	uint8_t position_map[] = {0x60,0x20,0x30,0x10,0x18,0x08,0x0C,0x04,0x06,0x02,0x42,0x40};
+	// Starting positions for hexagons 0-18, offset starts from the upper right corner, 
+	//  the value at index 18 should never be referenced
 	uint8_t starting_positions[] = {5,5,7,7,9,7,11,1,11,11,1,1,3,3,5,4,9,9,0};
+		
 	if (hex_num==18 || position == 7) {
 		tens_digit = SEVSEG_THIEF;
 		ones_digit = SEVSEG_THIEF;

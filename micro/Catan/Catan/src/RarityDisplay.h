@@ -40,9 +40,8 @@ void rarity_init( void );
 void rarity_set(unsigned int hex_num, unsigned int rarity_value);
 void rarity_set_all(unsigned int * rarity_value_arr);
 void rarity_clear_all(); 
-void rarity_disp_error(unsigned int error_position);
 unsigned int reverse(unsigned int v);
-void display_error(unsigned int hex_num, unsigned int position, unsigned int isCity);
+void rarity_display_error(unsigned int hex_num, unsigned int position, unsigned int isCity);
 
 
 

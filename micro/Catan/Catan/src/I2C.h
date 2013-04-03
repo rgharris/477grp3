@@ -35,26 +35,10 @@
 
 //! \brief Constants to define the sent and received pattern
 #define  PATTERN_TEST_LENGTH        (sizeof(test_pattern)/sizeof(U8))
-const U8 test_pattern[] =  {
-	0xAA,
-	0x55,
-	0xA5,
-	0x5A,
-	0x77,
-0x99};
 
 
 
-U8  s_status_cmd = TWI_MEM_IDLE; // State variable
-U8  s_u8_addr_pos;               // Offset in the address value (because we receive the address one Byte at a time)
-U32 s_u32_addr;                  // The current address in the virtual mem
-U8  s_memory[TWI_MEM_SIZE]={0};  // Content of the Virtual mem
 
-static const gpio_map_t TWI_GPIO_MAP =
-{
-{AVR32_TWI_SDA_0_0_PIN, AVR32_TWI_SDA_0_0_FUNCTION},
-{AVR32_TWI_SCL_0_0_PIN, AVR32_TWI_SCL_0_0_FUNCTION}
-};
 
 void I2C_test( void );
 /*static void twi_slave_rx( U8 u8_value );
