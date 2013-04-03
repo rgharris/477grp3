@@ -8,6 +8,8 @@ import cgitb
 #Everything else.
 import os, sys, cgi, json
 
+PLAYER_FILE = "../players/"
+
 query = os.environ["QUERY_STRING"]
 
 pairs = cgi.parse_qs(query)
@@ -15,33 +17,47 @@ pairs = cgi.parse_qs(query)
 print "Content-type: text/html;charset=utf-8\n\n"
 
 if len(pairs) == 0:
+	playerList = []
+	#Shows on current player's screen to run trade.
 	output = """<form method="post" action="index.py">
-      	      <h2>Trade</h2>
-					Give:
-					<input type="number" class="modalNumber" name="tradeNumber" min="1" max="99"/> &nbsp; <select class="modalSelect">
-						<option value="none">Select Resource</option>
-						<option value="clay">Clay</option>
-						<option value="ore">Ore</option>
-						<option value="wheat">Wheat</option>
-						<option value="sheep">Sheep</option>
-						<option value="wood">Wood</option></select><br />
-					Get:
-					<input type="number" class="modalNumber" name="forNumber" min="1" max="99"/> &nbsp; <select class="modalSelect">
-						<option value="none">Select Resource</option>
-						<option value="clay">Clay</option>
-						<option value="ore">Ore</option>
-						<option value="wheat">Wheat</option>
-						<option value="sheep">Sheep</option>
-						<option value="wood">Wood</option></select>
-					<input type="submit" value="No Deal!" class="bottom half left" name="noDeal" />
-					<input type="submit" value="Deal!" class="bottom half right" name="deal" />
-	        	   </form>
-				"""
+     	      <h2>Trade</h2>
+				Give:
+				<input type="number" class="modalNumber" name="tradeNumber" min="1" max="99"/> &nbsp; <select class="modalSelect">
+					<option value="none">Select Resource</option>
+					<option value="clay">Clay</option>
+					<option value="ore">Ore</option>
+					<option value="wheat">Wheat</option>
+					<option value="sheep">Sheep</option>
+					<option value="wood">Wood</option></select><br />
+				Get:
+				<input type="number" class="modalNumber" name="forNumber" min="1" max="99"/> &nbsp; <select class="modalSelect">
+					<option value="none">Select Resource</option>
+					<option value="clay">Clay</option>
+					<option value="ore">Ore</option>
+					<option value="wheat">Wheat</option>
+					<option value="sheep">Sheep</option>
+					<option value="wood">Wood</option></select>
+				From:
+				<select class="modalSelect"> {0}
+				</select>
+				<input type="submit" value="No Deal!" class="bottom half left" name="noDeal" />
+				<input type="submit" value="Deal!" class="bottom half right" name="deal" />
+        	   </form>
+			"""
+	for fn in os.listdir(PLAYER_FILE):
+	   if fn != 'dev.json':
+     		jsonInfo = open(PLAYER_FILE + fn)
+	      playerInfo = json.load(jsonInfo)
+			playerList.append("<option value=\"" + playerInfo["playerName"] + "\">" + playerInfo["playerName"] + "</option>")
+			jsonInfo.close()
+	output = output.format('\n'.join(playerList))
 else:
-	if pairs.has_key("invalid"):
+		elif pairs.has_key("invalid"):
+		#Shows up on current /or/ remote player's screen to identify invalid.
 		humanMap = {"settle":"settlement", "city":"city", "road":"road", "dev":"development card"}
 		output = "<h2>Purchase Error</h2>\n<p>You don't have enough resources to purchase a " + humanMap[pairs["invalid"][0]] + "!</p><a href=\"index.py#x\" class=\"bottom\">Got it!</a>"
 	elif pairs.has_key("confirm"):
+		#Shows up on remote player's screen to confirm trade.
 		output = "<form method=\"post\" action=\"index.py\">\n<h2>Confirm Purchase</h2>\n"
 		if pairs["confirm"][0] == "settle":
 			output = output + "<p>Do you wish to purchase a settlement for 1 wood, 1 wheat, 1 sheep, and 1 clay?</p>\n<input type=\"hidden\" name=\"purchase\" value=\"settle\" />"
@@ -52,7 +68,8 @@ else:
 		elif pairs["confirm"][0] == "dev":
 			output = output + "<p>Do you wish to purchase a development card for 1 wheat, 1 sheep, and 1 ore?</p>\n<input type=\"hidden\" name=\"purchase\" value=\"dev\" />"
 		output = output + "<input type=\"submit\" value=\"Yes I do!\" class=\"bottom half left\" name=\"confirmPurchase\"/><input type=\"submit\" value=\"No I don't!\" class=\"bottom half right\" name=\"doNotPurchase\"/>"
-	elif pairs.has_key("place"):
+	elif pairs.has_key("deny"):
+		#Shows up on current player's screen to acknowledge denial of trade.
 		output = "<h2>Place piece</h2>\n<p>Please place your piece now.</p><!--TODO:This needs removed when we're communicating with the board.--><a href=\"index.py#x\" class=\"bottom\">Done.</a>"
 	elif pairs.has_key("obtained"):
 		humanMap = {"knights":"Knight", "monopoly":"Monopoly", "road":"Road Building", "plenty":"Year of Plenty", "victory":"Victory Point"}
