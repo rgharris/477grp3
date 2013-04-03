@@ -45,8 +45,8 @@ if len(pairs) == 0:
         	   </form>
 			"""
 	for fn in os.listdir(PLAYER_FILE):
-	   if fn != 'dev.json':
-     		jsonInfo = open(PLAYER_FILE + fn)
+		if fn != 'dev.json':
+			jsonInfo = open(PLAYER_FILE + fn)
 			playerInfo = json.load(jsonInfo)
 			playerList.append("<option value=\"" + playerInfo["playerName"] + "\">" + playerInfo["playerName"] + "</option>")
 			jsonInfo.close()
