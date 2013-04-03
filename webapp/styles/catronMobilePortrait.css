@@ -204,6 +204,29 @@ a.playerName{
 	color: #000;
 	font-family: 'Arapey', 'Times New Roman', serif;
 }
+
+.modal input[type="number"] {
+	width: 10%;
+	font-size: 16pt;
+	border: none;
+	background-color: #fffdd0;
+	margin-left: 5px;
+	color: #000;
+	font-family: 'Arapey', 'Times New Roman', serif;
+}
+
+.modal select {
+	width: 60%;
+	font-size: 16pt;
+	border: none;
+	border-bottom: 1px solid #fffdd0;
+	border-left: 1px solid #fffdd0;
+	border-right: 1px solid #fffdd0;
+	margin-right: 5px;
+	background: none;
+	color: #fffdd0;
+	font-family: 'Arapey', 'Times New Roman', serif;
+}
 	
 
 
