@@ -17,6 +17,7 @@ struct spi_device RARITY = {
 
 #define DRIVER_ADDRESS	7 // A number 0-6
 #define TRANS_TIME		0 // A number 0-4ish
+#define LED_INTENSITY	15 // Max is 15
 
 unsigned int reverse(unsigned int v);
 void clockRGB();
@@ -32,6 +33,7 @@ int main (void)
 	spi_enable(SPI);
 	
 	int i = 0;
+	int j;
 
 	spi_select_device(SPI,&RARITY);
 	spiData[0] = reverse(0x01);
@@ -83,58 +85,76 @@ int main (void)
 	spi_write_packet(SPI,(spiData),2);
 	spi_deselect_device(SPI,&RARITY);
 	
-	spiData[1] = reverse(0x01);
+	spiData[1] = reverse(0x03);
 	lightRGB(DRIVER_ADDRESS, 40, 0, TRANS_TIME);
 	lightRGB(DRIVER_ADDRESS, 42, 0, TRANS_TIME);
 	lightRGB(DRIVER_ADDRESS, 44, 0, TRANS_TIME);
 	while(1) {
 		// int deviceAddress,  int colorAddress, int brightness, int transTime
-		lightRGB(DRIVER_ADDRESS, 40, 15, TRANS_TIME);
+		lightRGB(DRIVER_ADDRESS, 40, LED_INTENSITY, TRANS_TIME);
 		spi_select_device(SPI,&RARITY);
 		spiData[0] = reverse(i);
 		i++;
-		spi_write_packet(SPI,(spiData),2);
-		spi_deselect_device(SPI,&RARITY);
+		for (j=0; j<8; j++) {
+			spiData[1] = j;
+			spi_write_packet(SPI,(spiData),2);
+			spi_deselect_device(SPI,&RARITY);
+		}		
 		
 		delay_ms(1000);
 		lightRGB(DRIVER_ADDRESS, 44, 0, TRANS_TIME);
 		spi_select_device(SPI,&RARITY);
 		spiData[0] = reverse(i);
 		i++;
-		spi_write_packet(SPI,(spiData),2);
-		spi_deselect_device(SPI,&RARITY);
+		for (j=0; j<8; j++) {
+			spiData[1] = j;
+			spi_write_packet(SPI,(spiData),2);
+			spi_deselect_device(SPI,&RARITY);
+		}
 		
 		delay_ms(1000);
-		lightRGB(DRIVER_ADDRESS, 42, 15, TRANS_TIME);
+		lightRGB(DRIVER_ADDRESS, 42, LED_INTENSITY, TRANS_TIME);
 		spi_select_device(SPI,&RARITY);
 		spiData[0] = reverse(i);
 		i++;
-		spi_write_packet(SPI,(spiData),2);
-		spi_deselect_device(SPI,&RARITY);
+		for (j=0; j<8; j++) {
+			spiData[1] = j;
+			spi_write_packet(SPI,(spiData),2);
+			spi_deselect_device(SPI,&RARITY);
+		}
 		
 		delay_ms(1000);
 		lightRGB(DRIVER_ADDRESS, 40,  0, TRANS_TIME);
 		spi_select_device(SPI,&RARITY);
 		spiData[0] = reverse(i);
 		i++;
-		spi_write_packet(SPI,(spiData),2);
-		spi_deselect_device(SPI,&RARITY);
+		for (j=0; j<8; j++) {
+			spiData[1] = j;
+			spi_write_packet(SPI,(spiData),2);
+			spi_deselect_device(SPI,&RARITY);
+		}
 		
 		delay_ms(1000);
-		lightRGB(DRIVER_ADDRESS, 44, 15, TRANS_TIME);
+		lightRGB(DRIVER_ADDRESS, 44, LED_INTENSITY, TRANS_TIME);
 		spi_select_device(SPI,&RARITY);
 		spiData[0] = reverse(i);
 		i++;
-		spi_write_packet(SPI,(spiData),2);
-		spi_deselect_device(SPI,&RARITY);
+		for (j=0; j<8; j++) {
+			spiData[1] = j;
+			spi_write_packet(SPI,(spiData),2);
+			spi_deselect_device(SPI,&RARITY);
+		}
 		
 		delay_ms(1000);
 		lightRGB(DRIVER_ADDRESS, 42,  0, TRANS_TIME);
 		spi_select_device(SPI,&RARITY);
 		spiData[0] = reverse(i);
 		i=0;
-		spi_write_packet(SPI,(spiData),2);
-		spi_deselect_device(SPI,&RARITY);
+		for (j=0; j<8; j++) {
+			spiData[1] = j;
+			spi_write_packet(SPI,(spiData),2);
+			spi_deselect_device(SPI,&RARITY);
+		}
 		delay_ms(1000);
 	}
 		

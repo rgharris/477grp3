@@ -22,6 +22,7 @@ unsigned int reverse(unsigned int v);
 //uint8_t intHigh[2] = {0x0A,0x0F};
 //uint8_t scanLimit[2] = {0x0B,0x07};
 //uint8_t dig0[2] = {0x01, 0xFF};
+uint8_t nopSpiData = {0x0, 0x0};
 uint8_t spiData[2];
 
 int main (void)
@@ -31,9 +32,15 @@ int main (void)
 	spi_master_setup_device(SPI,&RARITY,SPI_MODE_0,SPI_BAUDRATE, 0);
 	spi_enable(SPI);
 
+    // delay_s(4);
+	delay_ms(100);
+	
+	while(ioport_get_pin_level(MIDDLE_SENSOR));
+ 
+	// Set all 7 segs to normal mode
 	spi_select_device(SPI,&RARITY);
-	spiData[0] = reverse(0x01);
-	spiData[1] = reverse(0x0C);
+	spiData[0] = reverse(0x01); // Data
+	spiData[1] = reverse(0x0C); // Register
 	spi_write_packet(SPI,spiData,2);
 	spi_write_packet(SPI,spiData,2);
 	spi_write_packet(SPI,spiData,2);
@@ -41,9 +48,11 @@ int main (void)
 	spi_write_packet(SPI,spiData,2);
 	spi_deselect_device(SPI,&RARITY);
 	
+	// Enable decode mode for all 7 segs
 	spi_select_device(SPI,&RARITY);
+	//spiData[0] = reverse(0xFF);
 	spiData[0] = reverse(0x00);
-	spiData[1] = reverse(0x09);
+	spiData[1] = reverse(0x0B);
 	spi_write_packet(SPI,(spiData),2);
 	spi_write_packet(SPI,(spiData),2);
 	spi_write_packet(SPI,(spiData),2);
@@ -51,8 +60,9 @@ int main (void)
 	spi_write_packet(SPI,(spiData),2);
 	spi_deselect_device(SPI,&RARITY);
 	
+	// Set global intensity to max on
 	spi_select_device(SPI,&RARITY);
-	spiData[0] = reverse(0x0F);
+	spiData[0] = reverse(0x04);
 	spiData[1] = reverse(0x0A);
 	spi_write_packet(SPI,(spiData),2);
 	spi_write_packet(SPI,(spiData),2);
@@ -61,6 +71,7 @@ int main (void)
 	spi_write_packet(SPI,(spiData),2);
 	spi_deselect_device(SPI,&RARITY);
 	
+	// Set scan limit to display all digits
 	spi_select_device(SPI,&RARITY);
 	spiData[0] = reverse(0x07); // 0x07 for all digits
 	spiData[1] = reverse(0x0B);
@@ -71,17 +82,34 @@ int main (void)
 	spi_write_packet(SPI,(spiData),2);
 	spi_deselect_device(SPI,&RARITY);
 	
-	spiData[0] = reverse(0xFF);
-	for (int i=1;i<=8;i++) {
-	  spi_select_device(SPI,&RARITY); 
-	  spiData[1] = reverse(i);
-	  spi_write_packet(SPI,(spiData),2);
-	  spi_write_packet(SPI,(spiData),2);
-	  spi_write_packet(SPI,(spiData),2);
-	  spi_write_packet(SPI,(spiData),2);
-	  spi_write_packet(SPI,(spiData),2);
-	  spi_deselect_device(SPI,&RARITY);
-	}	
+	while (1)
+	{
+		// Display 0-9 on all displays with time between
+		for (int segments=1;segments<128;segments=(segments<<1)+1)
+		{
+			
+			for (int i=1;i<=8;i++) {
+				//delay_ms(100);
+				//spiData[0] = reverse((4+i)%10);
+				spiData[0] = reverse(segments);
+				spiData[1] = reverse(i);
+				for (int j=0; j < 5; j++) {
+					//delay_ms(200);
+					spi_select_device(SPI,&RARITY);
+					spi_write_packet(SPI,j==0 ? spiData : nopSpiData,2);
+					spi_write_packet(SPI,j==1 ? spiData : nopSpiData,2);
+					spi_write_packet(SPI,j==2 ? spiData : nopSpiData,2);
+					spi_write_packet(SPI,j==3 ? spiData : nopSpiData,2);
+					spi_write_packet(SPI,j==4 ? spiData : nopSpiData,2);
+					spi_deselect_device(SPI,&RARITY);
+				}				
+			}
+			delay_s(1);
+			
+		}
+	}
+	
+		
 }
 
 
