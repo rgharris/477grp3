@@ -52,7 +52,7 @@ if len(pairs) == 0:
 			jsonInfo.close()
 	output = output.format('\n'.join(playerList))
 else:
-		elif pairs.has_key("invalid"):
+	if pairs.has_key("invalid"):
 		#Shows up on current /or/ remote player's screen to identify invalid.
 		humanMap = {"settle":"settlement", "city":"city", "road":"road", "dev":"development card"}
 		output = "<h2>Purchase Error</h2>\n<p>You don't have enough resources to purchase a " + humanMap[pairs["invalid"][0]] + "!</p><a href=\"index.py#x\" class=\"bottom\">Got it!</a>"
