@@ -68,7 +68,7 @@ else:
 		output = "<form method=\"post\" action=\"index.py\">\n<h2>Confirm Trade</h2>\n"
 		#Remember, all variables are from the perspective of the current player's turn, so this looks backwards but it is not.
 		output = output + "<p>Do you wish to trade " + pairs["forNum"] + " " + pairs["for"] + " for " + pairs["getNum"] + " " + pairs["get"] + "?</p>"
-		output = output + "<input type=\"submit\" value=\"Yes I do!\" class=\"bottom half left\" name=\"confirmPurchase\"/><input type=\"submit\" value=\"No I don't!\" class=\"bottom half right\" name=\"doNotPurchase\"/>"
+		output = output + "<input type=\"submit\" value=\"Yes I do!\" class=\"bottom half left\" name=\"confirmTrade\"/><input type=\"submit\" value=\"No I don't!\" class=\"bottom half right\" name=\"doNotTrade\"/>"
 	elif pairs.has_key("deny"):
 		#Shows up on current player's screen to acknowledge denial of trade.
 		output = "<h2>Trade denied</h2>\n<p>Your trade has been denied from the player you were trading with.</p><a href=\"index.py#x\" class=\"bottom\">Got it!</a>"

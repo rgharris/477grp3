@@ -281,9 +281,21 @@ elif "dev" in form:
 			print "Location: index.py?development=none#modal"
 		else:
 			print "Location: index.py?resources=true&purchase=dev#modal"
-
-
-
+elif "deal" in form:
+	#obtaining what we want to trade and what for.
+	pass
+elif "noDeal" in form:
+	#canceled trade. Just pass.
+	pass
+elif "trade" in form:
+	#Obtaining player we want to trade with.
+	pass
+elif "confirmTrade" in form:
+	#From remote player, confirming trade.
+	pass
+elif "doNotTrade" in form:
+	#From remote player, denying trade.
+	pass
 
 
 #################################PAGE GENERATION BELOW##################################
