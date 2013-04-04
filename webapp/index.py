@@ -298,7 +298,7 @@ elif "deal" in form:
 	giveNum = int(form.getvalue('giveNumber'))
 	getNum = int(form.getvalue('getNumber'))
 	giveRes = form.getvalue('tradeGive')
-	getRes = form.getValue('tradeGet')
+	getRes = form.getvalue('tradeGet')
 	if (giveRes == "none" or getRes == "none"):
 		print "Location: index.py?trade=invalid#modal"
 	elif (chkResources(playerInfo, {giveRes:giveNum}) == False):
