@@ -316,7 +316,7 @@ elif "trade" in form:
 	tradePlayer = form.getvalue('playerid')
 	#Check if remote player can trade. If so, submit proper request, if not, submit cannot trade.
 	tradeInfo = readJson(TRADE_FILE)
-	if (chkResources(tradePlayer, {tradeInfo['get']['resource']:tradeInfo['get']['amount']}) == False):
+	if (chkResources(tradePlayer, {tradeInfo['get']['resource']:int(tradeInfo['get']['amount'])}) == False):
 		setRefresh(int(tradePlayer), REFRESH_VALUE['cannotTrade'])
 	else:
 		setRefresh(int(tradePlayer),REFRESH_VALUE['tradeRequest'])
