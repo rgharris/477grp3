@@ -89,7 +89,7 @@ def readJson(jfile):
 	
 def setRefresh(playerID, value):
 	f = open("./chkRefresh/" + str(playerID), 'w')
-	f.write(value)
+	f.write(str(value))
 	f.close()
 
 def payForPurchase(playerInfo, resourceDict):
