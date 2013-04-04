@@ -61,7 +61,7 @@ else:
 				</form>
 			"""
 		for fn in os.listdir(PLAYER_FILE):
-			if fn != 'dev.json':
+			if fn != 'dev.json' and fn != 'trade.json':
 				jsonInfo = open(PLAYER_FILE + fn)
 				playerInfo = json.load(jsonInfo)
 				playerID = os.path.splitext(os.path.basename(fn))[0] #I have no idea why I forced this hilarious stupidity upon myself.
