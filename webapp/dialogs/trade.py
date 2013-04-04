@@ -73,7 +73,7 @@ else:
 		output = "<form method=\"post\" action=\"index.py\">\n<h2>Confirm Trade</h2>\n"
 		jsonInfo = open(TRADE_FILE)
 		tradeInfo = json.load(jsonInfo)
-		output = output + "<p>Do you wish to trade " + str(tradeInfo['get']['amount']) + " " + tradeInfo['get']['resource'] + " for " + str(tradeInfo['give']['amount']) + " " + tradeInfo['give']['resource'] + "?</p>"
+		output = output + "<p>Do you wish to trade " + str(int(tradeInfo['get']['amount'])) + " " + tradeInfo['get']['resource'] + " for " + str(int(tradeInfo['give']['amount'])) + " " + tradeInfo['give']['resource'] + "?</p>"
 		output = output + "<input type=\"hidden\" value=\"" + tradeInfo['from'] + "\" name=\"from\"><input type=\"submit\" value=\"Yes I do!\" class=\"bottom half left\" name=\"confirmTrade\"/><input type=\"submit\" value=\"No I don't!\" class=\"bottom half right\" name=\"doNotTrade\"/></form>"
 		jsonInfo.close()
 	elif pairs.has_key("deny"):
