@@ -14,11 +14,11 @@ TRADE_FILE = "../players/trade.json"
 query = os.environ["QUERY_STRING"]
 
 pairs = cgi.parse_qs(query)
+playerList = []
 
 print "Content-type: text/html;charset=utf-8\n\n"
 
 if len(pairs) == 0:
-	playerList = []
 	#Shows on current player's screen to run trade.
 	output = """<form method="post" action="index.py">
      	      <h2>Trade</h2>
