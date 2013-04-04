@@ -53,7 +53,7 @@ else:
 		#Shows up on current player's screen to ask for player to trade with.
 		output = """<form method="post" action="index.py">
 				<h2>Trade</h2>
-				From:
+				With:
 				<select name='playerid' class="modalSelect"> {0}
 				</select>
 				<input type="submit" value="Nevermind." class="bottom half left" name="noDeal" />
