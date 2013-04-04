@@ -57,7 +57,7 @@ else:
 				<select name='playerid' class="modalSelect"> {0}
 				</select>
 				<input type="submit" value="Nevermind." class="bottom half left" name="noDeal" />
-				<input type="submit" value="Let's do it!" class="bottom half right" name="trade" />
+				<input type="submit" value="Let's do it!" class="bottom half right" name="performTrade" />
 				</form>
 			"""
 		for fn in os.listdir(PLAYER_FILE):

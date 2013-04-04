@@ -311,7 +311,7 @@ elif "deal" in form:
 elif "noDeal" in form:
 	#canceled trade. Just pass.
 	pass
-elif "trade" in form:
+elif "performTrade" in form:
 	#Obtaining player we want to trade with.
 	tradePlayer = form.getvalue('playerid')
 	#Check if remote player can trade. If so, submit proper request, if not, submit cannot trade.
