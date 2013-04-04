@@ -22,7 +22,7 @@ const U8 test_pattern[] =  {
 U8  s_status_cmd = TWI_MEM_IDLE; // State variable
 U8  s_u8_addr_pos;               // Offset in the address value (because we receive the address one Byte at a time)
 U32 s_u32_addr;                  // The current address in the virtual mem
-U8  s_memory[TWI_MEM_SIZE]={0};  // Content of the Virtual mem
+U8  s_memory[TWI_MEM_SIZE]={1,2,3,4,5,6,7,8,9,0};  // Content of the Virtual mem
 
 static const gpio_map_t TWI_GPIO_MAP =
 {
@@ -31,7 +31,7 @@ static const gpio_map_t TWI_GPIO_MAP =
 };
 
 
-void I2C_test( void ) {
+int I2C_init( void ) {
 
   twi_options_t opt;
   twi_slave_fct_t twi_slave_fct;
@@ -55,28 +55,8 @@ void I2C_test( void ) {
   twi_slave_fct.tx = &twi_slave_tx;
   twi_slave_fct.stop = &twi_slave_stop;
   status = twi_slave_init(&AVR32_TWI, &opt, &twi_slave_fct );
-  
-    
-/*
-  int temp;
-  int previous = 0;
-  ioport_get_pin_level(PUSHBUTTON);
-  while(1){
-	  if (!previous && !ioport_get_pin_level(PUSHBUTTON)) {
-		  temp = Get_sys_count();
-		  s_memory[0] = (temp >> 24) & 0xFF;
-		  s_memory[1] = (temp >> 16) & 0xFF;
-		  s_memory[2] = (temp >> 8) & 0xFF;
-		  s_memory[3] = (temp >> 0) & 0xFF;
-		  previous = 1;
-		  delay_ms(25);
-		}
-	if (previous && ioport_get_pin_level(PUSHBUTTON)) {
-		previous = 0;
-	}		
-  }		
- while(1);*/
  
+  return (&s_memory[0] );
 }
 
 

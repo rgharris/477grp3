@@ -62,6 +62,6 @@
 // #define CONFIG_SPI_MASTER_DUMMY                0xFF
 
 // Config SPI Baudrate
-#define SPI_BAUDRATE							  2000000
+#define SPI_BAUDRATE							  4000000
 
 #endif /* CONF_SPI_MASTER_H_INCLUDED */

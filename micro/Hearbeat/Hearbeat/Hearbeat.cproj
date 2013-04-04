@@ -87,7 +87,7 @@
       </OverrideVtorValue>
       <Channel>
         <host>127.0.0.1</host>
-        <port>2284</port>
+        <port>2488</port>
         <ssl>False</ssl>
       </Channel>
       <ToolOptions>

@@ -11,10 +11,11 @@
     <AsfFrameworkConfig>
       <framework-data>
         <options>
-          <option id="common.boards" value="Add" config="" content-id="Atmel.ASF" />
-          <option id="common.services.ioport" value="Add" config="" content-id="Atmel.ASF" />
           <option id="avr32.drivers.gpio" value="Add" config="" content-id="Atmel.ASF" />
           <option id="avr32.drivers.twi" value="Add" config="" content-id="Atmel.ASF" />
+          <option id="common.boards" value="Add" config="" content-id="Atmel.ASF" />
+          <option id="common.services.ioport" value="Add" config="" content-id="Atmel.ASF" />
+          <option id="common.services.delay" value="Add" config="" content-id="Atmel.ASF" />
         </options>
         <configurations>
           <configuration key="config.avr32.utils.trampoline" value="yes" default="yes" content-id="Atmel.ASF" />
@@ -64,6 +65,8 @@
           <file path="src/asf/avr32/drivers/twi/twi.c" framework="" version="" source="avr32\drivers\twi\twi.c" changed="False" content-id="Atmel.ASF" />
           <file path="src/asf/avr32/drivers/twi/twi.h" framework="" version="" source="avr32\drivers\twi\twi.h" changed="False" content-id="Atmel.ASF" />
           <file path="src/config/conf_twi.h" framework="" version="" source="avr32\drivers\twi\module_config\conf_twi.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/asf/avr32/drivers/cpu/cycle_counter/cycle_counter.h" framework="" version="" source="avr32\drivers\cpu\cycle_counter\cycle_counter.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/asf/common/services/delay/delay.h" framework="" version="" source="common\services\delay\delay.h" changed="False" content-id="Atmel.ASF" />
         </files>
         <documentation help="http://asf.atmel.com/docs/3.5.1/common.applications.user_application.user_board.uc3b/html/index.html" />
       </framework-data>
@@ -87,20 +90,20 @@
     <com_atmel_avrdbg_tool_avrdragon>
       <ToolType>com.atmel.avrdbg.tool.avrdragon</ToolType>
       <ToolName>AVR Dragon</ToolName>
-      <ToolNumber>00A200035116</ToolNumber>
+      <ToolNumber>00A200035507</ToolNumber>
       <KeepTimersRunning>true</KeepTimersRunning>
       <OverrideVtor>false</OverrideVtor>
       <OverrideVtorValue>
       </OverrideVtorValue>
       <Channel>
         <host>127.0.0.1</host>
-        <port>2284</port>
+        <port>1349</port>
         <ssl>False</ssl>
       </Channel>
       <ToolOptions>
         <InterfaceName>JTAG</InterfaceName>
         <InterfaceProperties>
-          <JtagDbgClock>200000</JtagDbgClock>
+          <JtagDbgClock>0</JtagDbgClock>
           <JtagProgClock>1000000</JtagProgClock>
           <IspClock>150000</IspClock>
           <JtagInChain>false</JtagInChain>
@@ -141,6 +144,8 @@
             <Value>../src/asf/common/services/ioport</Value>
             <Value>../src/asf/avr32/drivers/gpio</Value>
             <Value>../src/asf/avr32/drivers/twi</Value>
+            <Value>../src/asf/avr32/drivers/cpu/cycle_counter</Value>
+            <Value>../src/asf/common/services/delay</Value>
           </ListValues>
         </avr32gcc.compiler.directories.IncludePaths>
         <avr32gcc.compiler.optimization.level>Optimize for size (-Os)</avr32gcc.compiler.optimization.level>
@@ -169,6 +174,8 @@
             <Value>../src/asf/common/services/ioport</Value>
             <Value>../src/asf/avr32/drivers/gpio</Value>
             <Value>../src/asf/avr32/drivers/twi</Value>
+            <Value>../src/asf/avr32/drivers/cpu/cycle_counter</Value>
+            <Value>../src/asf/common/services/delay</Value>
           </ListValues>
         </avr32gcc.assembler.general.IncludePaths>
         <avr32gcc.preprocessingassembler.general.AssemblerFlags>-DBOARD=USER_BOARD -mrelax</avr32gcc.preprocessingassembler.general.AssemblerFlags>
@@ -188,6 +195,8 @@
             <Value>../src/asf/common/services/ioport</Value>
             <Value>../src/asf/avr32/drivers/gpio</Value>
             <Value>../src/asf/avr32/drivers/twi</Value>
+            <Value>../src/asf/avr32/drivers/cpu/cycle_counter</Value>
+            <Value>../src/asf/common/services/delay</Value>
           </ListValues>
         </avr32gcc.preprocessingassembler.general.IncludePaths>
       </Avr32Gcc>
@@ -225,6 +234,8 @@
             <Value>../src/asf/common/services/ioport</Value>
             <Value>../src/asf/avr32/drivers/gpio</Value>
             <Value>../src/asf/avr32/drivers/twi</Value>
+            <Value>../src/asf/avr32/drivers/cpu/cycle_counter</Value>
+            <Value>../src/asf/common/services/delay</Value>
           </ListValues>
         </avr32gcc.compiler.directories.IncludePaths>
         <avr32gcc.compiler.optimization.level>Optimize (-O1)</avr32gcc.compiler.optimization.level>
@@ -254,6 +265,8 @@
             <Value>../src/asf/common/services/ioport</Value>
             <Value>../src/asf/avr32/drivers/gpio</Value>
             <Value>../src/asf/avr32/drivers/twi</Value>
+            <Value>../src/asf/avr32/drivers/cpu/cycle_counter</Value>
+            <Value>../src/asf/common/services/delay</Value>
           </ListValues>
         </avr32gcc.assembler.general.IncludePaths>
         <avr32gcc.preprocessingassembler.general.AssemblerFlags>-DBOARD=USER_BOARD -mrelax</avr32gcc.preprocessingassembler.general.AssemblerFlags>
@@ -273,6 +286,8 @@
             <Value>../src/asf/common/services/ioport</Value>
             <Value>../src/asf/avr32/drivers/gpio</Value>
             <Value>../src/asf/avr32/drivers/twi</Value>
+            <Value>../src/asf/avr32/drivers/cpu/cycle_counter</Value>
+            <Value>../src/asf/common/services/delay</Value>
           </ListValues>
         </avr32gcc.preprocessingassembler.general.IncludePaths>
       </Avr32Gcc>
@@ -283,7 +298,19 @@
     <GenerateEepFile>True</GenerateEepFile>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="src\asf\avr32\drivers\cpu\cycle_counter\cycle_counter.h">
+      <SubType>compile</SubType>
+    </None>
     <Compile Include="src\asf\avr32\drivers\flashc\flashc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <None Include="src\asf\common\services\delay\delay.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\RGB.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\RGB.h">
       <SubType>compile</SubType>
     </Compile>
     <None Include="src\asf\avr32\drivers\flashc\flashc.h">
@@ -415,6 +442,8 @@
     <Folder Include="src\asf\" />
     <Folder Include="src\asf\avr32\" />
     <Folder Include="src\asf\avr32\drivers\" />
+    <Folder Include="src\asf\avr32\drivers\cpu\" />
+    <Folder Include="src\asf\avr32\drivers\cpu\cycle_counter\" />
     <Folder Include="src\asf\avr32\drivers\flashc\" />
     <Folder Include="src\asf\avr32\drivers\gpio\" />
     <Folder Include="src\asf\avr32\drivers\intc\" />
@@ -429,6 +458,7 @@
     <Folder Include="src\asf\common\services\" />
     <Folder Include="src\asf\common\services\clock\" />
     <Folder Include="src\asf\common\services\clock\uc3b0_b1\" />
+    <Folder Include="src\asf\common\services\delay\" />
     <Folder Include="src\asf\common\services\ioport\" />
     <Folder Include="src\asf\common\services\ioport\uc3\" />
     <Folder Include="src\asf\common\utils\" />

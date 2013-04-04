@@ -6,6 +6,7 @@
  */ 
 
 #include <RGB.h>
+#include <Catan.h>
 
 void rgb_clear_all() {
 	lightRGB(7,0x2E,0,0);
@@ -171,5 +172,32 @@ void rgb_loop_test() {
 		delay_ms(1000);
 		lightRGB(7, 42,  0, TRANS_TIME);
 		delay_ms(1000);
+	}
+}
+
+void rgb_display_resource(int hexnum, int resource){
+	switch (resource)
+	{
+	case ORE:
+		rgb_hex_set(hexnum,COLOR_ORE);
+		break;
+	case WHEAT:
+		rgb_hex_set(hexnum,COLOR_WHEAT);
+		break;
+	case SHEEP:
+		rgb_hex_set(hexnum,COLOR_SHEEP);
+		break;
+	case BRICK:
+		rgb_hex_set(hexnum,COLOR_BRICK);
+		break;
+	case WOOD:
+		rgb_hex_set(hexnum,COLOR_WOOD);
+		break;
+	case DESERT:
+		rgb_hex_set(hexnum,COLOR_DESERT);
+		break;
+	default:
+		rgb_hex_set(hexnum,COLOR_ERROR);
+		break;
 	}
 }

@@ -13,7 +13,14 @@ void board_init(void)
 {
 	sysclk_init();
 	ioport_init();
-	ioport_enable_pin(CLKOUT);
-	ioport_set_pin_dir(CLKOUT, IOPORT_DIR_OUTPUT);
-	ioport_set_pin_level(CLKOUT, IOPORT_PIN_LEVEL_LOW);
+	
+	// Init pins for RGB Display
+	ioport_enable_pin(RGB_CLK);
+	ioport_set_pin_dir(RGB_CLK,IOPORT_DIR_OUTPUT);
+	ioport_enable_pin(RGB_DATA);
+	ioport_set_pin_dir(RGB_DATA,IOPORT_DIR_OUTPUT);
+		
+	//ioport_enable_pin(CLKOUT);
+	//ioport_set_pin_dir(CLKOUT, IOPORT_DIR_OUTPUT);
+	//ioport_set_pin_level(CLKOUT, IOPORT_PIN_LEVEL_LOW);
 }

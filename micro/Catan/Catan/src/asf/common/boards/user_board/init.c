@@ -9,7 +9,7 @@
 #include <board.h>
 #include <conf_board.h>
 #include <RarityDisplay.h>
-//#include <I2C.h>
+#include <I2C.h>
 
 void board_init(void)
 {
@@ -43,4 +43,5 @@ void board_init(void)
 	gpio_enable_module(SPI_GPIO_MAP,sizeof(SPI_GPIO_MAP)/sizeof(SPI_GPIO_MAP[0]));
 	delay_ms(100);
 	rarity_init();
+	I2C_init();
 }

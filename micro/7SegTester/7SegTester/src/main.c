@@ -52,7 +52,7 @@ int main (void)
 	spi_select_device(SPI,&RARITY);
 	//spiData[0] = reverse(0xFF);
 	spiData[0] = reverse(0x00);
-	spiData[1] = reverse(0x0B);
+	spiData[1] = reverse(0x09);
 	spi_write_packet(SPI,(spiData),2);
 	spi_write_packet(SPI,(spiData),2);
 	spi_write_packet(SPI,(spiData),2);
@@ -62,7 +62,7 @@ int main (void)
 	
 	// Set global intensity to max on
 	spi_select_device(SPI,&RARITY);
-	spiData[0] = reverse(0x04);
+	spiData[0] = reverse(8);
 	spiData[1] = reverse(0x0A);
 	spi_write_packet(SPI,(spiData),2);
 	spi_write_packet(SPI,(spiData),2);
@@ -85,7 +85,7 @@ int main (void)
 	while (1)
 	{
 		// Display 0-9 on all displays with time between
-		for (int segments=1;segments<128;segments=(segments<<1)+1)
+		for (int segments=0;segments<128;segments=(segments<<1)+1)
 		{
 			
 			for (int i=1;i<=8;i++) {

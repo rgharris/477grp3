@@ -40,7 +40,7 @@
 
 
 
-void I2C_test( void );
+int I2C_init( void );
 /*static void twi_slave_rx( U8 u8_value );
 static U8 twi_slave_tx( void );
 static void twi_slave_stop( void );*/

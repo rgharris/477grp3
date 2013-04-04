@@ -25,22 +25,22 @@
 #define C2 18
 
 // RGB COLOURS
-#define RED 0xFF0000
-#define GREEN 0x00FF00
-#define LIME 0x00ff7f
-#define BLUE 0x0000FF
-#define BRICK 0xE07000
-#define PINK 0xff69b4
-#define TEAL 0x008080
-#define BLACK 0x000000
-#define WHITE 0xFFFFFF
-#define SHEEP 0xFFFF00
-#define WHEAT 0xFAC520
-#define SGREEN 0x00ff5f
-#define WOOD  0x00fF00
-#define ERROR 0xFF0000
-#define ORE	  0xB0B090
-#define DESERT 0xF0F0B0
+#define COLOR_RED 0xFF0000
+#define COLOR_GREEN 0x00FF00
+#define COLOR_LIME 0x00ff7f
+#define COLOR_BLUE 0x0000FF
+#define COLOR_BRICK 0xE07000
+#define COLOR_PINK 0xff69b4
+#define COLOR_TEAL 0x008080
+#define COLOR_BLACK 0x000000
+#define COLOR_WHITE 0xFFFFFF
+#define COLOR_SHEEP 0xFFFF00
+#define COLOR_WHEAT 0xFAC520
+#define COLOR_SGREEN 0x00ff5f
+#define COLOR_WOOD  0x00fF00
+#define COLOR_ERROR 0xFF0000
+#define COLOR_ORE	0xB09090  //0xB0B090
+#define COLOR_DESERT 0xF0F0B0
 
 
 void clockRGB( void );
@@ -48,6 +48,7 @@ void lightRGB(int deviceAddress, int colorAddress, int brightness, int transTime
 void rgb_loop_test( void );
 void rgb_hex_set(int hex_num, int color); 
 void rgb_clear_all();
+void rgb_display_resource(int hex_num,int resource);
 
 
 

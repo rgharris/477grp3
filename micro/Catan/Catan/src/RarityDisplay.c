@@ -40,6 +40,7 @@
 void rarity_init()
 {
 	uint8_t spiData[2];
+	uint8_t nopSpiData = {0x0, 0x0};
 	struct spi_device RARITY = {
 		.id =  SPI_NPCS
 	};
@@ -52,6 +53,7 @@ void rarity_init()
 	spi_select_device(SPI,&RARITY);
 	spiData[0] = reverse(0x01);
 	spiData[1] = reverse(0x0C);
+	spi_write_packet(SPI,nopSpiData,2);
 	spi_write_packet(SPI,spiData,2);
 	spi_write_packet(SPI,spiData,2);
 	spi_write_packet(SPI,spiData,2);
@@ -63,6 +65,7 @@ void rarity_init()
 	spi_select_device(SPI,&RARITY);
 	spiData[0] = reverse(0x00);
 	spiData[1] = reverse(0x09);
+	spi_write_packet(SPI,nopSpiData,2);
 	spi_write_packet(SPI,(spiData),2);
 	spi_write_packet(SPI,(spiData),2);
 	spi_write_packet(SPI,(spiData),2);
@@ -74,6 +77,7 @@ void rarity_init()
 	spi_select_device(SPI,&RARITY);
 	spiData[0] = reverse(8);
 	spiData[1] = reverse(0x0A);
+	spi_write_packet(SPI,nopSpiData,2);
 	spi_write_packet(SPI,(spiData),2);
 	spi_write_packet(SPI,(spiData),2);
 	spi_write_packet(SPI,(spiData),2);
@@ -81,10 +85,12 @@ void rarity_init()
 	spi_write_packet(SPI,(spiData),2);
 	spi_deselect_device(SPI,&RARITY);
 	
+	
 	// Scan all digits on all drivers
 	spi_select_device(SPI,&RARITY);
 	spiData[0] = reverse(0x07);
 	spiData[1] = reverse(0x0B);
+	spi_write_packet(SPI,nopSpiData,2);
 	spi_write_packet(SPI,(spiData),2);
 	spi_write_packet(SPI,(spiData),2);
 	spi_write_packet(SPI,(spiData),2);
@@ -117,7 +123,7 @@ void rarity_display_error(unsigned int hex_num, unsigned int position, unsigned 
 	uint8_t position_map[] = {0x60,0x20,0x30,0x10,0x18,0x08,0x0C,0x04,0x06,0x02,0x42,0x40};
 	// Starting positions for hexagons 0-18, offset starts from the upper right corner, 
 	//  the value at index 18 should never be referenced
-	uint8_t starting_positions[] = {5,5,7,7,9,7,11,1,11,11,1,1,3,3,5,4,9,9,0};
+	uint8_t starting_positions[] = {5,5,7,7,9,7,11,1,11,11,1,1,3,3,5,3,9,9,0};
 		
 	if (hex_num==18 || position == 7) {
 		tens_digit = SEVSEG_THIEF;
@@ -239,6 +245,7 @@ void rarity_display_error(unsigned int hex_num, unsigned int position, unsigned 
 		spiData[0]=ones_digit;//reverse(digit_map[ones_digit]);
 		spiData[1]=driver_ones_digit;
 		spi_select_device(SPI,&RARITY);
+		spi_write_packet(SPI,nopSpiData,2);
 		spi_write_packet(SPI,driver_num==4 ? spiData : nopSpiData,2);
 		spi_write_packet(SPI,driver_num==3 ? spiData : nopSpiData,2);
 		spi_write_packet(SPI,driver_num==2 ? spiData : nopSpiData,2);
@@ -254,6 +261,7 @@ void rarity_display_error(unsigned int hex_num, unsigned int position, unsigned 
 		//}
 		spiData[1]=driver_tens_digit;
 		spi_select_device(SPI,&RARITY);
+		spi_write_packet(SPI,nopSpiData,2);
 		spi_write_packet(SPI,driver_num==4 ? spiData : nopSpiData,2);
 		spi_write_packet(SPI,driver_num==3 ? spiData : nopSpiData,2);
 		spi_write_packet(SPI,driver_num==2 ? spiData : nopSpiData,2);
@@ -395,35 +403,63 @@ void rarity_set(unsigned int hex_num, unsigned int rarity_value){
 		driver_ones_digit = SEVSEG_DIG2;
 		break;
 	}
-		ones_digit = rarity_value % 10;
-		tens_digit = (rarity_value - ones_digit) / 10;
-		
-		// write ones value
-		
-		spiData[0]=reverse(digit_map[ones_digit]);
-		spiData[1]=driver_ones_digit;
-		spi_select_device(SPI,&RARITY);
-		spi_write_packet(SPI,driver_num==4 ? spiData : nopSpiData,2);
-		spi_write_packet(SPI,driver_num==3 ? spiData : nopSpiData,2);
-		spi_write_packet(SPI,driver_num==2 ? spiData : nopSpiData,2);
-		spi_write_packet(SPI,driver_num==1 ? spiData : nopSpiData,2);
-		spi_write_packet(SPI,driver_num==0 ? spiData : nopSpiData,2);
-		spi_deselect_device(SPI,&RARITY);
-		
-		// write tens value
-		if (tens_digit == 0) {
-			spiData[0]= 0;
+		if(rarity_value > 99){
+			// write ones value
+			spiData[0]=reverse(0x01);
+			spiData[1]=driver_ones_digit;
+			spi_select_device(SPI,&RARITY);
+			spi_write_packet(SPI,nopSpiData,2);
+			spi_write_packet(SPI,driver_num==4 ? spiData : nopSpiData,2);
+			spi_write_packet(SPI,driver_num==3 ? spiData : nopSpiData,2);
+			spi_write_packet(SPI,driver_num==2 ? spiData : nopSpiData,2);
+			spi_write_packet(SPI,driver_num==1 ? spiData : nopSpiData,2);
+			spi_write_packet(SPI,driver_num==0 ? spiData : nopSpiData,2);
+			spi_deselect_device(SPI,&RARITY);
+			
+			// write tens value
+			spiData[0]=reverse(0x01);
+			spiData[1]=driver_tens_digit;
+			spi_select_device(SPI,&RARITY);
+			spi_write_packet(SPI,nopSpiData,2);
+			spi_write_packet(SPI,driver_num==4 ? spiData : nopSpiData,2);
+			spi_write_packet(SPI,driver_num==3 ? spiData : nopSpiData,2);
+			spi_write_packet(SPI,driver_num==2 ? spiData : nopSpiData,2);
+			spi_write_packet(SPI,driver_num==1 ? spiData : nopSpiData,2);
+			spi_write_packet(SPI,driver_num==0 ? spiData : nopSpiData,2);
+			spi_deselect_device(SPI,&RARITY);
 		} else {
-			spiData[0]=reverse(digit_map[tens_digit]);
-		}
-		spiData[1]=driver_tens_digit;
-		spi_select_device(SPI,&RARITY);
-		spi_write_packet(SPI,driver_num==4 ? spiData : nopSpiData,2);
-		spi_write_packet(SPI,driver_num==3 ? spiData : nopSpiData,2);
-		spi_write_packet(SPI,driver_num==2 ? spiData : nopSpiData,2);
-		spi_write_packet(SPI,driver_num==1 ? spiData : nopSpiData,2);
-		spi_write_packet(SPI,driver_num==0 ? spiData : nopSpiData,2);
-		spi_deselect_device(SPI,&RARITY);
+			ones_digit = rarity_value % 10;
+			tens_digit = (rarity_value - ones_digit) / 10;
+		
+			// write ones value
+		
+			spiData[0]=reverse(digit_map[ones_digit]);
+			spiData[1]=driver_ones_digit;
+			spi_select_device(SPI,&RARITY);
+			spi_write_packet(SPI,nopSpiData,2);
+			spi_write_packet(SPI,driver_num==4 ? spiData : nopSpiData,2);
+			spi_write_packet(SPI,driver_num==3 ? spiData : nopSpiData,2);
+			spi_write_packet(SPI,driver_num==2 ? spiData : nopSpiData,2);
+			spi_write_packet(SPI,driver_num==1 ? spiData : nopSpiData,2);
+			spi_write_packet(SPI,driver_num==0 ? spiData : nopSpiData,2);
+			spi_deselect_device(SPI,&RARITY);
+		
+			// write tens value
+			if (tens_digit == 0) {
+				spiData[0]= 0;
+			} else {
+				spiData[0]=reverse(digit_map[tens_digit]);
+			}
+			spiData[1]=driver_tens_digit;
+			spi_select_device(SPI,&RARITY);
+			spi_write_packet(SPI,nopSpiData,2);
+			spi_write_packet(SPI,driver_num==4 ? spiData : nopSpiData,2);
+			spi_write_packet(SPI,driver_num==3 ? spiData : nopSpiData,2);
+			spi_write_packet(SPI,driver_num==2 ? spiData : nopSpiData,2);
+			spi_write_packet(SPI,driver_num==1 ? spiData : nopSpiData,2);
+			spi_write_packet(SPI,driver_num==0 ? spiData : nopSpiData,2);
+			spi_deselect_device(SPI,&RARITY);
+		}			
 }
 
 void rarity_clear_all() {
@@ -432,20 +468,24 @@ void rarity_clear_all() {
 	};
 	uint8_t nopSpiData = {0x0, 0x0};
 	uint8_t spiData[2];
+	 
+	 for (int i=1;i<=8;i++) {
 	 for (int j=0; j < 5; j++) {
-		 for (int i=1;i<=8;i++) {
+		 
 			 //delay_ms(100);
-			 //spiData[0] = reverse((4+i)%10);
-			 spiData[0] = reverse(0);
-			 spiData[1] = reverse(i);
+			 
 			 
 			 //delay_ms(200);
 			 spi_select_device(SPI,&RARITY);
-			 spi_write_packet(SPI,j==0 ? spiData : nopSpiData,2);
-			 spi_write_packet(SPI,j==1 ? spiData : nopSpiData,2);
-			 spi_write_packet(SPI,j==2 ? spiData : nopSpiData,2);
-			 spi_write_packet(SPI,j==3 ? spiData : nopSpiData,2);
+			 //spiData[0] = reverse((4+i)%10);
+			 spiData[0] = reverse(0);
+			 spiData[1] = reverse(i);
+			 spi_write_packet(SPI,nopSpiData,2);
 			 spi_write_packet(SPI,j==4 ? spiData : nopSpiData,2);
+			 spi_write_packet(SPI,j==3 ? spiData : nopSpiData,2);
+			 spi_write_packet(SPI,j==2 ? spiData : nopSpiData,2);
+			 spi_write_packet(SPI,j==1 ? spiData : nopSpiData,2);
+			 spi_write_packet(SPI,j==0 ? spiData : nopSpiData,2);
 			 spi_deselect_device(SPI,&RARITY);
 			 
 		 }
