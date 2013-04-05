@@ -100,10 +100,10 @@ def payForPurchase(playerInfo, resourceDict):
 def performTrade(playerInfo, tradeInfo):
 	playerInfo['resources'][tradeInfo['give']['resource']] = playerInfo['resources'][tradeInfo['give']['resource']] + tradeInfo['give']['amount']
 	playerInfo['resources'][tradeInfo['get']['resource']] = playerInfo['resources'][tradeInfo['get']['resource']] - tradeInfo['get']['amount']
-	tradingPlayerInfo = readJson("players/" + tradeInfo['from'] + ".json")
+	tradingPlayerInfo = readJson("players/" + str(tradeInfo['from']) + ".json")
 	tradingPlayerInfo['resources'][tradeInfo['get']['resource']] = int(tradingPlayerInfo['resources'][tradeInfo['get']['resource']]) + tradeInfo['get']['amount']
 	tradingPlayerInfo['resources'][tradeInfo['give']['resource']] = int(tradingPlayerInfo['resources'][tradeInfo['give']['resource']]) - tradeInfo['give']['amount']
-	writeJson("players/" + tradeInfo['from'] + ".json", tradingPlayerInfo)
+	writeJson("players/" + str(tradeInfo['from']) + ".json", tradingPlayerInfo)
 
 def chkResources(playerInfo, resourceDict):
 	for resource in resourceDict:
