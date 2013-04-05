@@ -97,9 +97,10 @@ def payForPurchase(playerInfo, resourceDict):
 		playerInfo['resources'][resource] = playerInfo['resources'][resource] - resourceDict[resource]
 	return playerInfo
 	
-def performTrade(playerInfo, tradeInfo):
+def performTrade(playerFile, playerInfo, tradeInfo):
 	playerInfo['resources'][tradeInfo['give']['resource']] = playerInfo['resources'][tradeInfo['give']['resource']] + tradeInfo['give']['amount']
 	playerInfo['resources'][tradeInfo['get']['resource']] = playerInfo['resources'][tradeInfo['get']['resource']] - tradeInfo['get']['amount']
+	writeJson(playerFile, playerInfo)
 	tradingPlayerInfo = readJson("players/" + str(tradeInfo['from']) + ".json")
 	tradingPlayerInfo['resources'][tradeInfo['get']['resource']] = int(tradingPlayerInfo['resources'][tradeInfo['get']['resource']]) + tradeInfo['get']['amount']
 	tradingPlayerInfo['resources'][tradeInfo['give']['resource']] = int(tradingPlayerInfo['resources'][tradeInfo['give']['resource']]) - tradeInfo['give']['amount']
@@ -325,7 +326,7 @@ elif "confirmTrade" in form:
 	#From remote player, confirming trade.
 	#Perform trade (checks have already been done at this point).
 	tradeInfo = readJson(TRADE_FILE)
-	performTrade(playerInfo, tradeInfo)
+	performTrade(playerFile, playerInfo, tradeInfo)
 	setRefresh(int(form.getvalue('tradeFrom')), REFRESH_VALUE['tradeConfirm'])
 elif "doNotTrade" in form:
 	#From remote player, denying trade.
