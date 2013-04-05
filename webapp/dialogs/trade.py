@@ -48,7 +48,9 @@ else:
 			#Shows up on currentplayer's screen to identify invalid.
 			output = "<h2>Trade Error</h2>\n<p>You don't have enough resources to trade or you have selected an invalid option.</p><a href=\"index.py#x\" class=\"bottom\">Got it!</a>"
 		if pairs['invalid'][0] == "remote":
-			output = "<form method=\"post\" action=\"index.py\">\n<h2>Trade Error</h2>\n<p>You don't have enough resources to trade.</p><input type=\"submit\" value=\"Got it!\" class=\"bottom\" name=\"doNotTrade\"></form>"
+			jsonInfo = open(TRADE_FILE)
+			tradeInfo = json.load(jsonInfo)
+			output = "<form method=\"post\" action=\"index.py\">\n<h2>Trade Error</h2>\n<p>You don't have enough resources to trade.</p><input type=\"hidden\" value=\"" + str(tradeInfo['from']) + "\" name=\"tradeFrom\"><input type=\"submit\" value=\"Got it!\" class=\"bottom\" name=\"doNotTrade\"></form>"
 	elif pairs.has_key("valid"):
 		#Shows up on current player's screen to ask for player to trade with.
 		output = """<form method="post" action="index.py">
