@@ -442,7 +442,7 @@ else:
 		elif pairs["trade"][0] == "deny":
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?deny=true')</script>"
 		elif pairs["trade"][0] == "fail":
-			script = "</script>loadXMLDoc('ModalBox', '/dialogs/trade.py?invalid=remote')</script>"
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?invalid=remote')</script>"
 	output = """
 		<body>
 			<!--Need to pause when modal is active...this is just testing now.-->
