@@ -74,7 +74,7 @@ else:
 		jsonInfo = open(TRADE_FILE)
 		tradeInfo = json.load(jsonInfo)
 		output = output + "<p>Do you wish to trade " + str(tradeInfo['get']['amount']) + " " + tradeInfo['get']['resource'] + " for " + str(tradeInfo['give']['amount']) + " " + tradeInfo['give']['resource'] + "?</p>"
-		output = output + "<input type=\"hidden\" value=\"" + str(tradeInfo['from']) + "\" name=\"from\"><input type=\"submit\" value=\"No I don't!\" class=\"bottom half left\" name=\"doNotTrade\"/><input type=\"submit\" value=\"Yes I do!\" class=\"bottom half right\" name=\"confirmTrade\"/></form>"
+		output = output + "<input type=\"hidden\" value=\"" + str(tradeInfo['from']) + "\" name=\"tradeFrom\"><input type=\"submit\" value=\"No I don't!\" class=\"bottom half left\" name=\"doNotTrade\"/><input type=\"submit\" value=\"Yes I do!\" class=\"bottom half right\" name=\"confirmTrade\"/></form>"
 		jsonInfo.close()
 	elif pairs.has_key("deny"):
 		#Shows up on current player's screen to acknowledge denial of trade.

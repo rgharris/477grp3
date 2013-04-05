@@ -326,10 +326,10 @@ elif "confirmTrade" in form:
 	#Perform trade (checks have already been done at this point).
 	tradeInfo = readJson(TRADE_FILE)
 	performTrade(playerInfo, tradeInfo)
-	setRefresh(int(form.getValue('from')), REFRESH_VALUE['tradeConfirm'])
+	setRefresh(int(form.getvalue('tradeFrom')), REFRESH_VALUE['tradeConfirm'])
 elif "doNotTrade" in form:
 	#From remote player, denying trade.
-	setRefresh(int(form.getValue('from')), REFRESH_VALUE['tradeDeny'])
+	setRefresh(int(form.getvalue('tradeFrom')), REFRESH_VALUE['tradeDeny'])
 
 
 #################################PAGE GENERATION BELOW##################################
