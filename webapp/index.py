@@ -86,16 +86,25 @@ def readJson(jfile):
 	info = json.load(jsonInfo)
 	jsonInfo.close()
 	return info
-
-def resetRefresh(playerID):
+	
+def setRefresh(playerID, value):
 	f = open("./chkRefresh/" + str(playerID), 'w')
-	f.write("0")
+	f.write(str(value))
 	f.close()
 
 def payForPurchase(playerInfo, resourceDict):
 	for resource in resourceDict:
 		playerInfo['resources'][resource] = playerInfo['resources'][resource] - resourceDict[resource]
 	return playerInfo
+	
+def performTrade(playerFile, playerInfo, tradeInfo):
+	playerInfo['resources'][tradeInfo['give']['resource']] = playerInfo['resources'][tradeInfo['give']['resource']] + tradeInfo['give']['amount']
+	playerInfo['resources'][tradeInfo['get']['resource']] = playerInfo['resources'][tradeInfo['get']['resource']] - tradeInfo['get']['amount']
+	writeJson(playerFile, playerInfo)
+	tradingPlayerInfo = readJson("players/" + str(tradeInfo['from']) + ".json")
+	tradingPlayerInfo['resources'][tradeInfo['get']['resource']] = int(tradingPlayerInfo['resources'][tradeInfo['get']['resource']]) + tradeInfo['get']['amount']
+	tradingPlayerInfo['resources'][tradeInfo['give']['resource']] = int(tradingPlayerInfo['resources'][tradeInfo['give']['resource']]) - tradeInfo['give']['amount']
+	writeJson("players/" + str(tradeInfo['from']) + ".json", tradingPlayerInfo)
 
 def chkResources(playerInfo, resourceDict):
 	for resource in resourceDict:
@@ -124,7 +133,10 @@ form = cgi.FieldStorage()
 #Some basic "constants"
 PLAYER_FILE="players/"
 DEV_CARD_FILE="players/dev.json"
+TRADE_FILE = "players/trade.json"
 TIMEOUT = 3600 #one hour (3600 seconds)
+#This is a map of values that could be in the refresh file, and are checked in javascript.
+REFRESH_VALUE = {'reset':0, 'generic':1, 'tradeRequest':2, 'tradeConfirm':3, 'tradeDeny':4, 'cannotTrade':5}
 
 #Get cookies!
 cookies = os.environ.get('HTTP_COOKIE')
@@ -178,7 +190,7 @@ if playerID != -1:
 
 #Now that we've set the cookie, we need to simply overwrite
 #the "autorefresh" file with a 0, so it doesn't autorefresh again.
-resetRefresh(playerID)
+setRefresh(playerID,REFRESH_VALUE['reset'])
 
 
 #################################FORM RETRIEVAL BELOW##################################
@@ -283,19 +295,42 @@ elif "dev" in form:
 			print "Location: index.py?resources=true&purchase=dev#modal"
 elif "deal" in form:
 	#obtaining what we want to trade and what for.
-	pass
+	#First check if we can do the trade.
+	giveNum = int(form.getvalue('giveNumber'))
+	getNum = int(form.getvalue('getNumber'))
+	giveRes = form.getvalue('tradeGive')
+	getRes = form.getvalue('tradeGet')
+	if (giveRes == "none" or getRes == "none"):
+		print "Location: index.py?trade=invalid#modal"
+	elif (chkResources(playerInfo, {giveRes:giveNum}) == False):
+		print "Location: index.py?trade=invalid#modal"
+	else:
+		#So now we're sure we can do the trade on this end, so save this info in a json store.
+		writeJson(TRADE_FILE, {'from':playerID, 'give':{'amount':giveNum, 'resource':giveRes}, 'get':{'amount':getNum, 'resource':getRes}})
+		#move to the next step (request player to trade with)
+		print "Location: index.py?trade=getPlayer#modal"
 elif "noDeal" in form:
 	#canceled trade. Just pass.
 	pass
-elif "trade" in form:
+elif "performTrade" in form:
 	#Obtaining player we want to trade with.
-	pass
+	tradePlayer = form.getvalue('playerid')
+	#Check if remote player can trade. If so, submit proper request, if not, submit cannot trade.
+	tradeInfo = readJson(TRADE_FILE)
+	tradingPlayerInfo = readJson("players/" + str(tradePlayer) + ".json")
+	if (chkResources(tradingPlayerInfo, {str(tradeInfo['get']['resource']):int(tradeInfo['get']['amount'])}) == False):
+		setRefresh(int(tradePlayer), REFRESH_VALUE['cannotTrade'])
+	else:
+		setRefresh(int(tradePlayer),REFRESH_VALUE['tradeRequest'])
 elif "confirmTrade" in form:
 	#From remote player, confirming trade.
-	pass
+	#Perform trade (checks have already been done at this point).
+	tradeInfo = readJson(TRADE_FILE)
+	performTrade(playerFile, playerInfo, tradeInfo)
+	setRefresh(int(form.getvalue('tradeFrom')), REFRESH_VALUE['tradeConfirm'])
 elif "doNotTrade" in form:
 	#From remote player, denying trade.
-	pass
+	setRefresh(int(form.getvalue('tradeFrom')), REFRESH_VALUE['tradeDeny'])
 
 
 #################################PAGE GENERATION BELOW##################################
@@ -341,6 +376,22 @@ print """<!DOCTYPE HTML>
 							{
 								location.reload(true);
 							}
+							else if(xmlhttp.responseText == 2)
+							{
+								window.location = "./index.py?trade=check#modal";
+							}
+							else if(xmlhttp.responseText == 3)
+							{
+								window.location = "./index.py?trade=confirm#modal";
+							}
+							else if(xmlhttp.responseText == 4)
+							{
+								window.location = "./index.py?trade=deny#modal";
+							}
+							else if(xmlhttp.responseText == 5)
+							{
+								window.location = "./index.py?trade=fail#modal";
+							}
 						}
 					}
 					xmlhttp.open("GET", "/chkRefresh/chk.py?id=" + playerID, true);
@@ -379,6 +430,19 @@ else:
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?development=none')</script>"
 	elif pairs.has_key("place"):
 		script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?place=piece')</script>"
+	elif pairs.has_key("trade"):
+		if pairs["trade"][0] == "invalid":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?invalid=current')</script>"
+		elif pairs["trade"][0] == "getPlayer":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?valid=true')</script>"
+		elif pairs["trade"][0] == "check":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?confirm=true')</script>"
+		elif pairs["trade"][0] == "confirm":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?success=true')</script>"
+		elif pairs["trade"][0] == "deny":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?deny=true')</script>"
+		elif pairs["trade"][0] == "fail":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?invalid=remote')</script>"
 	output = """
 		<body>
 			<!--Need to pause when modal is active...this is just testing now.-->

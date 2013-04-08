@@ -13,9 +13,12 @@ void board_init(void)
 {
 	sysclk_init();
 	ioport_init();
-	ioport_enable_pin(CLKOUT);
-	ioport_set_pin_dir(CLKOUT, IOPORT_DIR_OUTPUT);
-	ioport_set_pin_level(CLKOUT, IOPORT_PIN_LEVEL_HIGH);
+	//ioport_enable_pin(CLKOUT);
+	//ioport_set_pin_dir(CLKOUT, IOPORT_DIR_OUTPUT);
+	ioport_enable_pin(MIDDLE_SENSOR);
+	ioport_set_pin_dir(MIDDLE_SENSOR, IOPORT_DIR_INPUT);
+	ioport_set_pin_mode(MIDDLE_SENSOR,IOPORT_MODE_PULLUP);
+	//ioport_set_pin_level(CLKOUT, IOPORT_PIN_LEVEL_HIGH);
 	
 	// SPI
 	static const gpio_map_t SPI_GPIO_MAP = {

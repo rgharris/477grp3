@@ -103,6 +103,7 @@
  */
 
 #include <asf.h>
+#include <RGB.h>
 
 //------------------  C O N F I G U R A T I O N S  -------------------
 
@@ -191,7 +192,7 @@ static U8 twi_slave_tx( void )
    {
       u8_value = s_memory[s_u32_addr-VIRTUALMEM_ADDR_START];
    }else{
-      u8_value = s_u32_addr;
+      u8_value = 0xFF;//s_u32_addr;
    }
    s_u32_addr++;  // Update to next position
    return u8_value;
@@ -237,19 +238,18 @@ int main(void)
   twi_slave_fct.tx = &twi_slave_tx;
   twi_slave_fct.stop = &twi_slave_stop;
   status = twi_slave_init(&AVR32_TWI, &opt, &twi_slave_fct );
-  // check init result
+  rgb_hex_set(0,WHEAT);
+   //check init result
   if (status == TWI_SUCCESS)
   {
     // display test result to user
-    //print_dbg("Slave start:\tPASS\r\n");
-	ioport_set_pin_level(CLKOUT,IOPORT_PIN_LEVEL_HIGH);
+   rgb_hex_set(0,ORE);
 	
   }
   else
   {
     // display test result to user
-    //print_dbg("slave start:\tFAIL\r\n");
-	ioport_set_pin_level(CLKOUT,IOPORT_PIN_LEVEL_LOW);
+	rgb_hex_set(0,ERROR);
   }
 
   while(1);

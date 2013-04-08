@@ -54,6 +54,10 @@ void board_init(void)
 	
 	ioport_enable_port(HE_RETURN_PORT,HE_ADDR_PINS_MASK);
 	ioport_set_port_dir(HE_RETURN_PORT,HE_ADDR_PINS_MASK,IOPORT_DIR_OUTPUT);
+	
+	ioport_enable_pin(MIDDLE_SENSE);
+	ioport_set_pin_dir(MIDDLE_SENSE,IOPORT_DIR_INPUT);
+	ioport_set_pin_mode(MIDDLE_SENSE,IOPORT_MODE_PULLUP);
 	//ioport_set_pin_mode(HE_RETURN_PORT,HE_ADDR_MASK,IOPORT_MODE_DRIVE_STRENGTH);
 	
 }

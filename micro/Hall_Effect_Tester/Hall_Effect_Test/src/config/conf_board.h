@@ -49,6 +49,7 @@
 #define HE_COL15				AVR32_PIN_PA27
 #define HE_COL16				AVR32_PIN_PA30
 #define HE_COL17				AVR32_PIN_PA31
+#define MIDDLE_SENSE			AVR32_PIN_PB00
 
 #define HE_RETURN_PORT			AVR32_PORT_A
 // \todo Should replace CF8A1CFC without a more robust way of making mask. No time to address right now.

@@ -8,7 +8,7 @@
 #ifndef CONF_BOARD_H
 #define CONF_BOARD_H
 
-// internal oscillator
+// external oscillator
 #define BOARD_OSC0_HZ			BOARD_XOSC_HZ
 #define BOARD_OSC0_IS_XTAL		false
 #define BOARD_OSC0_STARTUP_US	1100
@@ -17,16 +17,19 @@
 #define RGB_CLK		AVR32_PIN_PB10
 #define RGB_DATA	AVR32_PIN_PB11
 
-// RGB COLOURS
-#define RED "FF0000"
-#define GREEN "00FF00"
-#define LIME "00ff7f"
-#define BLUE "0000FF"
-#define ORANGE "ff4500"
-#define PINK "ff69b4"
-#define TEAL "008080"
-#define BLACK "000000"
-#define WHITE "FFFFFF"
+// SPI Connections
+#define SPI						(&AVR32_SPI)
+#define SPI_NPCS				0
+#define SPI_SCK_PIN				AVR32_SPI_SCK_0_0_PIN
+#define SPI_SCK_FUNCTION		AVR32_SPI_SCK_0_0_FUNCTION
+
+#define SPI_MISO_PIN			AVR32_SPI_MISO_0_2_PIN
+#define SPI_MISO_FUNCTION		AVR32_SPI_MISO_0_2_FUNCTION
+#define SPI_MOSI_PIN			AVR32_SPI_MOSI_0_0_PIN
+#define SPI_MOSI_FUNCTION		AVR32_SPI_MOSI_0_0_FUNCTION
+
+#define SPI_NPCS0_PIN			AVR32_SPI_NPCS_0_0_PIN
+#define SPI_NPCS0_FUNCTION		AVR32_SPI_NPCS_0_0_FUNCTION
 
 // HALL EFFECT MUX return pins (configure as input)
 #define HE_COL0					AVR32_PIN_PA03
@@ -50,16 +53,16 @@
 
 #define HE_RETURN_PORT			AVR32_PORT_A
 // \todo Should replace CF8A1CFC without a more robust way of making mask. No time to address right now.
-#define HE_RETURN_MASK			0xCF8A1CFC
+#define HE_RETURN_MASK			0xCF8A39F8
 #define HE_ADDR_PORT			AVR32_PORT_A
 #define HE_ADDR_PIN_0			AVR32_PIN_PA20
-#define HE_ADDR_PINS_MASK		7<<HE_ADDR_PIN_0
+#define HE_ADDR_PINS_MASK		(7<<HE_ADDR_PIN_0)
 
 
-// This the HEARTBEAT.  Thats why this is named
-// HEARTBEAT project. HEAR DA HEARTBEATBEAT
-#define	CLKOUT					AVR32_PIN_PA11
-#define PUSHBUTTON				AVR32_PIN_PB10
+
+//#define PUSHBUTTON				AVR32_PIN_PB10
+
+#define MIDDLE_SENSOR			AVR32_PIN_PB00
 
 
 #endif // CONF_BOARD_H

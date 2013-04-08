@@ -14,7 +14,7 @@
 
 // This the HEARTBEAT.  Thats why this is named
 // HEARTBEAT project. HEAR DA HEARTBEATBEAT
-#define	CLKOUT					AVR32_PIN_PB10
+#define	CLKOUT					AVR32_PIN_PA10
 
 
 #endif // CONF_BOARD_H
