@@ -89,7 +89,7 @@ def readJson(jfile):
 	
 def setRefresh(playerID, value):
 	f = open("./chkRefresh/" + str(playerID), 'w')
-	f.write(value)
+	f.write(str(value))
 	f.close()
 
 def payForPurchase(playerInfo, resourceDict):
@@ -97,13 +97,14 @@ def payForPurchase(playerInfo, resourceDict):
 		playerInfo['resources'][resource] = playerInfo['resources'][resource] - resourceDict[resource]
 	return playerInfo
 	
-def performTrade(playerInfo, tradeInfo):
+def performTrade(playerFile, playerInfo, tradeInfo):
 	playerInfo['resources'][tradeInfo['give']['resource']] = playerInfo['resources'][tradeInfo['give']['resource']] + tradeInfo['give']['amount']
 	playerInfo['resources'][tradeInfo['get']['resource']] = playerInfo['resources'][tradeInfo['get']['resource']] - tradeInfo['get']['amount']
-	tradingPlayerInfo = readJson("players/" + tradeInfo['from'] + ".json")
+	writeJson(playerFile, playerInfo)
+	tradingPlayerInfo = readJson("players/" + str(tradeInfo['from']) + ".json")
 	tradingPlayerInfo['resources'][tradeInfo['get']['resource']] = int(tradingPlayerInfo['resources'][tradeInfo['get']['resource']]) + tradeInfo['get']['amount']
 	tradingPlayerInfo['resources'][tradeInfo['give']['resource']] = int(tradingPlayerInfo['resources'][tradeInfo['give']['resource']]) - tradeInfo['give']['amount']
-	writeJson("players/" + tradeInfo['from'] + ".json", tradingPlayerInfo)
+	writeJson("players/" + str(tradeInfo['from']) + ".json", tradingPlayerInfo)
 
 def chkResources(playerInfo, resourceDict):
 	for resource in resourceDict:
@@ -298,7 +299,7 @@ elif "deal" in form:
 	giveNum = int(form.getvalue('giveNumber'))
 	getNum = int(form.getvalue('getNumber'))
 	giveRes = form.getvalue('tradeGive')
-	getRes = form.getValue('tradeGet')
+	getRes = form.getvalue('tradeGet')
 	if (giveRes == "none" or getRes == "none"):
 		print "Location: index.py?trade=invalid#modal"
 	elif (chkResources(playerInfo, {giveRes:giveNum}) == False):
@@ -311,12 +312,13 @@ elif "deal" in form:
 elif "noDeal" in form:
 	#canceled trade. Just pass.
 	pass
-elif "trade" in form:
+elif "performTrade" in form:
 	#Obtaining player we want to trade with.
 	tradePlayer = form.getvalue('playerid')
 	#Check if remote player can trade. If so, submit proper request, if not, submit cannot trade.
 	tradeInfo = readJson(TRADE_FILE)
-	if (chkResources(tradePlayer, {tradeInfo['get']['resource']:tradeInfo['get']['amount']}) == False):
+	tradingPlayerInfo = readJson("players/" + str(tradePlayer) + ".json")
+	if (chkResources(tradingPlayerInfo, {str(tradeInfo['get']['resource']):int(tradeInfo['get']['amount'])}) == False):
 		setRefresh(int(tradePlayer), REFRESH_VALUE['cannotTrade'])
 	else:
 		setRefresh(int(tradePlayer),REFRESH_VALUE['tradeRequest'])
@@ -324,11 +326,11 @@ elif "confirmTrade" in form:
 	#From remote player, confirming trade.
 	#Perform trade (checks have already been done at this point).
 	tradeInfo = readJson(TRADE_FILE)
-	performTrade(playerInfo, tradeInfo)
-	setRefresh(int(form.getValue('from')), REFRESH_VALUE['tradeConfirm'])
+	performTrade(playerFile, playerInfo, tradeInfo)
+	setRefresh(int(form.getvalue('tradeFrom')), REFRESH_VALUE['tradeConfirm'])
 elif "doNotTrade" in form:
 	#From remote player, denying trade.
-	setRefresh(int(form.getValue('from')), REFRESH_VALUE['tradeDeny'])
+	setRefresh(int(form.getvalue('tradeFrom')), REFRESH_VALUE['tradeDeny'])
 
 
 #################################PAGE GENERATION BELOW##################################
@@ -440,7 +442,7 @@ else:
 		elif pairs["trade"][0] == "deny":
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?deny=true')</script>"
 		elif pairs["trade"][0] == "fail":
-			script = "</script>loadXMLDoc('ModalBox', '/dialogs/trade.py?invalid=remote')</script>"
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?invalid=remote')</script>"
 	output = """
 		<body>
 			<!--Need to pause when modal is active...this is just testing now.-->

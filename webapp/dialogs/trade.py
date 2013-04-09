@@ -14,11 +14,11 @@ TRADE_FILE = "../players/trade.json"
 query = os.environ["QUERY_STRING"]
 
 pairs = cgi.parse_qs(query)
+playerList = []
 
 print "Content-type: text/html;charset=utf-8\n\n"
 
 if len(pairs) == 0:
-	playerList = []
 	#Shows on current player's screen to run trade.
 	output = """<form method="post" action="index.py">
      	      <h2>Trade</h2>
@@ -48,20 +48,22 @@ else:
 			#Shows up on currentplayer's screen to identify invalid.
 			output = "<h2>Trade Error</h2>\n<p>You don't have enough resources to trade or you have selected an invalid option.</p><a href=\"index.py#x\" class=\"bottom\">Got it!</a>"
 		if pairs['invalid'][0] == "remote":
-			output = "<form method=\"post\" action=\"index.py\">\n<h2>Trade Error</h2>\n<p>You don't have enough resources to trade.</p><input type=\"submit\" value=\"Got it!\" class=\"bottom\" name=\"doNotTrade\"></form>"
+			jsonInfo = open(TRADE_FILE)
+			tradeInfo = json.load(jsonInfo)
+			output = "<form method=\"post\" action=\"index.py\">\n<h2>Trade Error</h2>\n<p>You don't have enough resources to trade.</p><input type=\"hidden\" value=\"" + str(tradeInfo['from']) + "\" name=\"tradeFrom\"><input type=\"submit\" value=\"Got it!\" class=\"bottom\" name=\"doNotTrade\"></form>"
 	elif pairs.has_key("valid"):
 		#Shows up on current player's screen to ask for player to trade with.
 		output = """<form method="post" action="index.py">
 				<h2>Trade</h2>
-				From:
+				With:
 				<select name='playerid' class="modalSelect"> {0}
 				</select>
 				<input type="submit" value="Nevermind." class="bottom half left" name="noDeal" />
-				<input type="submit" value="Let's do it!" class="bottom half right" name="trade" />
+				<input type="submit" value="Let's do it!" class="bottom half right" name="performTrade" />
 				</form>
 			"""
 		for fn in os.listdir(PLAYER_FILE):
-			if fn != 'dev.json':
+			if fn != 'dev.json' and fn != 'trade.json':
 				jsonInfo = open(PLAYER_FILE + fn)
 				playerInfo = json.load(jsonInfo)
 				playerID = os.path.splitext(os.path.basename(fn))[0] #I have no idea why I forced this hilarious stupidity upon myself.
@@ -73,8 +75,8 @@ else:
 		output = "<form method=\"post\" action=\"index.py\">\n<h2>Confirm Trade</h2>\n"
 		jsonInfo = open(TRADE_FILE)
 		tradeInfo = json.load(jsonInfo)
-		output = output + "<p>Do you wish to trade " + tradeInfo['get']['amount'] + " " + tradeInfo['get']['resource'] + " for " + tradeInfo['give']['amount'] + " " + tradeInfo['give']['resource'] + "?</p>"
-		output = output + "<input type=\"hidden\" value=\"" + tradeInfo['from'] + "\" name=\"from\"><input type=\"submit\" value=\"Yes I do!\" class=\"bottom half left\" name=\"confirmTrade\"/><input type=\"submit\" value=\"No I don't!\" class=\"bottom half right\" name=\"doNotTrade\"/></form>"
+		output = output + "<p>Do you wish to trade " + str(tradeInfo['get']['amount']) + " " + tradeInfo['get']['resource'] + " for " + str(tradeInfo['give']['amount']) + " " + tradeInfo['give']['resource'] + "?</p>"
+		output = output + "<input type=\"hidden\" value=\"" + str(tradeInfo['from']) + "\" name=\"tradeFrom\"><input type=\"submit\" value=\"No I don't!\" class=\"bottom half left\" name=\"doNotTrade\"/><input type=\"submit\" value=\"Yes I do!\" class=\"bottom half right\" name=\"confirmTrade\"/></form>"
 		jsonInfo.close()
 	elif pairs.has_key("deny"):
 		#Shows up on current player's screen to acknowledge denial of trade.
