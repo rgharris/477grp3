@@ -81,7 +81,7 @@ def runTerminal(address):
 			selector.wait()
 			if selector.ready == dataFlag:
 				print("Got it.")
-				print(button.value)
+				print(dataFlag.value)
 			elif selector.ready == timer:
 				timer.wait()
 
