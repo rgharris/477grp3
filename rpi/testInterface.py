@@ -23,7 +23,7 @@ CLEARVALUE = 0x00
 #This register is the starting register to read from
 STARTREGISTER = 0x00
 
-def i2cReadData(address):
+#def i2cReadData(address):
 #	print("Receiving data...")
 	#I haven't updated this function yet,
 	#But this is what worked with python in interactive mode:
