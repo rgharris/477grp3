@@ -45,16 +45,16 @@ def i2cReadData(address):
 #		print()
 #		print("Press any key to send command, CTRL+C to exit.")
 	
-#def runTerminal(address):
+def runTerminal(address):
 	#Setup terminal
-#	print("Press any key to send command, CTRL+C to exit.")
+	print("Press CTRL+C to exit.")
 	#dataFlag = Pin(GPIOPIN, direction=In, interrupt="rising")
-#	dataFlag = pins.pin(GPIOPIN, In, Rising)
+	dataFlag = pins.pin(GPIOPIN, In, Rising)
 	#Setup epoll, sort of like C's select statement
-#	with dataFlag:
-#		epoll = select.epoll()
+	with dataFlag:
+		epoll = select.epoll()
 		#Register the pin, wait for level changes
-	#	epoll.register(dataFlag, select.EPOLLIN | select.EPOLLET)
+		epoll.register(dataFlag, select.EPOLLIN | select.EPOLLET)
 		#Register standard input (the keyboard), wait for input
 		#Since we're going to do something on keypress, we won't be able
 		#to grab events from the micro while typing. This is fine, because
@@ -67,19 +67,20 @@ def i2cReadData(address):
 		#it would mean there's up to 5 seconds (or whatever the ttl refresh value is)
 		#where the pi could not react to the micro.
 		#Something to think about.
-#		epoll.register(sys.stdin, select.EPOLLIN)
+		epoll.register(sys.stdin, select.EPOLLIN)
 		#Endless loop waiting for something.
-#		while True:
-#			events = epoll.poll()
-#			for fileno, event in events:
+		while True:
+			events = epoll.poll()
+			for fileno, event in events:
 #				if fileno == sys.stdin.fileno():
 #					i2cWriteData(address)
-#				if fileno == dataFlag.fileno():
-#					i2cReadData(address)
+				if fileno == dataFlag.fileno():
+	#				i2cReadData(address)
+					print("HAHA! I SEE IT!")
 
 if __name__ == "__main__":
 	if (len(sys.argv) != 2):
 		print("Usage: " + sys.argv[0] + " address")
 		print("Address should be in 0xYY format, with YY being the hex address.")
 	else:
-		i2cReadData(sys.argv[1])
+		runTerminal(sys.argv[1])
