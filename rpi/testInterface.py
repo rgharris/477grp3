@@ -24,19 +24,19 @@ CLEARVALUE = 0x00
 STARTREGISTER = 0x00
 
 def i2cReadData(address):
-	print("Receiving data...")
+#	print("Receiving data...")
 	#I haven't updated this function yet,
 	#But this is what worked with python in interactive mode:
 #>>> with i2c.I2CMaster() as bus:
 #...     read_num = bus.transaction(i2c.writing_bytes(address, 0x05), i2c.reading(address, 1))
 #...     print(read_num)
-	with i2c.I2CMaster() as bus:
+#	with i2c.I2CMaster() as bus:
 		#First, read to see how many bytes to read. Yeah, I know...
-		print i2c.reading(address, 1)
-		read_num = bus.transaction(i2c.writing_bytes(address, NBYTEREGISTER), i2c.reading(address, 1))
+#		print i2c.reading(address, 1)
+#		read_num = bus.transaction(i2c.writing_bytes(address, NBYTEREGISTER), i2c.reading(address, 1))
 		#Now we read that many bytes, starting at the first register
-		read_result = bus.transaction(i2c.writing_bytes(address, STARTREGISTER), i2c.reading(address, read_num))
-	print(read_result)
+#		read_result = bus.transaction(i2c.writing_bytes(address, STARTREGISTER), i2c.reading(address, read_num))
+#	print(read_result)
 
 #def i2cWriteData(address):
 #	print("Type q to quit writing.")
