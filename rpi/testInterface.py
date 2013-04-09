@@ -10,7 +10,7 @@ from quick2wire.gpio import pins, Pin, In, Out, Both, Rising, Falling
 from quick2wire.selector import Selector
 
 #The pin used to throw an I2C interrupt
-GPIOPIN = 4
+GPIOPIN = 7
 #Register that tells us how many bytes to read
 #when we're reading from I2C. Should only be
 #one byte long.
@@ -54,7 +54,7 @@ def runTerminal(address):
 	#Setup terminal
 	print("Press CTRL+C to exit.")
 	#dataFlag = Pin(GPIOPIN, direction=In, interrupt="rising")
-	dataFlag = pins.pin(GPIOPIN, In, Falling)
+	dataFlag = pins.pin(GPIOPIN, In, Rising)
 	#Setup epoll, sort of like C's select statement
 	with dataFlag:
 		epoll = select.epoll()
@@ -72,7 +72,7 @@ def runTerminal(address):
 		#it would mean there's up to 5 seconds (or whatever the ttl refresh value is)
 		#where the pi could not react to the micro.
 		#Something to think about.
-		epoll.register(sys.stdin, select.EPOLLIN)
+		#epoll.register(sys.stdin, select.EPOLLIN)
 		#Endless loop waiting for something.
 		while True:
 			events = epoll.poll()
