@@ -6,7 +6,7 @@
 #Parameters: address of the i2c slave.
 import time, os, sys, select
 import quick2wire.i2c as i2c
-from quick2wire.gpio import pins, Pin, In, Out, Both, Rising
+from quick2wire.gpio import pins, Pin, In, Out, Both, Rising, Falling
 from quick2wire.selector import Selector
 
 #The pin used to throw an I2C interrupt
