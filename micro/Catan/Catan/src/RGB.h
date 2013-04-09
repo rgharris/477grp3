@@ -10,6 +10,7 @@
 #define RGB_H_
 
 #include <asf.h>
+#include <Catan.h>
 
 #define TRANS_TIME	0 // A number 0-4 will define the time taken to change color
 
@@ -47,7 +48,7 @@ void clockRGB( void );
 void lightRGB(int deviceAddress, int colorAddress, int brightness, int transTime);
 void rgb_loop_test( void );
 void rgb_hex_set(int hex_num, int color); 
-void rgb_clear_all();
+void rgb_clear_all( void );
 void rgb_display_resource(int hex_num,int resource);
 
 

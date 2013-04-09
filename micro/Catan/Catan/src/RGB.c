@@ -6,7 +6,6 @@
  */ 
 
 #include <RGB.h>
-#include <Catan.h>
 
 void rgb_clear_all() {
 	lightRGB(7,0x2E,0,0);
@@ -22,7 +21,7 @@ void clockRGB()
 
 void lightRGB(int deviceAddress,  int colorAddress, int brightness, int transTime) {
 	// transTime is in range 0 to 31 (5-bit)
-	// brightness is in range 0 to 15 (4-bit)
+	// brightness is in range 0 t-o 15 (4-bit)
 	// colorAddress is in range 0 to 63 (6-bit)
 	// deviceAddress is in range 0 to 63 (6-bit)
 	int control = 1;
@@ -178,25 +177,25 @@ void rgb_loop_test() {
 void rgb_display_resource(int hexnum, int resource){
 	switch (resource)
 	{
-	case ORE:
+		case ORE:
 		rgb_hex_set(hexnum,COLOR_ORE);
 		break;
-	case WHEAT:
+		case WHEAT:
 		rgb_hex_set(hexnum,COLOR_WHEAT);
 		break;
-	case SHEEP:
+		case SHEEP:
 		rgb_hex_set(hexnum,COLOR_SHEEP);
 		break;
-	case BRICK:
+		case BRICK:
 		rgb_hex_set(hexnum,COLOR_BRICK);
 		break;
-	case WOOD:
+		case WOOD:
 		rgb_hex_set(hexnum,COLOR_WOOD);
 		break;
-	case DESERT:
+		case DESERT:
 		rgb_hex_set(hexnum,COLOR_DESERT);
 		break;
-	default:
+		default:
 		rgb_hex_set(hexnum,COLOR_ERROR);
 		break;
 	}
