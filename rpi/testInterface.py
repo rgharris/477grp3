@@ -54,7 +54,7 @@ def runTerminal(address):
 	#Setup terminal
 	print("Press CTRL+C to exit.")
 	#dataFlag = Pin(GPIOPIN, direction=In, interrupt="rising")
-	dataFlag = pins.pin(GPIOPIN, In, Rising)
+	dataFlag = pins.pin(GPIOPIN, In, Falling)
 	#Setup epoll, sort of like C's select statement
 	with dataFlag:
 		epoll = select.epoll()
