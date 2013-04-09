@@ -56,9 +56,9 @@ def runTerminal(address):
 	#dataFlag = Pin(GPIOPIN, direction=In, interrupt="rising")
 	dataFlag = pins.pin(GPIOPIN, direction=In, interrupt=Rising)
 	#Setup epoll, sort of like C's select statement
-	epoll = select.epoll()
+	#epoll = select.epoll()
 	#Register the pin, wait for level changes
-	epoll.register(dataFlag, select.EPOLLIN | select.EPOLLET)
+	#epoll.register(dataFlag, select.EPOLLIN | select.EPOLLET)
 	#Register standard input (the keyboard), wait for input
 	#Since we're going to do something on keypress, we won't be able
 	#to grab events from the micro while typing. This is fine, because
@@ -73,15 +73,17 @@ def runTerminal(address):
 	#Something to think about.
 	#epoll.register(sys.stdin, select.EPOLLIN)
 	#Endless loop waiting for something.
-	with dataFlag:
+	with dataFlag, Selector() as selector, Timer(interval=0.5) as timer:
+		print("waiting...")
+		selector.add(dataFlag)
+		selector.add(timer)
 		while True:
-			events = epoll.poll()
-			for fileno, event in events:
-#				if fileno == sys.stdin.fileno():
-#					i2cWriteData(address)
-				if fileno == dataFlag.fileno():
-	#				i2cReadData(address)
-					print("HAHA! I SEE IT!")
+			selector.wait()
+			if selector.ready == dataFlag:
+				print("Got it.")
+				print(button.value)
+			elif selector.ready == timer:
+				timer.wait()
 
 if __name__ == "__main__":
 	if (len(sys.argv) != 2):
