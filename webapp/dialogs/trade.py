@@ -20,9 +20,42 @@ print "Content-type: text/html;charset=utf-8\n\n"
 
 if len(pairs) == 0:
 	#Shows on current player's screen to run trade.
-	output = """<form method="post" action="index.py">
-     	      <h2>Trade</h2>
-				Give:
+	output = """<form method="post" action="index.py" class="trade">
+     	      <h2 style="margin-bottom: 15px">Trade</h2>
+	      <div style="width: 100%; height: 155px">
+			<div class="resourceColumn">
+				<h3 class="resourceHeader">Resource</h3>	
+				<div class="resourceName">Clay</div>
+				<div class="resourceName">Ore</div>
+				<div class="resourceName">Sheep</div>
+				<div class="resourceName">Wheat</div>
+				<div class="resourceName">Wood</div>
+			</div>
+			<div class="countColumn">
+				<h3 class="countHeader">Give</h3>
+				<input name="giveClay" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+				<input name="giveOre" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+				<input name="giveSheep" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+				<input name="giveWheat" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+				<input name="giveWood" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+			</div>
+			<div class="countColumn">
+				<h3 class="countHeader">Get</h3>
+				<input name="getClay" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+				<input name="getOre" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+				<input name="getSheep" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+				<input name="getWheat" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+				<input name="getWood" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+			</div>
+			</div>
+			<h3>Player to trade with: </h3>
+			<select name="tradePlayer" class="playerSelect">
+				<option>Player1</option>
+				<option>Player2</option>
+				<option>Player3</option>
+			</select>
+
+			<!--	Give:
 				<input type="number" class="modalNumber" name="giveNumber" min="1" max="99"/> &nbsp; <select name="tradeGive" class="modalSelect">
 					<option value="none">Select Resource</option>
 					<option value="clay">Clay</option>
@@ -38,6 +71,7 @@ if len(pairs) == 0:
 					<option value="wheat">Wheat</option>
 					<option value="sheep">Sheep</option>
 					<option value="wood">Wood</option></select>
+-->
 				<input type="submit" value="No Deal!" class="bottom half left" name="noDeal" />
 				<input type="submit" value="Deal!" class="bottom half right" name="deal" />
         	   </form>

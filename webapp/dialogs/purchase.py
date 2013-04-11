@@ -20,13 +20,13 @@ if len(pairs) == 0:
          	   <input type="submit" value="Settlement" class="bottom half top left" name="settle"/>
 					<input type="submit" value="City" class="bottom half top right" name="city"/>
 					<input type="submit" value="Road" class="bottom half bot left" name="road" />
-					<input type="submit" value="Dev. Card" class="bottom half bot right" name="dev" />
+					<input type="submit" value="Dev. Card" class="bottom half bottom right" name="dev" />
 	        	   </form>
 				"""
 else:
 	if pairs.has_key("invalid"):
 		humanMap = {"settle":"settlement", "city":"city", "road":"road", "dev":"development card"}
-		output = "<h2>Purchase Error</h2>\n<p>You don't have enough resources to purchase a " + humanMap[pairs["invalid"][0]] + "!</p><a href=\"index.py#x\" class=\"bottom\">Got it!</a>"
+		output = "<h2>Purchase Error</h2>\n<p>You don't have enough resources to purchase a " + humanMap[pairs["invalid"][0]] + "!</p><a href=\"index.py#x\" class=\"bottom left\">Got it!</a>"
 	elif pairs.has_key("confirm"):
 		output = "<form method=\"post\" action=\"index.py\">\n<h2>Confirm Purchase</h2>\n"
 		if pairs["confirm"][0] == "settle":

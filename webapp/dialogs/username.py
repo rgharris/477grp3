@@ -19,7 +19,7 @@ output = """Content-type: text/html;charset=utf-8
             <div>
                <input type="text" id="user" name="user" value="{0}" />
             </div>
-            <input type="submit" value="Got it!" class="bottom" />
+            <input type="submit" value="Got it!" class="bottom left" />
             </form>
 			"""
 
