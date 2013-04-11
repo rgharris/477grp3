@@ -39,10 +39,9 @@
 void rarity_init( void );
 void rarity_set(unsigned int hex_num, unsigned int rarity_value);
 void rarity_set_all(unsigned int * rarity_value_arr);
-void rarity_clear_all(); 
+void rarity_clear_all( void ); 
 unsigned int reverse(unsigned int v);
 void rarity_display_error(unsigned int hex_num, unsigned int position, unsigned int isCity);
-void generate_board(uint8_t* Hex2Resource, uint8_t* Hex2Rarity);
 
 
 

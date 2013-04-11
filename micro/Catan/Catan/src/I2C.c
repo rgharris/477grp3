@@ -22,7 +22,10 @@ const U8 test_pattern[] =  {
 U8  s_status_cmd = TWI_MEM_IDLE; // State variable
 U8  s_u8_addr_pos;               // Offset in the address value (because we receive the address one Byte at a time)
 U32 s_u32_addr;                  // The current address in the virtual mem
-U8  s_memory[TWI_MEM_SIZE]={1,2,3,4,5,6,7,8,9,0};  // Content of the Virtual mem
+// Content of the Virtual memory
+U8  s_memory[TWI_MEM_SIZE]={0};
+
+
 
 static const gpio_map_t TWI_GPIO_MAP =
 {
@@ -44,6 +47,11 @@ int I2C_init( void ) {
 
   // TWI gpio pins configuration
   gpio_enable_module(TWI_GPIO_MAP, sizeof(TWI_GPIO_MAP) / sizeof(TWI_GPIO_MAP[0]));
+  
+  // initialize the interrupt flag for alerting the Pi of new data (TWI = Three Wire Interface for us)
+  ioport_enable_pin(I2C_FLAG);
+  ioport_set_pin_dir(I2C_FLAG,IOPORT_DIR_OUTPUT);
+  ioport_set_pin_level(I2C_FLAG,false);
 
   // options settings
   opt.pba_hz = FOSC0;
@@ -88,7 +96,7 @@ static void twi_slave_rx( U8 u8_value )
       {
          s_memory[s_u32_addr-VIRTUALMEM_ADDR_START] = u8_value;
       }
-      s_u32_addr++;  // Update to next position
+      //s_u32_addr++;  // Update to next position
       break;
    }
 }
@@ -109,7 +117,7 @@ static U8 twi_slave_tx( void )
    }else{
       u8_value = 0xFF;
    }
-   s_u32_addr++;  // Update to next position
+   //s_u32_addr++;  // Update to next position
    return u8_value;
 }
 
@@ -119,4 +127,63 @@ static U8 twi_slave_tx( void )
 static void twi_slave_stop( void )
 {
    s_status_cmd = TWI_MEM_IDLE;
+}
+
+uint8_t isDiceRolled(void){
+	if (s_memory[PI_EVENT_REG] & PI_DICE_ROLL)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+uint8_t isTurnOver(void){
+	if (s_memory[PI_EVENT_REG] & PI_END_TURN)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+uint8_t isNewGame(void){
+	if (s_memory[PI_EVENT_REG] & PI_NEW_GAME)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+uint8_t isRoadBuildingPlayed(void)
+{
+	if (s_memory[PI_EVENT_REG] & PI_DEV_ROAD)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+uint8_t isKnightPlayed(void){
+	if (s_memory[PI_EVENT_REG] & PI_DEV_KNIGHT)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+uint8_t isNewPieceConfirm(void){
+	if (s_memory[PI_EVENT_REG] & PI_NEW_PIECE_CONFIRM)
+	{
+		return 1;
+	}
+	return 0;
+}
+uint8_t isNewPieceReject(void){
+	if (s_memory[PI_EVENT_REG] & PI_NEW_PIECE_REJECT)
+	{
+		return 1;
+	}
+	return 0;
+}
+uint8_t PiecePurchased(void){
+	return s_memory[PI_EVENT_REG] & PI_PIECE_PURCHASE;
 }

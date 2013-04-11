@@ -63,6 +63,6 @@
 //#define PUSHBUTTON				AVR32_PIN_PB10
 
 #define MIDDLE_SENSOR			AVR32_PIN_PB00
-
+#define I2C_FLAG				AVR32_PIN_PB05
 
 #endif // CONF_BOARD_H
