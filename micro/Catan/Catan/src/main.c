@@ -10,20 +10,18 @@
 
 
 void PositionTest(void);
-//void refresh_display(uint8_t* Hex2Resource, uint8_t* Hex2Rarity);
+void SetThiefPos(void);
+
 
 int main(void)
 {
+	ioport_port_mask_t RowReturn, TestRow;
+	int j,i;
+	int pos;
+	int ColPins[]= {HE_COL0,HE_COL1,HE_COL2,HE_COL3,HE_COL4,HE_COL5,HE_COL6,HE_COL7, HE_COL8,HE_COL9,HE_COL10,HE_COL11,HE_COL12,HE_COL13,HE_COL14,HE_COL15,HE_COL16,HE_COL17};
 
-	// Hexagon Maps
-	int i;
-	uint8_t Hex2Rarity[19];
-	uint8_t Hex2Resource[19];
-	
 	// Initialize the board
 	board_init();
-	// Delay for 100ms just to be safe
-	//delay_ms(100);
 	// Clear all of the 7-segment displays
 	rarity_clear_all();
 	// Clear all of the RGB LEDs
@@ -34,57 +32,71 @@ int main(void)
 	while(ioport_get_pin_level(MIDDLE_SENSOR));
 	
 	delay_ms(500);
-	/*
-	for (int i=0; i<19; i++)
-	{
-		rarity_set(i,i);
-		
-	}
-	while(ioport_get_pin_level(MIDDLE_SENSOR));
 	
-	rarity_clear_all();
+	//while (1)
+	//{
+		//AdjHexTest();
+	//}
 	
-	// Test the static map
-	while (1) {PositionTest();}	
-    */
-	//while (1) {PositionTest();}	
-		
-	// Testing die roll value
-	/*
-	for (i=0;i<14;i++)
+	//generate_board();
+	TestGameSetup();
+	assign_resources();
+	refresh_display();
+	
+	// initial placement
+	
+	while(1)
 	{
-		s_memory[i] = 0;
+		delay_s(2);
+		SetThiefPos();
+		refresh_display();
+		assign_resources();
 	}
-	while (1)
+
+}	
+
+// Prototyping
+
+void SetThiefPos(void)
+{
+	uint8_t i;
+	int ColPins[]= {HE_COL0,HE_COL1,HE_COL2,HE_COL3,HE_COL4,HE_COL5,HE_COL6,HE_COL7, HE_COL8,HE_COL9,HE_COL10,HE_COL11,HE_COL12,HE_COL13,HE_COL14,HE_COL15,HE_COL16,HE_COL17};
+	ioport_port_mask_t RowReturn = 0;
+	
+	ioport_set_port_level(HE_ADDR_PORT,HE_ADDR_PINS_MASK,7<<HE_ADDR_PIN_0);
+	delay_ms(1);
+	RowReturn = ioport_get_port_level(HE_RETURN_PORT,HE_RETURN_MASK);
+	
+	for (i=0;i<=17;i++)
 	{
-		if (!ioport_get_pin_level(MIDDLE_SENSOR))
+		if ((RowReturn & 1<<ColPins[i]))
 		{
-			s_memory[0] = (roll_die());
-			if (s_memory[0]>0)
+			if (!pos2Owner(126+i))
 			{
-				if (s_memory[0]<13)
-				{
-					s_memory[s_memory[0]]++;
-					rarity_set(18,s_memory[0]);
-				}
-				else{
-					s_memory[13]++;
-				}
-			}
-			else{
-				s_memory[13]++;
-			}
-			
-			delay_ms(500);
-			rarity_clear_all();
+				posSetOwner(126+i,1);
+				rarity_display_error(i,7,0);
+				delay_ms(500);
+			}			
+		}
+		else
+		{
+			posSetOwner(126+i,0);
 		}
 	}
-	*/
-	//while(1) {PortTest();}
-	generate_board(Hex2Resource,Hex2Rarity);
-	refresh_display(Hex2Resource,Hex2Rarity);
-	while(1);
-}	
+	if (!ioport_get_pin_level(MIDDLE_SENSOR))
+	{
+		if (!pos2Owner(144))
+		{
+			posSetOwner(144,1);
+			rarity_display_error(18,7,0);
+			delay_ms(500);
+		}
+	}
+	else
+	{
+		posSetOwner(144,0);
+	}
+}
 
 void PositionTest(void){
 	ioport_port_mask_t RowReturn;

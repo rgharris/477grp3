@@ -15,7 +15,7 @@
 //--------------------------------------------------------------------------------------------------------------
 
 //! Defines & Variables to manage a virtual TWI memory
-#define TWI_MEM_SIZE    29 // The size of the virtual mem
+#define TWI_MEM_SIZE    30 // The size of the virtual mem
 #define TWI_MEM_IDLE    0  // Idle state
 #define TWI_MEM_ADDR    1  // Address state
 #define TWI_MEM_DATA    2  // Data state
@@ -46,7 +46,8 @@
 #define CURRENT_PLAYER_REG			6		// The current turn's player
 #define LONGEST_ROAD_REG			7		// Which player has the longest road?
 #define DIE_VALUE_REG				8		// The value on the die roll
-#define RESOURCE_REC_REG			9		// 4x5 Array of resources each player receives on the die roll
+#define PLAYERS_THIEFED_REG			9		// Players which are adjacent to the thief
+#define RESOURCE_REC_REG			10		// 4x5 Array of resources each player receives on the die roll
 
 // Register 0: Pi Event Flags
 #define PI_NEW_GAME				0x01		// Set if New Game should start
