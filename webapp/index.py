@@ -79,7 +79,7 @@ def createPlayer(playerFile, playerID):
 		#points: The player's current score, minus their Victory Point cards.
 		#playedKnights: The number of knights the player has played.
 		#currentTurn: 1 if it's the player's turn, 0 if it is not.
-	newPlayer = {'playerName':"Player " + str(playerID+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'active':time.time(), 'awards':[], 'points':0 'currentTurn':0}
+	newPlayer = {'playerName':"Player " + str(playerID+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'active':time.time(), 'awards':[], 'points':0, 'currentTurn':0}
 	writeJson(playerFile, newPlayer)
 	return newPlayer
 

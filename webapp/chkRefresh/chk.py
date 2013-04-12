@@ -4,6 +4,8 @@
 # This is a really quick program that
 # returns a 1 if they need to refresh,
 # a 0 otherwise.
+# It also checks for the I2C flag on the micro,
+# and checks the approriate registers if it's set.
 import os, cgi
 
 query=os.environ[ "QUERY_STRING" ]

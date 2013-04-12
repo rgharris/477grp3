@@ -220,6 +220,9 @@ a.playerName{
 .modal input[type="submit"].top{
 	bottom:22%;
 }
+.modal input[type="submit"].moreTop{
+	bottom:44%;
+}
 .modal input[type="submit"].left{
 	left:0;
 }
