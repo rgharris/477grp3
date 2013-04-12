@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 #
 # This is the modal dialog that asks the user
@@ -23,4 +23,4 @@ output = """Content-type: text/html;charset=utf-8
             </form>
 			"""
 
-print output.format(pairs['user'][0]);
+print(output.format(pairs['user'][0]));

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 #
 # This is the dialog that deals with trading.
@@ -16,7 +16,7 @@ query = os.environ["QUERY_STRING"]
 pairs = cgi.parse_qs(query)
 playerList = []
 
-print "Content-type: text/html;charset=utf-8\n\n"
+print("Content-type: text/html;charset=utf-8\n\n")
 
 if len(pairs) == 0:
 	#Shows on current player's screen to run trade.
@@ -66,7 +66,7 @@ if len(pairs) == 0:
 	output = output.format('\n'.join(playerList), "if(this.value == '0') { this.value = ''; }", "if(this.value == '') {this.value = '0';}")
 
 else:
-	if pairs.has_key("invalid"):
+	if "invalid" in pairs:
 		if pairs['invalid'][0] == "current":
 			#Shows up on currentplayer's screen to identify invalid.
 			output = "<h2>Trade Error</h2>\n<p>You don't have enough resources to trade or you have selected an invalid option.</p><a href=\"index.py#x\" class=\"bottom\">Got it!</a>"
@@ -74,7 +74,7 @@ else:
 			jsonInfo = open(TRADE_FILE)
 			tradeInfo = json.load(jsonInfo)
 			output = "<form method=\"post\" action=\"index.py\">\n<h2>Trade Error</h2>\n<p>You don't have enough resources to trade.</p><input type=\"hidden\" value=\"" + str(tradeInfo['from']) + "\" name=\"tradeFrom\"><input type=\"submit\" value=\"Got it!\" class=\"bottom\" name=\"doNotTrade\"></form>"
-	elif pairs.has_key("confirm"):
+	elif "confirm" in pairs:
 		#Shows up on remote player's screen to confirm trade.
 		output = "<form method=\"post\" action=\"index.py\">\n<h2>Confirm Trade</h2>\n"
 		jsonInfo = open(TRADE_FILE)
@@ -97,12 +97,12 @@ else:
 		output = output + "<p>Do you wish to trade " + getString + " for " + giveString + "?</p>"
 		output = output + "<input type=\"hidden\" value=\"" + str(tradeInfo['from']) + "\" name=\"tradeFrom\"><input type=\"submit\" value=\"No I don't!\" class=\"bottom half left\" name=\"doNotTrade\"/><input type=\"submit\" value=\"Yes I do!\" class=\"bottom half right\" name=\"confirmTrade\"/></form>"
 		jsonInfo.close()
-	elif pairs.has_key("deny"):
+	elif "deny" in pairs:
 		#Shows up on current player's screen to acknowledge denial of trade.
 		output = "<h2>Trade denied</h2>\n<p>Your trade has been denied from the player you were trading with.</p><a href=\"index.py#x\" class=\"bottom\">Got it!</a>"
-	elif pairs.has_key("success"):
+	elif "success" in pairs:
 		#Shows up on current player's screen to acknowledge success of trade.
 		output = "<h2>Trade Successful</h2>\n<p>Your trade has been accepted and has taken place.</p><a href=\"index.py#x\" class=\"bottom\">Got it!</a>"
 
 
-print output
+print(output)

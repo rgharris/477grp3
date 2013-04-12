@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 #
 # This is a really quick program that
@@ -13,4 +13,4 @@ pid = pairs['id'][0]
 
 output = "Content-type: text/plain\n\n" + open(pid, 'r').read()
 
-print output;
+print(output);
