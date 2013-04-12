@@ -77,7 +77,9 @@ def createPlayer(playerFile, playerID):
 		#	just in case the board is turned off and not back on.
 		#awards: This is where Longest Road and Largest Army are stored. A simple list.
 		#points: The player's current score, minus their Victory Point cards.
-	newPlayer = {'playerName':"Player " + str(playerID+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'onHold':{}, 'active':time.time(), 'awards':[], 'points':0}
+		#playedKnights: The number of knights the player has played.
+		#currentTurn: 1 if it's the player's turn, 0 if it is not.
+	newPlayer = {'playerName':"Player " + str(playerID+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'active':time.time(), 'awards':[], 'points':0 'currentTurn':0}
 	writeJson(playerFile, newPlayer)
 	return newPlayer
 
@@ -493,9 +495,11 @@ else:
 						<p class="amount">{7}</p>
 					</div>
 					<div id="cards" class="resource">
-						<img src="images/sea.png" class="resourceImg"/>
-						<p class="resourceTitle">Dev. Cards</p>
-						<p class="amount">{8}</p>
+						<a href="#modal" id="cardsLink" onclick="loadXMLDoc('ModalBox', '/dialogs/devCards.py?player={9}')">
+							<img src="images/sea.png" class="resourceImg"/>
+							<p class="resourceTitle">Dev. Cards</p>
+							<p class="amount">{8}</p>
+						</a>
 					</div>
 				</div>
 				<div class="clear"></div>
@@ -513,7 +517,7 @@ else:
 	if 'victory' in playerInfo['onHold']:
 		curPoints = curPoints + playerInfo['onHold']['victory']
 	if 'victory' in playerInfo['cards']:
-		curPoints = curPoints + playerInfo['onHold']['cards']
+		curPoints = curPoints + playerInfo['cards']['victory']
 
 	print(output.format(script,playerInfo['playerName'], str(curPoints), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())),playerID))
 #This needs to go at the end of all pages.

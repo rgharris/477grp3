@@ -83,6 +83,10 @@ div#head h2{
 #clay, #wood, #cards{
 	color: #fff;
 }
+#cardsLink{
+	text-decoration: none;
+	color: #fff;
+}
 .button{
 	float:left;
 	border-right:solid 1px #000;
