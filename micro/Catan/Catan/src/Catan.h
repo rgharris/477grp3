@@ -233,6 +233,7 @@ void PortTest ( void );
 
 void TestGameSetup(void);
 
+int8_t chkstateTest(void);
 
 
 

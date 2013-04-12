@@ -18,6 +18,9 @@ uint8_t city_map[145] = {0};
 // Hexagon Maps
 uint8_t Hex2Rarity[19];
 uint8_t Hex2Resource[19];
+uint8_t dice_roll_state = 0;		// Has the dice been rolled yet?
+int8_t last_pos_confirmed = -1;		// Gives the position of the last piece to be confirmed as placed. Needs to be set to -1 once it serves its purpose
+int8_t last_pos_rejected = -1;		// Gives position of last piece to be rejected. Should be cleared (-1) at end of clean run of check board state
 
 int ColPins[]= {HE_COL0,HE_COL1,HE_COL2,HE_COL3,HE_COL4,HE_COL5,HE_COL6,HE_COL7, HE_COL8,HE_COL9,HE_COL10,HE_COL11,HE_COL12,HE_COL13,HE_COL14,HE_COL15,HE_COL16,HE_COL17};
 
@@ -290,20 +293,68 @@ uint8_t roll_die(void){
 	return diceValue1+diceValue2;
 }
 
-//int isLegal (int pos, int owner, int settlement, int road, int city, int theif) {
-	//// Check if position is on the board
-	//if ((pos > 144) || (pos < 0)) { return -1; }
-	//// First determine the type of piece based on the position#
-	//if ((pos % 7) == 0) { // Position is a theif
-		//
-	//}
-	//else if ((pos % 2) == 0) { // Position even -- a road
-		//
-	//}
-	//else { // 
-		//
-	//}
-//}
+int8_t isLegal (int8_t pos, int8_t settlement, int8_t road, int8_t city, int8_t thief, int8_t thief_pos_last) {
+	int8_t i;
+	// Check if position is on the board
+	if ((pos > 144) || (pos < 0)) { return -1; }
+	// First determine the type of piece based on the position#
+	// Position is a thief
+	if (pos/18 >= 7) { 
+		
+		// Are thieves even allowed to be placed? And has it been moved?
+		if (thief && (thief_pos_last!=pos))
+		{
+			return 1;
+		}
+	}
+	
+	// row even -- a road
+	else if (((pos/18) % 2) == 0) { 
+		// If the road already has an owner, it's being removed, and therefore is not legal
+		if (!pos2Owner(pos) && road)
+		{
+			// check both adjacent cities first. If either owned by player, it's a legal play
+			if ((pos2Owner(pos2AdjPos(pos,0))==s_memory[CURRENT_PLAYER_REG]) || (pos2Owner(pos2AdjPos(pos,1))==s_memory[CURRENT_PLAYER_REG]) )
+			{
+				return 1;
+			}
+			// Now check the adjacent roads, but only if they are not blocked by another player's settlement or city
+			else if (!pos2Owner(pos2AdjPos(pos,0)))
+			{
+				for (i=0;i<3;i++)
+				{
+					if ((pos2AdjPos(pos2AdjPos(pos,0),i)!=-1) && (pos2AdjPos(pos2AdjPos(pos,0),i)!= pos))
+					{
+						if (pos2Owner(pos2AdjPos(pos2AdjPos(pos,0),i)) == s_memory[CURRENT_PLAYER_REG])
+						{
+							return 1;
+						}
+					}
+				}
+			}
+			else if (!pos2Owner(pos2AdjPos(pos,1)))
+			{
+				for (i=0;i<3;i++)
+				{
+					if ((pos2AdjPos(pos2AdjPos(pos,1),i)!=-1) && (pos2AdjPos(pos2AdjPos(pos,1),i)!= pos))
+					{
+						if (pos2Owner(pos2AdjPos(pos2AdjPos(pos,1),i)) == s_memory[CURRENT_PLAYER_REG])
+						{
+							return 1;
+						}
+					}
+				}
+			}
+		}
+		
+	}
+	// row odd and not thief -- a settlement or city
+	else { 
+		return 1;
+	}
+	// No legal situations found, return false 
+	return 0;
+}
 void assign_resources(void)
 {
 	// Should assign the resources to the resources to receive registers so the Pi can retrieve them
@@ -409,13 +460,13 @@ void confirmNewPiece(void)
 {
 	setPosLegal(s_memory[NEW_PIECE_LOC_REG]);
 	posSetOwner(s_memory[NEW_PIECE_LOC_REG],s_memory[CURRENT_PLAYER_REG]);	
-	
+	last_pos_confirmed = s_memory[NEW_PIECE_LOC_REG];
 	
 	if (s_memory[NEW_PIECE_LOC_REG]/18 >= 7)
 	{
 		// Do something for thieves.
 		// Thief Placement affects resource distribution, redo resources
-		// AssignResources();   // Placeholder function
+		assign_resources();   
 	}
 	else if ((s_memory[NEW_PIECE_LOC_REG]/18)%2 == 0)
 	{
@@ -429,7 +480,7 @@ void confirmNewPiece(void)
 		// Upgrade city status of position (nothing to settlement or settlement to city)
 		city_map[s_memory[NEW_PIECE_LOC_REG]]++;
 		// Settlement placement affects resource distribution
-		// AssignResources();	// Placeholder function
+		assign_resources();
 		// Settlement placement can affect longest road
 		// LongestRoad();		// Placeholder function
 	}
@@ -620,12 +671,76 @@ void TestGameSetup(void){
 	for (i=0;i<sizeof(p1pos)/sizeof(p1pos[0]);i++)
 	{
 		posSetOwner(p1pos[i],2);
+		setPosLegal(p1pos[i]);
 		city_map[p1pos[i]]++;
 		rarity_display_error(p1pos[i]%18,p1pos[i]/18,0);
 		delay_ms(500);
 	}
+	
+	//Thief proper
+	posSetOwner(131,1);
+	setPosLegal(131);
 
 	delay_s(2);
+}
+
+int8_t chkstateTest(void)
+{
+	uint8_t i;
+	uint8_t address;
+	ioport_port_mask_t RowReturn;
+	int8_t error = 0;
+	
+	for (address=0;address<8;address++)
+	{
+
+		// Grab the sensor data for every row
+		ioport_set_port_level(HE_RETURN_PORT,HE_ADDR_PINS_MASK,address<<HE_ADDR_PIN_0);
+		delay_ms(.1);
+		RowReturn = ioport_get_port_level(HE_RETURN_PORT,HE_RETURN_MASK);
+		if (!compareLegal2Row(RowReturn,address))
+		{
+			for (i=0;i<18;i++)
+			{
+				// If the sensor value is not the same as what we have in the legal state, see if it's a legal move
+				if ((RowReturn & 1<<ColPins[i])!=(getLegalRow(address)& 1<<ColPins[i]))
+				{
+					if (isLegal(address*18+i,1,1,1,1,131))
+					{
+						rgb_hex_set(i,COLOR_BLACK);
+						rarity_display_error(i,address,0);
+					}
+					else
+					{
+						rgb_hex_set(i,COLOR_ERROR);
+						rarity_display_error(i,address,0);	
+						error = 1;
+					}					
+				}
+			}
+		}
+	}
+	
+	// Don't forget to check the middle thief.
+	if (!getLegalRow(7))
+	{
+		if ( (!ioport_get_pin_level(MIDDLE_SENSOR) && !pos2Owner(144)) || (ioport_get_pin_level(MIDDLE_SENSOR)&& pos2Owner(144))){
+			
+			// MOAR FANCY GRAPHICS
+			if (isLegal(144,1,1,1,1,131))
+			{
+				rgb_hex_set(18,COLOR_BLACK);
+			}
+			else{
+				rgb_hex_set(18,COLOR_ERROR);
+				rarity_display_error(18,7,0);
+				error = 1;
+			}
+		}
+	}
+	
+		
+	return !error;
 }
 
 	

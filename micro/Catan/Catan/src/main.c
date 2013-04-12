@@ -48,9 +48,13 @@ int main(void)
 	while(1)
 	{
 		delay_s(2);
-		SetThiefPos();
+		//SetThiefPos();
 		refresh_display();
-		assign_resources();
+		if (chkstateTest())
+		{
+			assign_resources();
+		}
+		
 	}
 
 }	
