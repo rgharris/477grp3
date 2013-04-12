@@ -28,4 +28,4 @@ for fn in os.listdir(PLAYER_FILE):
 				print "<br />\n\t\t<i>Has the longest road and the largest army</i>"
 		print "</li>\n"
 		jsonInfo.close()
-print"</ul>\t<a href=\"#x\" class=\"bottom\">Got it!</a>"
+print"</ul>\t<a href=\"#x\" class=\"bottom left\">Got it!</a>"

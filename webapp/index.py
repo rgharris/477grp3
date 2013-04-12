@@ -21,7 +21,7 @@
 # Import debugging
 import cgitb
 #Everything else.
-import os, sys, json, Cookie, time, cgi, random
+import os, sys, json, Cookie, time, cgi, random, shutil
 #Enable debugging
 cgitb.enable()
 
@@ -98,12 +98,14 @@ def payForPurchase(playerInfo, resourceDict):
 	return playerInfo
 	
 def performTrade(playerFile, playerInfo, tradeInfo):
-	playerInfo['resources'][tradeInfo['give']['resource']] = playerInfo['resources'][tradeInfo['give']['resource']] + tradeInfo['give']['amount']
-	playerInfo['resources'][tradeInfo['get']['resource']] = playerInfo['resources'][tradeInfo['get']['resource']] - tradeInfo['get']['amount']
-	writeJson(playerFile, playerInfo)
 	tradingPlayerInfo = readJson("players/" + str(tradeInfo['from']) + ".json")
-	tradingPlayerInfo['resources'][tradeInfo['get']['resource']] = int(tradingPlayerInfo['resources'][tradeInfo['get']['resource']]) + tradeInfo['get']['amount']
-	tradingPlayerInfo['resources'][tradeInfo['give']['resource']] = int(tradingPlayerInfo['resources'][tradeInfo['give']['resource']]) - tradeInfo['give']['amount']
+	for resource in tradeInfo['give']:
+		playerInfo['resources'][resource] = playerInfo['resources'][resource] + tradeInfo['give'][resource]
+		tradingPlayerInfo['resources'][resource] = int(tradingPlayerInfo['resources'][resource]) - tradeInfo['give'][resource]
+	for resource in tradeInfo['get']:
+		playerInfo['resources'][resource] = playerInfo['resources'][resource] - tradeInfo['get'][resource]
+		tradingPlayerInfo['resources'][resource] = tradingPlayerInfo['resources'][resource] + tradeInfo['get'][resource]
+	writeJson(playerFile, playerInfo)
 	writeJson("players/" + str(tradeInfo['from']) + ".json", tradingPlayerInfo)
 
 def chkResources(playerInfo, resourceDict):
@@ -154,6 +156,15 @@ else:
 
 if playerInfo == '':
 	playerID = -1
+	#First, go through and remove all player files that have timed out.
+	#(Move them to a backup file for testing purposes)
+	for i in range(0, 4):
+		playerFile = PLAYER_FILE + str(i) + ".json"
+		if os.path.isfile(playerFile):
+			playerInfo = readJson(playerFile)
+			if(playerInfo["active"] == 0 or playerInfo["active"] + TIMEOUT < time.time()):
+				shutil.move(playerFile, "backup" + playerFile)
+
 	#Next start by checking if json files exist. If not, create them.
 	#If so, check if they are set to "active". If not, we have this player's ID!
 	for i in range(0, 4):
@@ -163,7 +174,8 @@ if playerInfo == '':
 			playerInfo = createPlayer(playerFile, playerID)
 			break
 		else:
-			#All json files exist, so check timeouts!
+			#That json file exists, so check it's timeout!
+			#This bit of code should never be executed now, but I'm leaving it for historical purposes.
 			playerInfo = readJson(playerFile)
 			if (playerInfo["active"] == 0 or playerInfo["active"] + TIMEOUT < time.time()):
 				#This player is inactive or has timed out, so here we go!
@@ -296,32 +308,29 @@ elif "dev" in form:
 elif "deal" in form:
 	#obtaining what we want to trade and what for.
 	#First check if we can do the trade.
-	giveNum = int(form.getvalue('giveNumber'))
-	getNum = int(form.getvalue('getNumber'))
-	giveRes = form.getvalue('tradeGive')
-	getRes = form.getvalue('tradeGet')
-	if (giveRes == "none" or getRes == "none"):
+	give = {'clay': int(form.getvalue('giveClay')),'ore': int(form.getvalue('giveOre')), 'wheat': int(form.getvalue('giveWheat')),'sheep': int(form.getvalue('giveSheep')),'wood': int(form.getvalue('giveWood'))}
+	get = {'clay': int(form.getvalue('getClay')),'ore': int(form.getvalue('getOre')), 'wheat': int(form.getvalue('getWheat')),'sheep': int(form.getvalue('getSheep')),'wood': int(form.getvalue('getWood'))}
+	give = dict((key, val) for key, val in give.iteritems() if val != 0)
+	get = dict((key, val) for key, val in get.iteritems() if val != 0)
+	if (len(give) == 0 or len(get) == 0):
 		print "Location: index.py?trade=invalid#modal"
-	elif (chkResources(playerInfo, {giveRes:giveNum}) == False):
+	elif (chkResources(playerInfo, give) == False):
 		print "Location: index.py?trade=invalid#modal"
 	else:
 		#So now we're sure we can do the trade on this end, so save this info in a json store.
-		writeJson(TRADE_FILE, {'from':playerID, 'give':{'amount':giveNum, 'resource':giveRes}, 'get':{'amount':getNum, 'resource':getRes}})
-		#move to the next step (request player to trade with)
-		print "Location: index.py?trade=getPlayer#modal"
+		writeJson(TRADE_FILE, {'from':playerID, 'give':give, 'get':get})
+		#Now, obtain the player we want to trade with
+		tradePlayer = form.getvalue('playerid')
+		#Check if remote player can trade. If so, submit proper request, if not, submit cannot trade.
+		tradeInfo = readJson(TRADE_FILE)
+		tradingPlayerInfo = readJson("players/" + str(tradePlayer) + ".json")
+		if(chkResources(tradingPlayerInfo, get) == False):
+			setRefresh(int(tradePlayer), REFRESH_VALUE['cannotTrade'])
+		else:
+			setRefresh(int(tradePlayer), REFRESH_VALUE['tradeRequest'])
 elif "noDeal" in form:
 	#canceled trade. Just pass.
 	pass
-elif "performTrade" in form:
-	#Obtaining player we want to trade with.
-	tradePlayer = form.getvalue('playerid')
-	#Check if remote player can trade. If so, submit proper request, if not, submit cannot trade.
-	tradeInfo = readJson(TRADE_FILE)
-	tradingPlayerInfo = readJson("players/" + str(tradePlayer) + ".json")
-	if (chkResources(tradingPlayerInfo, {str(tradeInfo['get']['resource']):int(tradeInfo['get']['amount'])}) == False):
-		setRefresh(int(tradePlayer), REFRESH_VALUE['cannotTrade'])
-	else:
-		setRefresh(int(tradePlayer),REFRESH_VALUE['tradeRequest'])
 elif "confirmTrade" in form:
 	#From remote player, confirming trade.
 	#Perform trade (checks have already been done at this point).
@@ -433,8 +442,6 @@ else:
 	elif pairs.has_key("trade"):
 		if pairs["trade"][0] == "invalid":
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?invalid=current')</script>"
-		elif pairs["trade"][0] == "getPlayer":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?valid=true')</script>"
 		elif pairs["trade"][0] == "check":
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?confirm=true')</script>"
 		elif pairs["trade"][0] == "confirm":

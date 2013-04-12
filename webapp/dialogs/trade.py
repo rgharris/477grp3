@@ -33,49 +33,38 @@ if len(pairs) == 0:
 			</div>
 			<div class="countColumn">
 				<h3 class="countHeader">Give</h3>
-				<input name="giveClay" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-				<input name="giveOre" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-				<input name="giveSheep" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-				<input name="giveWheat" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-				<input name="giveWood" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+				<input name="giveClay" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="giveOre" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="giveSheep" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="giveWheat" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="giveWood" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
 			</div>
 			<div class="countColumn">
 				<h3 class="countHeader">Get</h3>
-				<input name="getClay" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-				<input name="getOre" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-				<input name="getSheep" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-				<input name="getWheat" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-				<input name="getWood" type="tel" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+				<input name="getClay" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="getOre" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="getSheep" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="getWheat" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="getWood" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
 			</div>
 			</div>
 			<h3>Player to trade with: </h3>
-			<select name="tradePlayer" class="playerSelect">
-				<option>Player1</option>
-				<option>Player2</option>
-				<option>Player3</option>
+			<select name="playerid" class="playerSelect">
+				{0}
 			</select>
-
-			<!--	Give:
-				<input type="number" class="modalNumber" name="giveNumber" min="1" max="99"/> &nbsp; <select name="tradeGive" class="modalSelect">
-					<option value="none">Select Resource</option>
-					<option value="clay">Clay</option>
-					<option value="ore">Ore</option>
-					<option value="wheat">Wheat</option>
-					<option value="sheep">Sheep</option>
-					<option value="wood">Wood</option></select><br />
-				Get:
-				<input type="number" class="modalNumber" name="getNumber" min="1" max="99"/> &nbsp; <select name="tradeGet" class="modalSelect">
-					<option value="none">Select Resource</option>
-					<option value="clay">Clay</option>
-					<option value="ore">Ore</option>
-					<option value="wheat">Wheat</option>
-					<option value="sheep">Sheep</option>
-					<option value="wood">Wood</option></select>
--->
 				<input type="submit" value="No Deal!" class="bottom half left" name="noDeal" />
 				<input type="submit" value="Deal!" class="bottom half right" name="deal" />
         	   </form>
 			"""
+	for fn in os.listdir(PLAYER_FILE):
+		if fn != 'dev.json' and fn != 'trade.json':
+			jsonInfo = open(PLAYER_FILE + fn)
+			playerInfo = json.load(jsonInfo)
+			playerID = os.path.splitext(os.path.basename(fn))[0] #I have no idea why I forced this hilarious stupidity upon myself.
+			playerList.append("<option value=\"" + playerID + "\">" + playerInfo["playerName"] + "</option>")
+			jsonInfo.close()
+	output = output.format('\n'.join(playerList), "if(this.value == '0') { this.value = ''; }", "if(this.value == '') {this.value = '0';}")
+
 else:
 	if pairs.has_key("invalid"):
 		if pairs['invalid'][0] == "current":
@@ -85,31 +74,27 @@ else:
 			jsonInfo = open(TRADE_FILE)
 			tradeInfo = json.load(jsonInfo)
 			output = "<form method=\"post\" action=\"index.py\">\n<h2>Trade Error</h2>\n<p>You don't have enough resources to trade.</p><input type=\"hidden\" value=\"" + str(tradeInfo['from']) + "\" name=\"tradeFrom\"><input type=\"submit\" value=\"Got it!\" class=\"bottom\" name=\"doNotTrade\"></form>"
-	elif pairs.has_key("valid"):
-		#Shows up on current player's screen to ask for player to trade with.
-		output = """<form method="post" action="index.py">
-				<h2>Trade</h2>
-				With:
-				<select name='playerid' class="modalSelect"> {0}
-				</select>
-				<input type="submit" value="Nevermind." class="bottom half left" name="noDeal" />
-				<input type="submit" value="Let's do it!" class="bottom half right" name="performTrade" />
-				</form>
-			"""
-		for fn in os.listdir(PLAYER_FILE):
-			if fn != 'dev.json' and fn != 'trade.json':
-				jsonInfo = open(PLAYER_FILE + fn)
-				playerInfo = json.load(jsonInfo)
-				playerID = os.path.splitext(os.path.basename(fn))[0] #I have no idea why I forced this hilarious stupidity upon myself.
-				playerList.append("<option value=\"" + playerID + "\">" + playerInfo["playerName"] + "</option>")
-				jsonInfo.close()
-		output = output.format('\n'.join(playerList))
 	elif pairs.has_key("confirm"):
 		#Shows up on remote player's screen to confirm trade.
 		output = "<form method=\"post\" action=\"index.py\">\n<h2>Confirm Trade</h2>\n"
 		jsonInfo = open(TRADE_FILE)
 		tradeInfo = json.load(jsonInfo)
-		output = output + "<p>Do you wish to trade " + str(tradeInfo['get']['amount']) + " " + tradeInfo['get']['resource'] + " for " + str(tradeInfo['give']['amount']) + " " + tradeInfo['give']['resource'] + "?</p>"
+		getString = ''
+		giveString = ''
+		#Would really like to add some magic to throw "and" in there...
+		if (len(tradeInfo['get']) == 1):
+			for resource in tradeInfo['get']:
+				 getString = getString + str(tradeInfo['get'][resource]) + " " + str(resource)
+		else:
+			for resource in tradeInfo['get']:
+				 getString = getString + str(tradeInfo['get'][resource]) + " " + str(resource) + ", "
+		if (len(tradeInfo['give']) == 1):
+			for resource in tradeInfo['give']:
+				 giveString = giveString + str(tradeInfo['give'][resource]) + " " + str(resource)
+		else:
+			for resource in tradeInfo['give']:
+				 giveString = giveString + str(tradeInfo['give'][resource]) + " " + str(resource) + ", "
+		output = output + "<p>Do you wish to trade " + getString + " for " + giveString + "?</p>"
 		output = output + "<input type=\"hidden\" value=\"" + str(tradeInfo['from']) + "\" name=\"tradeFrom\"><input type=\"submit\" value=\"No I don't!\" class=\"bottom half left\" name=\"doNotTrade\"/><input type=\"submit\" value=\"Yes I do!\" class=\"bottom half right\" name=\"confirmTrade\"/></form>"
 		jsonInfo.close()
 	elif pairs.has_key("deny"):
