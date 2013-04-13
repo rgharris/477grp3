@@ -127,7 +127,8 @@ def chkDeck(deckFile, timeout):
 		return False
 
 def endTurn(playerFile, playerInfo):
-	playerInfo['cards'] = playerInfo['onHold']
+	for resource in playerInfo['cards']:
+		playerInfo['cards'][resource] = playerInfo['cards'][resource] + playerInfo['onHold'][resource]
 	playerInfo['onHold'] = {'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}
 	writeJson(playerFile, playerInfo)
 
