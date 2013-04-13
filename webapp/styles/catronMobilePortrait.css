@@ -265,7 +265,7 @@ a.playerName{
 
 /*-- Added by Robert -- */
 
-.modal form.trade form.cards{
+.modal form.trade, .modal form.cards{
   height: 415px;
 }
 
