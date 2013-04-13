@@ -51,7 +51,7 @@ void generate_board(void) {
 	rarity_clear_all();
 			
 	// Keep checking all sensor positions until all hexes have been assigned a resource
-	while (ResourcesRemaining && !(s_memory[PI_EVENT_REG] & PI_NEW_GAME))
+	while (ResourcesRemaining && !(s_memory[PI_EVENT_REG] == PI_TURN_ON))
 	{
 		for (address=0;address<8;address++)
 		{
@@ -224,7 +224,7 @@ void generate_board(void) {
 	// WAITING FOR PI TO SAY A NEW GAME HAS BEGUN
 	//////////////////////////////////////////////////////////////////////////
 	
-	while (!(s_memory[PI_EVENT_REG] & PI_NEW_GAME))
+	while (!(s_memory[PI_EVENT_REG] == PI_NEW_GAME))
 	{
 		for (address=0;address<8;address++)
 		{
@@ -293,8 +293,68 @@ uint8_t roll_die(void){
 	return diceValue1+diceValue2;
 }
 
-int8_t isLegal (int8_t pos, int8_t settlement, int8_t road, int8_t city, int8_t thief, int8_t thief_pos_last) {
-	int8_t i;
+int8_t isLegalInit (uint8_t pos, int8_t settlement, int8_t road, uint8_t last_settlement_pos){
+	int8_t i,j;
+	// Check if position is on the board
+	if ((pos > 144) || (pos < 0)) { s_memory[MCU_EVENT_REG] = 0xF;return -1; }
+	// First determine the type of piece based on the position#
+	// row even -- a road
+	if (((pos/18) % 2) == 0) {
+		// If the road already has an owner, it's being removed, and therefore is not legal
+		if (!pos2Owner(pos) && road)
+		{
+			// check both adjacent cities. If either owned by player and the last settlement placed, it's a legal play
+			if ((pos2Owner(pos2AdjPos(pos,0))==s_memory[CURRENT_PLAYER_REG]) && (pos2AdjPos(pos,0) == last_settlement_pos))
+			{
+				s_memory[MCU_EVENT_REG] = 2;
+				return 1;
+			}
+			if ((pos2Owner(pos2AdjPos(pos,1))==s_memory[CURRENT_PLAYER_REG]) && (pos2AdjPos(pos,1) == last_settlement_pos))
+			{
+				s_memory[MCU_EVENT_REG] = 2;
+				return 1;
+			}		
+		}
+	}
+	// Thieves not allowed
+	else if ((pos/18) >= 7)
+	{
+		s_memory[MCU_EVENT_REG] = 7;
+		return 0;
+		
+	}
+	// row odd and not thief -- a settlement or city
+	else if (((pos/18) % 2) == 1) {
+		// If the settlement already has an owner, it's being removed, and therefore is not legal
+		if (!pos2Owner(pos) && settlement) {
+			// If a settlement adjacent to the position, it is not legal
+			for (i=0;i<3;i++) {
+				// Be sure that the if the settlement is on the edge it only examines 2 positions
+				if (pos2AdjPos(pos,i)!=-1) {
+					for (j=0;j<2;j++) {
+						// Exclude itself from the adjacent check of adjacent roads
+						if (pos2AdjPos(pos2AdjPos(pos,i),j)!=pos) {
+							if (pos2Owner(pos2AdjPos(pos2AdjPos(pos,i),j))) {
+								// If the adjacent settlement is already owned, this placement is illegal
+								s_memory[MCU_EVENT_REG] = 16;
+								return 0;
+							}
+						}
+					}
+				}
+			}
+			// No conflicts with adjacent cities, therefore legal
+			s_memory[MCU_EVENT_REG] = 3;
+			return 1;
+		}		
+	}
+
+	// No legal situations found, return false
+	return 0;
+}
+
+int8_t isLegal (uint8_t pos, int8_t settlement, int8_t road, int8_t city, int8_t thief, uint8_t thief_pos_last) {
+	int8_t i,j;
 	// Check if position is on the board
 	if ((pos > 144) || (pos < 0)) { return -1; }
 	// First determine the type of piece based on the position#
@@ -319,39 +379,81 @@ int8_t isLegal (int8_t pos, int8_t settlement, int8_t road, int8_t city, int8_t 
 				return 1;
 			}
 			// Now check the adjacent roads, but only if they are not blocked by another player's settlement or city
-			else if (!pos2Owner(pos2AdjPos(pos,0)))
+			else
 			{
-				for (i=0;i<3;i++)
+				if (!pos2Owner(pos2AdjPos(pos,0)))
 				{
-					if ((pos2AdjPos(pos2AdjPos(pos,0),i)!=-1) && (pos2AdjPos(pos2AdjPos(pos,0),i)!= pos))
+					for (i=0;i<3;i++)
 					{
-						if (pos2Owner(pos2AdjPos(pos2AdjPos(pos,0),i)) == s_memory[CURRENT_PLAYER_REG])
+						if ((pos2AdjPos(pos2AdjPos(pos,0),i)!=-1) && (pos2AdjPos(pos2AdjPos(pos,0),i)!= pos))
 						{
-							return 1;
+							if (pos2Owner(pos2AdjPos(pos2AdjPos(pos,0),i)) == s_memory[CURRENT_PLAYER_REG])
+							{
+								return 1;
+							}
+						}
+					}
+				}
+				if (!pos2Owner(pos2AdjPos(pos,1)))
+				{
+					for (i=0;i<3;i++)
+					{
+						if ((pos2AdjPos(pos2AdjPos(pos,1),i)!=-1) && (pos2AdjPos(pos2AdjPos(pos,1),i)!= pos))
+						{
+							if (pos2Owner(pos2AdjPos(pos2AdjPos(pos,1),i)) == s_memory[CURRENT_PLAYER_REG])
+							{
+								return 1;
+							}
 						}
 					}
 				}
 			}
-			else if (!pos2Owner(pos2AdjPos(pos,1)))
-			{
-				for (i=0;i<3;i++)
-				{
-					if ((pos2AdjPos(pos2AdjPos(pos,1),i)!=-1) && (pos2AdjPos(pos2AdjPos(pos,1),i)!= pos))
-					{
-						if (pos2Owner(pos2AdjPos(pos2AdjPos(pos,1),i)) == s_memory[CURRENT_PLAYER_REG])
-						{
-							return 1;
-						}
-					}
-				}
-			}
+			
+			
+			
 		}
 		
 	}
 	// row odd and not thief -- a settlement or city
-	else { 
-		return 1;
-	}
+	else if (((pos/18) % 2) == 1) { 
+		// If the settlement already has an owner, it's being removed, and therefore is not legal
+		if (!pos2Owner(pos) && settlement) {
+			// If a settlement adjacent to the position, it is not legal
+			for (i=0;i<3;i++) {
+				// Be sure that the if the settlement is on the edge it only examines 2 positions
+				if (pos2AdjPos(pos,i)!=-1) { 
+					for (j=0;j<2;j++) {
+						// Exclude itself from the adjacent check of adjacent roads 
+						if (pos2AdjPos(pos2AdjPos(pos,i),j)!=pos) { 
+							if (pos2Owner(pos2AdjPos(pos2AdjPos(pos,i),j))) {
+								// If the adjacent settlement is already owned, this placement is illegal
+								return 0;
+							}							
+						}
+					}					  
+				}				  
+			}
+			
+			// check all adjacent roads. If any are owned by current player, it's a legal play
+			for (i=0;i<3;i++) {
+				if (pos2AdjPos(pos,i)!=-1) {
+					if ((pos2Owner(pos2AdjPos(pos,i)))==s_memory[CURRENT_PLAYER_REG]) {
+						return 1;
+					}
+				}
+			}
+		}
+		// If the settlement already has an owner and that owner is the current player and cities are allowed, then it is legal
+		else if ((pos2Owner(pos) == s_memory[CURRENT_PLAYER_REG]) && city)
+		{
+			// Need to make sure what is being removed is a settlement and not a city
+			if (city_map[pos] == 1)
+			{
+				return 1;
+			}
+		}
+	}	
+
 	// No legal situations found, return false 
 	return 0;
 }
@@ -658,7 +760,8 @@ void TestGameSetup(void){
 	uint8_t resource_order[] = {ORE,WHEAT,SHEEP,WHEAT,BRICK,WOOD,ORE,SHEEP,SHEEP,WOOD,BRICK,WHEAT,ORE,BRICK,SHEEP,DESERT,WOOD,WHEAT,WOOD};
 	uint8_t hex_order[] =		{0,1,3,5,16,17,8, 9,10,11,12,15,14,2,4,6,7,13,18};		// Used to lay out rarity values
 	uint8_t rarity_order[] =	{5,2,6,3, 8,10,9,12,11, 4, 8,-1,10,9,4,5,6, 3,11};
-	uint8_t p1pos[] = {32,56,22};
+	uint8_t p1pos[] = {32,56,22,38,2,74};
+	uint8_t p2pos[] = {90};
 	uint8_t i,j;
 	
 	for (i=0;i<19;i++)
@@ -670,16 +773,31 @@ void TestGameSetup(void){
 	// Player 1 cities/settlements
 	for (i=0;i<sizeof(p1pos)/sizeof(p1pos[0]);i++)
 	{
-		posSetOwner(p1pos[i],2);
+		posSetOwner(p1pos[i],1);
 		setPosLegal(p1pos[i]);
 		city_map[p1pos[i]]++;
 		rarity_display_error(p1pos[i]%18,p1pos[i]/18,0);
 		delay_ms(500);
 	}
 	
+	city_map[p1pos[1]]++;
+	
+	// Player 2 cities/settlements
+	for (i=0;i<sizeof(p2pos)/sizeof(p2pos[0]);i++)
+	{
+		posSetOwner(p2pos[i],2);
+		setPosLegal(p2pos[i]);
+		city_map[p2pos[i]]++;
+		rarity_display_error(p2pos[i]%18,p2pos[i]/18,0);
+		delay_ms(500);
+	}
+	
 	//Thief proper
 	posSetOwner(131,1);
 	setPosLegal(131);
+	
+    // ********************************
+	s_memory[CURRENT_PLAYER_REG] = 1;
 
 	delay_s(2);
 }
@@ -705,7 +823,7 @@ int8_t chkstateTest(void)
 				// If the sensor value is not the same as what we have in the legal state, see if it's a legal move
 				if ((RowReturn & 1<<ColPins[i])!=(getLegalRow(address)& 1<<ColPins[i]))
 				{
-					if (isLegal(address*18+i,1,1,1,1,131))
+					if (isLegalInit(address*18+i,1,1,32))
 					{
 						rgb_hex_set(i,COLOR_BLACK);
 						rarity_display_error(i,address,0);
@@ -722,12 +840,13 @@ int8_t chkstateTest(void)
 	}
 	
 	// Don't forget to check the middle thief.
-	if (!getLegalRow(7))
-	{
-		if ( (!ioport_get_pin_level(MIDDLE_SENSOR) && !pos2Owner(144)) || (ioport_get_pin_level(MIDDLE_SENSOR)&& pos2Owner(144))){
-			
-			// MOAR FANCY GRAPHICS
-			if (isLegal(144,1,1,1,1,131))
+	
+	
+	if ( (!ioport_get_pin_level(MIDDLE_SENSOR) && !pos2Owner(144)) || (ioport_get_pin_level(MIDDLE_SENSOR)&& pos2Owner(144))){
+		
+		if (!getLegalRow(7))
+		{
+			if (isLegalInit(address*18+i,1,1,32))
 			{
 				rgb_hex_set(18,COLOR_BLACK);
 			}
@@ -737,9 +856,9 @@ int8_t chkstateTest(void)
 				error = 1;
 			}
 		}
-	}
-	
+		// MOAR FANCY GRAPHICS
 		
+	}		
 	return !error;
 }
 
