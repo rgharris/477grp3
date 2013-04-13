@@ -95,6 +95,28 @@ static void twi_slave_rx( U8 u8_value )
       if( TWI_MEM_SIZE > (s_u32_addr-VIRTUALMEM_ADDR_START) )
       {
          s_memory[s_u32_addr-VIRTUALMEM_ADDR_START] = u8_value;
+		 
+		 // Do something if the Pi writes to the PI EVENT register
+		 if ((s_u32_addr-VIRTUALMEM_ADDR_START)==PI_EVENT_REG)
+		 {
+			 if (s_memory[PI_EVENT_REG])
+			 {
+				 ioport_set_pin_level(I2C_FLAG,false);
+				  switch (s_memory[PI_EVENT_REG])
+				  {
+					  case PI_NEW_PIECE_CONFIRM:
+						confirmNewPiece();
+						break;
+					  case PI_NEW_PIECE_REJECT:
+						rejectNewPiece();
+						break;
+				  }
+				  s_memory[PI_EVENT_REG] = 0;
+			 }
+			
+			 
+			 
+		 }
       }
       //s_u32_addr++;  // Update to next position
       break;

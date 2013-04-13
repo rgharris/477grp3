@@ -22,6 +22,13 @@
 #define DESERT	5
 #define NO_RESOURCE	6
 
+// Check Board State States
+#define ALL_CONFIRMED	1
+#define NEW_PIECE		0
+#define ERROR		   -1
+
+#define MIDDLE_THIEF_POS	144
+
 // Decided to go with the large map since all the adjacent positions were already figured
 // in the spreadsheet without the adjustment
 
@@ -186,6 +193,19 @@ void generate_board(void);
 void refresh_display(void);
 uint8_t roll_die(void);
 void assign_resources(void);
+void checkBoardState(int8_t settlement, int8_t road, int8_t city, int8_t thief, int8_t initial_placement, uint8_t last_pos);
+void confirmNewPiece(void);
+void rejectNewPiece(void);
+
+uint8_t buildRoad(int8_t initial_placement, uint8_t last_settlement);
+
+uint8_t buildSettlement(int8_t initial_placement);
+
+uint8_t buildCity(void);
+
+uint8_t moveThief(void);
+
+void show_remaining_piece(void);
 
 // Given a position and flags, checks if the placement is valid
 // - In normal play, settlements, roads can be placed, settlements can be removed

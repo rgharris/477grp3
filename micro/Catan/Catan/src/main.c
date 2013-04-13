@@ -19,6 +19,7 @@ int main(void)
 	int j,i;
 	int pos;
 	int ColPins[]= {HE_COL0,HE_COL1,HE_COL2,HE_COL3,HE_COL4,HE_COL5,HE_COL6,HE_COL7, HE_COL8,HE_COL9,HE_COL10,HE_COL11,HE_COL12,HE_COL13,HE_COL14,HE_COL15,HE_COL16,HE_COL17};
+    int player;
 
 	// Initialize the board
 	board_init();
@@ -45,17 +46,32 @@ int main(void)
 	
 	// initial placement
 	
-	while(1)
-	{
+	//for(player=1;player<=4;player++) {
+		//s_memory[CURRENT_PLAYER_REG] = player;
+		//buildRoad(1, buildSettlement(1));
+	//}
+	//for(player=4;player>=1;player--) {
+		//s_memory[CURRENT_PLAYER_REG] = player;
+		//buildRoad(1, buildSettlement(1));
+	//}
+	s_memory[CURRENT_PLAYER_REG] = 1;
+	moveThief();
+	s_memory[10] = 4;
+	
+	while(1);
+	/*{
 		delay_s(2);
 		//SetThiefPos();
 		refresh_display();
-		if (chkstateTest())
-		{
-			assign_resources();
-		}
+		//PositionTest();
+		//delay_s(1);
+		//refresh_display();
+		checkBoardState(1,1,1,1,0,0);
+		show_remaining_piece();
+		//assign_resources();
 		
-	}
+		
+	}*/
 
 }	
 
@@ -89,16 +105,16 @@ void SetThiefPos(void)
 	}
 	if (!ioport_get_pin_level(MIDDLE_SENSOR))
 	{
-		if (!pos2Owner(144))
+		if (!pos2Owner(MIDDLE_THIEF_POS))
 		{
-			posSetOwner(144,1);
+			posSetOwner(MIDDLE_THIEF_POS,1);
 			rarity_display_error(18,7,0);
 			delay_ms(500);
 		}
 	}
 	else
 	{
-		posSetOwner(144,0);
+		posSetOwner(MIDDLE_THIEF_POS,0);
 	}
 }
 
@@ -107,13 +123,13 @@ void PositionTest(void){
 	int j,i;
 	int ColPins[]= {HE_COL0,HE_COL1,HE_COL2,HE_COL3,HE_COL4,HE_COL5,HE_COL6,HE_COL7, HE_COL8,HE_COL9,HE_COL10,HE_COL11,HE_COL12,HE_COL13,HE_COL14,HE_COL15,HE_COL16,HE_COL17};
 
-	while (1)
-	{
-		
+	//while (1)
+	//{
+		//
 		for (i=0;i<=7;i++)
 		{
 			ioport_set_port_level(HE_ADDR_PORT,HE_ADDR_PINS_MASK,i<<HE_ADDR_PIN_0);
-			delay_ms(1);
+			delay_ms(.1);
 			RowReturn = ioport_get_port_level(HE_RETURN_PORT,HE_RETURN_MASK);
 			for (j=0;j<18;j++)
 			{
@@ -122,18 +138,18 @@ void PositionTest(void){
 				
 				if (RowReturn & 1<<ColPins[j])
 				{
-					//rgb_hex_set(j,COLOR_ORE);
-					rarity_display_error(j,i,0);
-					s_memory[PI_EVENT_REG] = s_memory[PI_EVENT_REG] | 1<<i;
+					rgb_hex_set(j,COLOR_BLUE);
+					rarity_display_error(j,i,1);
+					//s_memory[PI_EVENT_REG] = s_memory[PI_EVENT_REG] | 1<<i;
 					delay_ms(500);
 					rarity_clear_all();
 				}
 			}
 			//delay_s(2);
 		}
-		if (isDiceRolled())
-		{
-			rgb_hex_set(18,COLOR_ORE);
-		}
-	}
+		//if (isDiceRolled())
+		//{
+			//rgb_hex_set(18,COLOR_ORE);
+		//}
+	//}
 }

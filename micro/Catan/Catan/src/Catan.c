@@ -18,9 +18,11 @@ uint8_t city_map[145] = {0};
 // Hexagon Maps
 uint8_t Hex2Rarity[19];
 uint8_t Hex2Resource[19];
+// Pieces each player has remaining of each type [player][piecetype] {roads,settlements,cities}
+uint8_t pieces_remaining[4][3] ={{15,5,4},{15,5,4},{15,5,4},		 {15,		5,		     4}};		
 uint8_t dice_roll_state = 0;		// Has the dice been rolled yet?
-int8_t last_pos_confirmed = -1;		// Gives the position of the last piece to be confirmed as placed. Needs to be set to -1 once it serves its purpose
-int8_t last_pos_rejected = -1;		// Gives position of last piece to be rejected. Should be cleared (-1) at end of clean run of check board state
+uint8_t last_pos_confirmed = 0xFF;		// Gives the position of the last piece to be confirmed as placed. Needs to be set to -1 once it serves its purpose
+uint8_t last_pos_rejected = 0xFF;		// Gives position of last piece to be rejected. Should be cleared (-1) at end of clean run of check board state
 
 int ColPins[]= {HE_COL0,HE_COL1,HE_COL2,HE_COL3,HE_COL4,HE_COL5,HE_COL6,HE_COL7, HE_COL8,HE_COL9,HE_COL10,HE_COL11,HE_COL12,HE_COL13,HE_COL14,HE_COL15,HE_COL16,HE_COL17};
 
@@ -275,6 +277,286 @@ void generate_board(void) {
 	}
 }
 
+void checkBoardState(int8_t settlement, int8_t road, int8_t city, int8_t thief, int8_t initial_placement, uint8_t last_pos)
+{
+	uint8_t piecetype = 0;
+	int8_t boardState = ALL_CONFIRMED;
+	int8_t NewboardState = ALL_CONFIRMED;
+	uint8_t pos_interest = 0xFF;
+	uint8_t remove = 0;
+	int8_t errorflg = 0;
+	int8_t newflg = 0;
+	uint8_t i,j,thief_index,k;
+	ioport_port_mask_t RowReturn;
+	
+	// No piece could have been rejected when we enter this function
+	last_pos_rejected = 0xFF;
+	
+	while (1)
+	{
+		NewboardState = ALL_CONFIRMED;
+		pos_interest = 0xFF;
+		errorflg = 0;
+		newflg = 0;
+		remove = 0;
+		piecetype = 0;
+		
+		//////////////////////////////////////////////////////////////////////////
+		// Sensor Polling Loop
+		// Check every Hall Effect sensor. Exit poll if error is found
+		//////////////////////////////////////////////////////////////////////////
+		
+		for (j=0;(j<8) && (!errorflg);j++)
+		{
+			// Grab the sensor data for every row
+			ioport_set_port_level(HE_RETURN_PORT,HE_ADDR_PINS_MASK,j<<HE_ADDR_PIN_0);
+			delay_ms(1);
+			RowReturn = ioport_get_port_level(HE_RETURN_PORT,HE_RETURN_MASK);
+			
+			// Only need to check individual positions if the whole row does not match
+			if (!compareLegal2Row(RowReturn,j))
+			{
+				for (i=0;(i<18)&&!errorflg;i++)
+				{
+					
+					// If the sensor value is not the same as what we have in the legal state, see if it's a legal move
+					if ((RowReturn & 1<<ColPins[i])!=(getLegalRow(j)& 1<<ColPins[i]))
+					{
+						// Definitely an interesting position
+						remove = (RowReturn>>ColPins[i])&1;
+						pos_interest = j*18+i;
+						// Are we in the initial placement phase or normal game play?
+						if (initial_placement)
+						{
+							if (isLegalInit(j*18+i,settlement,road,last_pos))
+							{
+								newflg = 1;
+							}
+							else
+							{
+								errorflg = 1;
+							}
+						}
+						else
+						{
+							if (isLegal(j*18+i,settlement,road,city,thief,last_pos))
+							{
+								newflg = 1;
+							}
+							else
+							{								
+								errorflg = 1;
+							}
+						}
+					}
+				}
+			}
+		}
+		// Don't forget to check the middle thief.
+		if (!errorflg)
+		{
+			if ( (!ioport_get_pin_level(MIDDLE_SENSOR) && !pos2Owner(MIDDLE_THIEF_POS)) || (ioport_get_pin_level(MIDDLE_SENSOR)&& pos2Owner(MIDDLE_THIEF_POS)))
+			{
+				// Definitely an interesting position
+				remove = !pos2Owner(MIDDLE_THIEF_POS);
+				pos_interest = MIDDLE_THIEF_POS;
+				if (initial_placement)
+				{					
+					errorflg = 1;
+				}
+				else
+				{
+					if (isLegal(MIDDLE_THIEF_POS,settlement,road,city,thief,last_pos))
+					{
+						newflg = 1;
+					}
+					else
+					{						
+						errorflg = 1;
+					}
+				}
+			}
+		}
+		
+		//////////////////////////////////////////////////////////////////////////
+		// End Sensor Polling loop
+		//////////////////////////////////////////////////////////////////////////
+		
+		// Set the new board state based on the findings from above
+		if (errorflg)
+		{
+			NewboardState = ERROR;
+		}
+		else if (newflg)
+		{
+			NewboardState = NEW_PIECE;			
+		}
+		else
+		{
+			NewboardState = ALL_CONFIRMED;
+		}
+		
+		// See if something has changed from the last time we checked the board
+		if ((NewboardState != boardState) || (pos_interest != s_memory[NEW_PIECE_LOC_REG]))
+		{
+			// Refresh the board to be ready to add new things
+			refresh_display();
+			// initialize the relevant I2C registers
+			s_memory[NEW_PIECE_LOC_REG] = pos_interest;
+			s_memory[PIECE_TYPE_REG] = 0;
+			s_memory[NEW_PIECE_PORT_REG] = pos2Port(pos_interest);
+			s_memory[PLAYERS_THIEFED_REG] = 0;
+			
+			// That is all we have to do if everything is ALL CONFIRMED, otherwise:
+			if ((NewboardState == ERROR)||(NewboardState == NEW_PIECE))
+			{
+				// If the piece is in error, do we need to remove or replace it?
+				if (NewboardState == ERROR)
+				{
+					if (remove)
+					{
+						piecetype = PIECE_TYPE_REMOVE;
+					}
+					else
+					{
+						piecetype = PIECE_TYPE_REPLACE;
+					}
+				}
+				// If it's not in error, it must need to be confirmed
+				else
+				{
+					piecetype = PIECE_TYPE_TBC;
+				}
+				
+				// Make the board's display reflect the change with both color and pointing
+				if (pos_interest == MIDDLE_THIEF_POS) {
+					rgb_hex_set(18,NewboardState == ERROR ? COLOR_ERROR : COLOR_CONFIRM);
+					rarity_display_error(18,7,0);
+				} else {
+					rgb_hex_set(pos_interest % 18,NewboardState == ERROR ? COLOR_ERROR : COLOR_CONFIRM );
+					switch (city_map[pos_interest])
+					{
+						case 0:
+						rarity_display_error(pos_interest % 18,pos_interest/18,0);
+						break;
+						case 1:
+						if (piecetype == PIECE_TYPE_TBC)
+						{
+							rarity_display_error(pos_interest % 18,pos_interest/18,1);
+						}
+						else
+						{
+							rarity_display_error(pos_interest % 18,pos_interest/18,0);
+						}
+						break;
+						case 2:
+						rarity_display_error(pos_interest % 18,pos_interest/18,1);
+					}
+				}
+				
+				// Assign the I2C registers differently depending on what type of piece we are looking at
+				
+				// Type = Thief
+				if (pos_interest/18>=7)
+				{
+					s_memory[PIECE_TYPE_REG] = piecetype + PIECE_TYPE_THIEF;
+					// Need to tell Pi all the players that can be thieved at this position
+					if (pos_interest == MIDDLE_THIEF_POS)
+					{
+						// Check the positions adjacent to the middle thief if it's the middle thief that is of interest
+						for (k=0;k<6;k++)
+						{
+							if (pos2Owner(MiddleThiefAdjSettlements[k]))
+							{
+								s_memory[PLAYERS_THIEFED_REG] = s_memory[PLAYERS_THIEFED_REG] | 1<<(pos2Owner(MiddleThiefAdjSettlements[k])-1);
+							}
+						}
+					}
+					else
+					{
+						// For other hexes, first check cities/settlements on same MUX
+						for (k=1;k<7;k+=2)
+						{
+							if (pos2Owner(k*18+pos_interest%18))
+							{
+								s_memory[PLAYERS_THIEFED_REG] = s_memory[PLAYERS_THIEFED_REG] | 1<<(pos2Owner(k*18+pos_interest%18)-1);
+							}
+						}
+						
+						// Then check the hexes not on the same MUX
+						for (k=0;k<3;k++)
+						{
+							if (pos2Owner(pos2AdjPos(pos_interest,k)))
+							{
+								s_memory[PLAYERS_THIEFED_REG] = s_memory[PLAYERS_THIEFED_REG] | 1<<(pos2Owner(pos2AdjPos(pos_interest,k))-1);
+							}
+						}
+					}					
+				}
+				
+				// Type = Road
+				else if ((pos_interest/18)%2 == 0)
+				{
+					s_memory[PIECE_TYPE_REG] = piecetype + PIECE_TYPE_ROAD;
+				}
+				
+				// Type = Settlement or City
+				else
+				{
+					switch (city_map[pos_interest])
+					{
+						case 0:
+							s_memory[PIECE_TYPE_REG] = piecetype + PIECE_TYPE_SETTLEMENT;
+							break;
+						case 1:
+							if (piecetype == PIECE_TYPE_TBC)
+							{
+								s_memory[PIECE_TYPE_REG] = piecetype + PIECE_TYPE_CITY;
+							}
+							else
+							{
+								s_memory[PIECE_TYPE_REG] = piecetype + PIECE_TYPE_SETTLEMENT;
+							}
+							break;
+						case 2:
+							s_memory[PIECE_TYPE_REG] = piecetype + PIECE_TYPE_CITY;
+					}
+				}
+				
+				//Now that a new error or new piece was detected, and all the register update, need to alert PI
+				if (NewboardState == NEW_PIECE)
+				{
+					if (s_memory[PIECE_TYPE_REG] % PIECE_TYPE_TBC == PIECE_TYPE_THIEF)
+					{
+						s_memory[MCU_EVENT_REG] = MCU_NEW_THIEF_TBC;
+					}
+					else 
+					{
+						s_memory[MCU_EVENT_REG] = MCU_NEW_PIECE_TBC;
+					}
+				}
+				else
+				{				
+					s_memory[MCU_EVENT_REG] = MCU_ERROR;
+				}
+				
+				// Set the Hey Look at ME pin for the Pi
+				ioport_set_pin_level(I2C_FLAG,true);
+			}
+		}
+		
+		boardState = NewboardState;
+		// Don't leave check board state unless the entire board has confirmed pieces
+		if (boardState == ALL_CONFIRMED)
+		{
+			return;
+		}
+	}
+	
+	
+			
+}
+
 void refresh_display(void){
 	for (int i=0;i<=18;i++)
 	{
@@ -296,7 +578,9 @@ uint8_t roll_die(void){
 int8_t isLegalInit (uint8_t pos, int8_t settlement, int8_t road, uint8_t last_settlement_pos){
 	int8_t i,j;
 	// Check if position is on the board
-	if ((pos > 144) || (pos < 0)) { s_memory[MCU_EVENT_REG] = 0xF;return -1; }
+	if ((pos > MIDDLE_THIEF_POS) || (pos < 0)) { s_memory[MCU_EVENT_REG] = 0xF;return 0; }
+	// Make sure the position is not the last position that was rejected
+	if (pos == last_pos_rejected){return 0;}
 	// First determine the type of piece based on the position#
 	// row even -- a road
 	if (((pos/18) % 2) == 0) {
@@ -356,7 +640,10 @@ int8_t isLegalInit (uint8_t pos, int8_t settlement, int8_t road, uint8_t last_se
 int8_t isLegal (uint8_t pos, int8_t settlement, int8_t road, int8_t city, int8_t thief, uint8_t thief_pos_last) {
 	int8_t i,j;
 	// Check if position is on the board
-	if ((pos > 144) || (pos < 0)) { return -1; }
+	if ((pos > MIDDLE_THIEF_POS) || (pos < 0)) { return 0; }
+	// Make sure it wasn't the last position rejected
+	if (pos == last_pos_rejected){return 0;}
+	
 	// First determine the type of piece based on the position#
 	// Position is a thief
 	if (pos/18 >= 7) { 
@@ -373,6 +660,11 @@ int8_t isLegal (uint8_t pos, int8_t settlement, int8_t road, int8_t city, int8_t
 		// If the road already has an owner, it's being removed, and therefore is not legal
 		if (!pos2Owner(pos) && road)
 		{
+			// If the player doesn't have any roads left, it can't be legal
+			if (!pieces_remaining[s_memory[CURRENT_PLAYER_REG]-1][0])
+			{
+				return 0;
+			}
 			// check both adjacent cities first. If either owned by player, it's a legal play
 			if ((pos2Owner(pos2AdjPos(pos,0))==s_memory[CURRENT_PLAYER_REG]) || (pos2Owner(pos2AdjPos(pos,1))==s_memory[CURRENT_PLAYER_REG]) )
 			{
@@ -418,6 +710,11 @@ int8_t isLegal (uint8_t pos, int8_t settlement, int8_t road, int8_t city, int8_t
 	else if (((pos/18) % 2) == 1) { 
 		// If the settlement already has an owner, it's being removed, and therefore is not legal
 		if (!pos2Owner(pos) && settlement) {
+			// If the player doesn't have any settlements left, it can't be legal
+			if (!pieces_remaining[s_memory[CURRENT_PLAYER_REG]-1][1])
+			{
+				return 0;
+			}
 			// If a settlement adjacent to the position, it is not legal
 			for (i=0;i<3;i++) {
 				// Be sure that the if the settlement is on the edge it only examines 2 positions
@@ -446,6 +743,11 @@ int8_t isLegal (uint8_t pos, int8_t settlement, int8_t road, int8_t city, int8_t
 		// If the settlement already has an owner and that owner is the current player and cities are allowed, then it is legal
 		else if ((pos2Owner(pos) == s_memory[CURRENT_PLAYER_REG]) && city)
 		{
+			// If the player doesn't have any cities left, it can't be legal
+			if (!pieces_remaining[s_memory[CURRENT_PLAYER_REG]-1][2])
+			{
+				return 0;
+			}
 			// Need to make sure what is being removed is a settlement and not a city
 			if (city_map[pos] == 1)
 			{
@@ -457,6 +759,7 @@ int8_t isLegal (uint8_t pos, int8_t settlement, int8_t road, int8_t city, int8_t
 	// No legal situations found, return false 
 	return 0;
 }
+
 void assign_resources(void)
 {
 	// Should assign the resources to the resources to receive registers so the Pi can retrieve them
@@ -497,7 +800,7 @@ void assign_resources(void)
 	
 	// Now need to subtract resources hidden by thief
 	// Check each thief position (don't forget middle thief at end
-	for (j=0;j<=18;j++)
+	for (j=0;j<18;j++)
 	{
 		// wait for the hex that actually has a thief on it (thief owner is meaningless except to tell it exists)
 		if (pos2Owner(126+j))
@@ -557,6 +860,74 @@ void assign_resources(void)
 	}
 }
 
+void show_remaining_piece(void)
+{
+	uint8_t i;
+	for (i=0;i<12;i++)
+	{
+		s_memory[RESOURCE_REC_REG+i]=pieces_remaining[i/3][i%3];
+	}
+	
+}
+
+uint8_t buildRoad(int8_t initial_placement, uint8_t last_settlement)
+{
+	uint8_t temp_pos;
+	last_pos_confirmed = 0xFF;
+	while(last_pos_confirmed == 0xFF) {
+		checkBoardState(0,1,0,0,initial_placement,last_settlement);
+	}
+	temp_pos = last_pos_confirmed;
+	last_pos_confirmed = 0xFF;
+	return temp_pos;
+}
+
+uint8_t buildSettlement(int8_t initial_placement)
+{
+	uint8_t temp_pos;
+	last_pos_confirmed = 0xFF;
+	while(last_pos_confirmed == 0xFF) {
+		checkBoardState(1,0,0,0,initial_placement,0xFF);
+	}
+	temp_pos = last_pos_confirmed;
+	last_pos_confirmed = 0xFF;
+	return temp_pos;
+}
+
+uint8_t buildCity()
+{
+	uint8_t temp_pos;
+	last_pos_confirmed = 0xFF;
+	while(last_pos_confirmed == 0xFF) {
+		checkBoardState(0,0,1,0,0,0xFF);
+	}
+	temp_pos = last_pos_confirmed;
+	last_pos_confirmed = 0xFF;
+	return temp_pos;
+}
+
+uint8_t moveThief()
+{
+	uint8_t last_thief_pos;
+	uint8_t temp_pos;
+	uint8_t i;
+	for (i=7*18;i<=MIDDLE_THIEF_POS;i++)
+	{
+		if (pos2Owner(i)) {
+			s_memory[11] = i+1;
+			last_thief_pos = i;
+		}
+	}
+	posSetOwner(last_thief_pos,0);
+	clearPosLegal(last_thief_pos);
+	last_pos_confirmed = 0xFF;
+	while(last_pos_confirmed == 0xFF) {
+		checkBoardState(0,0,0,1,0,last_thief_pos);
+	}
+	temp_pos = last_pos_confirmed;
+	last_pos_confirmed = 0xFF;
+	return temp_pos;
+}
 
 void confirmNewPiece(void)
 {
@@ -572,6 +943,8 @@ void confirmNewPiece(void)
 	}
 	else if ((s_memory[NEW_PIECE_LOC_REG]/18)%2 == 0)
 	{
+		// Reduce the number of roads that player has remaining
+		pieces_remaining[s_memory[CURRENT_PLAYER_REG]-1][0]--;
 		// Do something for roads
 		// Road placement affects longest road
 		// LongestRoad();		// Placeholder function
@@ -581,49 +954,70 @@ void confirmNewPiece(void)
 		// Do something for settlements/cities
 		// Upgrade city status of position (nothing to settlement or settlement to city)
 		city_map[s_memory[NEW_PIECE_LOC_REG]]++;
+		
+		// Reduce the number of settlements or cities that player has remaining
+		if (city_map[s_memory[NEW_PIECE_LOC_REG]]>1)
+		{
+			// Remove a city, refill a settlement
+			pieces_remaining[s_memory[CURRENT_PLAYER_REG]-1][2]--;
+			pieces_remaining[s_memory[CURRENT_PLAYER_REG]-1][1]++;
+		}
+		else
+		{
+			// Remove a settlement
+			pieces_remaining[s_memory[CURRENT_PLAYER_REG]-1][1]--;
+		}
+		
 		// Settlement placement affects resource distribution
 		assign_resources();
 		// Settlement placement can affect longest road
 		// LongestRoad();		// Placeholder function
 	}
 	
-	// Clear new piece location register
-	s_memory[NEW_PIECE_LOC_REG] = 0xFF;
-	// Do not clear the new piece confirm flag. Used in PlaceCity,PlaceRoad,PlaceSettlement,PlaceThief to exit wait loops
-	//s_memory[PI_EVENT_REG] = s_memory[PI_EVENT_REG] & ~(PI_NEW_PIECE_CONFIRM);
+	// Clear new piece location registers
+	s_memory[NEW_PIECE_LOC_REG] = -1;
+	s_memory[PIECE_TYPE_REG] = 0;
+	s_memory[NEW_PIECE_PORT_REG] = -1;
+	s_memory[PLAYERS_THIEFED_REG] = 0;
+	
+}
+
+void rejectNewPiece(void)
+{
+	last_pos_rejected = s_memory[NEW_PIECE_LOC_REG];
 }
 
 // Functions to access the Static Map
 int rowCol2Pos(int row, int col) {
 	int pos = row*18+col;
-if ((pos > 144) || (pos < 0)) { return -1; }
+if ((pos > MIDDLE_THIEF_POS) || (pos < 0)) { return -1; }
 return (pos);
 }
 
 int pos2AdjPos(int pos, int adj_num) {
-	if ((pos > 144) || (pos < 0)) { return -1; }
+	if ((pos > MIDDLE_THIEF_POS) || (pos < 0)) { return -1; }
 	if ((adj_num > 2) || (adj_num < 0)) { return -1; }
 	return (pos_map[pos][adj_num]);
 }
 
 int pos2AdjHex(int pos, int adj_num) {
-    if ((pos > 144) || (pos < 0)) { return -1; }
+    if ((pos > MIDDLE_THIEF_POS) || (pos < 0)) { return -1; }
 	if ((adj_num > 2) || (adj_num < 0)) { return -1; }
     
 	return (pos_map[pos][adj_num+3]);
 }
 int pos2Port(int pos) {
-	if ((pos > 144) || (pos < 0)) { return -1; }
+	if ((pos > MIDDLE_THIEF_POS) || (pos < 0)) { return -1; }
     return(pos_map[pos][6]);
 }
 // Functions to access the position owners
 int pos2Owner(int pos) {
-    if ((pos > 144) || (pos < 0)) { return -1; }
+    if ((pos > MIDDLE_THIEF_POS) || (pos < 0)) { return -1; }
     return (owner_map[pos]);
 }
 
 void posSetOwner(int pos, int owner) {
-    if ((pos <= 144) && (pos >= 0)) {
+    if ((pos <= MIDDLE_THIEF_POS) && (pos >= 0)) {
       if ((owner <= 4) && (owner >= 0)) {
 	    owner_map[pos] = owner;
 	  }
@@ -631,14 +1025,14 @@ void posSetOwner(int pos, int owner) {
 }
 
 void setPosLegal(int pos){
-	if ((pos<=144) && (pos >=0))
+	if ((pos<=MIDDLE_THIEF_POS) && (pos >=0))
 	{
 		legalBoardState[pos/18] = legalBoardState[pos/18] | 1<<ColPins[pos%18];
 	}
 }
 
 void clearPosLegal(int pos){
-	if ((pos<=144) && (pos >=0))
+	if ((pos<=MIDDLE_THIEF_POS) && (pos >=0))
 	{
 		legalBoardState[pos/18] = legalBoardState[pos/18] & ~(1<<ColPins[pos%18]);
 	}
@@ -769,28 +1163,30 @@ void TestGameSetup(void){
 		Hex2Resource[i]=resource_order[i];
 		Hex2Rarity[hex_order[i]] = rarity_order[i];
 	}
-	
+	/*
 	// Player 1 cities/settlements
+	s_memory[CURRENT_PLAYER_REG]= 1;
 	for (i=0;i<sizeof(p1pos)/sizeof(p1pos[0]);i++)
 	{
-		posSetOwner(p1pos[i],1);
-		setPosLegal(p1pos[i]);
-		city_map[p1pos[i]]++;
+		s_memory[NEW_PIECE_LOC_REG] = p1pos[i];
+		confirmNewPiece();
 		rarity_display_error(p1pos[i]%18,p1pos[i]/18,0);
 		delay_ms(500);
 	}
-	
-	city_map[p1pos[1]]++;
+	// City
+	s_memory[NEW_PIECE_LOC_REG] = p1pos[1];
+	confirmNewPiece();
+	rarity_display_error(p1pos[1]%18,p1pos[1]/18,1);
 	
 	// Player 2 cities/settlements
+	s_memory[CURRENT_PLAYER_REG] = 2;
 	for (i=0;i<sizeof(p2pos)/sizeof(p2pos[0]);i++)
 	{
-		posSetOwner(p2pos[i],2);
-		setPosLegal(p2pos[i]);
-		city_map[p2pos[i]]++;
+		s_memory[NEW_PIECE_LOC_REG] = p2pos[i];
+		confirmNewPiece();
 		rarity_display_error(p2pos[i]%18,p2pos[i]/18,0);
 		delay_ms(500);
-	}
+	}*/
 	
 	//Thief proper
 	posSetOwner(131,1);
@@ -842,7 +1238,7 @@ int8_t chkstateTest(void)
 	// Don't forget to check the middle thief.
 	
 	
-	if ( (!ioport_get_pin_level(MIDDLE_SENSOR) && !pos2Owner(144)) || (ioport_get_pin_level(MIDDLE_SENSOR)&& pos2Owner(144))){
+	if ( (!ioport_get_pin_level(MIDDLE_SENSOR) && !pos2Owner(MIDDLE_THIEF_POS)) || (ioport_get_pin_level(MIDDLE_SENSOR)&& pos2Owner(MIDDLE_THIEF_POS))){
 		
 		if (!getLegalRow(7))
 		{

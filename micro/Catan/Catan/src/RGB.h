@@ -42,6 +42,7 @@
 #define COLOR_ERROR 0xFF0000
 #define COLOR_ORE	0xB09090  //0xB0B090
 #define COLOR_DESERT 0xF0F0B0
+#define COLOR_CONFIRM 0x0000FF
 
 
 void clockRGB( void );

@@ -9,6 +9,7 @@
 #define I2C_H_
 
 #include <asf.h>
+#include <Catan.h>
 
 //--------------------------------------------------------------------------------------------------------------
 //------------------------------------------ T W I   S L A V E -------------------------------------------------
@@ -58,7 +59,7 @@
 #define PI_DEV_KNIGHT			6			// A knight was played
 #define PI_NEW_PIECE_CONFIRM	7			// Confirm the new piece in NEW_PIECE_LOC_REG
 #define PI_NEW_PIECE_REJECT		8			// Deny the new piece in NEW_PIECE_LOC_REG
-
+#define PI_CLEAR_I2CFLG			9			// So the Pi can tell the MCU to turn off the I2C flag if it needs to
 #define PI_ROAD_PURCHASE		10			// A road was purchased
 #define PI_SETTLEMENT_PURCHASE	11			// A settlement was purchased
 #define PI_CITY_PURCHASE		12			// A city was purchased via web interface
@@ -72,9 +73,9 @@
 #define MCU_NEW_LONG_ROAD		LONGEST_ROAD_REG		// Set when a new player has longest road (0 if none)
 
 // Register 6: Piece Type Code (10's digit is what action is needed, 1's digit is the type of piece
-#define PIECE_TYPE_TBC			10			// The piece needs confirmation from the player	
-#define PIECE_TYPE_REMOVE		20			// The piece needs to be removed by the player
-#define PIECE_TYPE_REPLACE		30			// The piece needs to be replaced by the player
+#define PIECE_TYPE_TBC			0x10			// The piece needs confirmation from the player	
+#define PIECE_TYPE_REMOVE		0x20			// The piece needs to be removed by the player
+#define PIECE_TYPE_REPLACE		0x30			// The piece needs to be replaced by the player
 #define PIECE_TYPE_THIEF		 0			// The piece is a thief
 #define PIECE_TYPE_ROAD			 1			// The piece is a road
 #define PIECE_TYPE_SETTLEMENT	 2			// The piece is a settlement
