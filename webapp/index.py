@@ -372,6 +372,7 @@ elif "plentySelected" in form:
 	playerInfo['resources'][form.getvalue('resource1')] = playerInfo['resources'][form.getvalue('resource1')] + 1
 	playerInfo['resources'][form.getvalue('resource2')] = playerInfo['resources'][form.getvalue('resource2')] + 1
 	playerInfo['playedDevCard'] = 1
+	playerInfo['cards']['plenty'] = playerInfo['cards']['plenty'] - 1
 	writeJson(playerFile, playerInfo)
 	print("Location: index.py?played=plenty#modal")
 elif "monopolySelected" in form:
@@ -384,6 +385,7 @@ elif "monopolySelected" in form:
 			monopolyPlayerID = fn.split('.')[0]
 			setRefresh(monopolyPlayerID, REFRESH_VALUE['monopoly'])
 	playerInfo['playedDevCard'] = 1
+	playerInfo['cards']['monopoly'] = playerInfo['cards']['monopoly'] - 1
 	writeJson(playerFile, playerInfo)
 	print("Location: index.py?played=monopoly#modal")
 elif "knightsSelected" in form:
