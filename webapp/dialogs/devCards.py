@@ -75,7 +75,7 @@ else:
 					<p>This card gets you an additional victory point, hidden from the other players. It cannot be played, but counts toward your total score. Your opponents will only see your score without these cards. You currently have {4} victory cards.</p>
 				"""
 	else:
-		output = """<form method="post" action="index.py">
+		output = """<form method="post" action="index.py" class="cards">
 				<h2>Development Cards</h2>
 				<p>You have the following available.</p>
 				<input type="submit" value="Victory: {4}" class="bottom moreTop left" name="victory" />

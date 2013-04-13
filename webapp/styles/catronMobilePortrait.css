@@ -177,7 +177,6 @@ a.playerName{
 	 min-height: 30%;
 	 display: inline;
 }
-}
 
 .modal a.bottom {
 	display: inline-block;
@@ -266,7 +265,7 @@ a.playerName{
 
 /*-- Added by Robert -- */
 
-.modal form.trade {
+.modal form.trade form.cards{
   height: 415px;
 }
 
