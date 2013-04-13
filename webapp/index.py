@@ -457,7 +457,7 @@ print("""<!DOCTYPE HTML>
 							}
 							else if(xmlhttp.responseText == 6)
 							{
-								window.location = "./index.py?against=monopoly#modal";
+								window.location = "./index.py?against=monoCardd#modal";
 							}
 						}
 					}
