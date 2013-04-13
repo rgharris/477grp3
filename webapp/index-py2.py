@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
 #My thoughts:
@@ -21,7 +21,7 @@
 # Import debugging
 import cgitb
 #Everything else.
-import os, sys, json, http.cookies, time, cgi, random, shutil
+import os, sys, json, Cookie, time, cgi, random, shutil
 #Enable debugging
 cgitb.enable()
 
@@ -77,9 +77,7 @@ def createPlayer(playerFile, playerID):
 		#	just in case the board is turned off and not back on.
 		#awards: This is where Longest Road and Largest Army are stored. A simple list.
 		#points: The player's current score, minus their Victory Point cards.
-		#playedKnights: The number of knights the player has played.
-		#currentTurn: 1 if it's the player's turn, 0 if it is not.
-	newPlayer = {'playerName':"Player " + str(playerID+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'active':time.time(), 'awards':[], 'points':0, 'currentTurn':0}
+	newPlayer = {'playerName':"Player " + str(playerID+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{}, 'onHold':{}, 'active':time.time(), 'awards':[], 'points':0}
 	writeJson(playerFile, newPlayer)
 	return newPlayer
 
@@ -126,12 +124,6 @@ def chkDeck(deckFile, timeout):
 			return True
 		return False
 
-def endTurn(playerFile, playerInfo):
-	for resource in playerInfo['cards']:
-		playerInfo['cards'][resource] = playerInfo['cards'][resource] + playerInfo['onHold'][resource]
-	playerInfo['onHold'] = {'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}
-	writeJson(playerFile, playerInfo)
-
 ####################PRE DISPLAY IS BELOW###################
 #Debug variable, append strings for debugging to this variable
 #and they will be output after the main HTML.
@@ -150,7 +142,7 @@ REFRESH_VALUE = {'reset':0, 'generic':1, 'tradeRequest':2, 'tradeConfirm':3, 'tr
 
 #Get cookies!
 cookies = os.environ.get('HTTP_COOKIE')
-cookie = http.cookies.SimpleCookie()
+cookie = Cookie.SimpleCookie()
 
 #Throw query string in a var for later.
 query = os.environ.get('QUERY_STRING')
@@ -202,11 +194,11 @@ if playerID != -1:
 	#last active time if the the cookie existed
 	#already.
 	#(Clear cookie var in the process)
-	cookie = http.cookies.SimpleCookie()
+	cookie = Cookie.SimpleCookie()
 	cookie['playerid'] = str(playerID)
 	cookie['lastactive'] = str(time.time())
 	#Cookies need to be sent before other headers
-	print(cookie)
+	print cookie
 
 #Now that we've set the cookie, we need to simply overwrite
 #the "autorefresh" file with a 0, so it doesn't autorefresh again.
@@ -214,12 +206,12 @@ setRefresh(playerID,REFRESH_VALUE['reset'])
 
 
 #################################FORM RETRIEVAL BELOW##################################
-if 'user' in form:
+if form.has_key('user'):
 	newUsername = form.getvalue("user", "Player " + str(playerID + 1))
 	playerInfo['playerName'] = cgi.escape(newUsername)
 	writeJson(playerFile, playerInfo)
 elif "endTurn" in form:
-	endTurn(playerFile, playerInfo)
+	pass
 elif "noEndTurn" in form:
 	pass
 elif "confirmPurchase" in form:
@@ -230,7 +222,7 @@ elif "confirmPurchase" in form:
 		playerInfo['points'] = playerInfo['points'] + 1
 		writeJson(playerFile, playerInfo)
 		#Notify board to place piece.
-		print("Location: index.py?place=piece#modal")
+		print "Location: index.py?place=piece#modal"
 
 	elif(purchaseItem == "city"):
 		playerInfo = payForPurchase(playerInfo, {'wheat':2, 'ore':3})
@@ -238,14 +230,14 @@ elif "confirmPurchase" in form:
 		playerInfo['points'] = playerInfo['points'] + 1
 		writeJson(playerFile, playerInfo)
 		#Notify board to place piece.
-		print("Location: index.py?place=piece#modal")
+		print "Location: index.py?place=piece#modal"
 
 	elif(purchaseItem == "road"):
 		playerInfo = payForPurchase(playerInfo, {'wood':1, 'clay':1})
 		######TODO: At this point we need to do a longest road check.
 		writeJson(playerFile, playerInfo)
 		#Notify board to place piece.
-		print("Location: index.py?place=piece#modal")
+		print "Location: index.py?place=piece#modal"
 
 	elif(purchaseItem == "dev"):
 		newDevBase = {'active':time.time(), 'knights':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}
@@ -263,7 +255,7 @@ elif "confirmPurchase" in form:
 		cardList = ['knights','monopoly','road','plenty','victory']
 		if sum(weights) == 0:
 			#If the sum of weights is 0, that means there are 0 cards in our deck. Nothing to draw!
-			print("Location: index.py?development=none#modal")
+			print "Location: index.py?development=none#modal"
 		else:
 			#This will return an integer between 0 and 4. The order is the same as the lists above.
 			randNum = weighted_choice_sub(weights)
@@ -278,52 +270,52 @@ elif "confirmPurchase" in form:
 			devBase[cardList[randNum]] = devBase[cardList[randNum]] - 1
 			writeJson(DEV_CARD_FILE, devBase)
 			#NOW We're done. Redirect to modal box to show what they got.
-			print("Location: index.py?obtained=" + cardList[randNum] + "#modal")
+			print "Location: index.py?obtained=" + cardList[randNum] + "#modal"
 
 elif "doNotPurchase" in form:
 	pass
 elif "settle" in form:
 	if (chkResources(playerInfo, {'wood':1, 'clay':1, 'wheat':1, 'sheep':1}) == False):
 		#Redirect to self with query string that identifies lack of resources and type of purchase; query string brings up modal box.
-		print("Location: index.py?resources=false&purchase=settle#modal")
+		print "Location: index.py?resources=false&purchase=settle#modal"
 	else:
 		#Redirect to self - query string identifies resources and type of purchase.
-		print("Location: index.py?resources=true&purchase=settle#modal")
+		print "Location: index.py?resources=true&purchase=settle#modal"
 elif "city" in form:
 	if (chkResources(playerInfo, {'wheat':2, 'ore':3}) == False):
 		#Redirect to self with query string that identifies lack of resources and type of purchase; query string brings up modal box.
-		print("Location: index.py?resources=false&purchase=city#modal")
+		print "Location: index.py?resources=false&purchase=city#modal"
 	else:
 		#Redirect to self - query string identifies resources and type of purchase.
-		print("Location: index.py?resources=true&purchase=city#modal")
+		print "Location: index.py?resources=true&purchase=city#modal"
 elif "road" in form:
 	if (chkResources(playerInfo, {'clay':1, 'wood':1}) == False):
 		#Redirect to self with query string that identifies lack of resources and type of purchase; query string brings up modal box.
-		print("Location: index.py?resources=false&purchase=road#modal")
+		print "Location: index.py?resources=false&purchase=road#modal"
 	else:
 		#Redirect to self - query string identifies resources and type of purchase.
-		print("Location: index.py?resources=true&purchase=road#modal")
+		print "Location: index.py?resources=true&purchase=road#modal"
 elif "dev" in form:
 	if (chkResources(playerInfo, {'sheep':1, 'wheat':1, 'ore':1}) == False):
 		#Redirect to self with query string that identifies lack of resources and type of purchase; query string brings up modal box.
-		print("Location: index.py?resources=false&purchase=dev#modal")
+		print "Location: index.py?resources=false&purchase=dev#modal"
 	else:
 		#Redirect to self - query string identifies resources and type of purchase.
 		if chkDeck(DEV_CARD_FILE,TIMEOUT) == False:
-			print("Location: index.py?development=none#modal")
+			print "Location: index.py?development=none#modal"
 		else:
-			print("Location: index.py?resources=true&purchase=dev#modal")
+			print "Location: index.py?resources=true&purchase=dev#modal"
 elif "deal" in form:
 	#obtaining what we want to trade and what for.
 	#First check if we can do the trade.
 	give = {'clay': int(form.getvalue('giveClay')),'ore': int(form.getvalue('giveOre')), 'wheat': int(form.getvalue('giveWheat')),'sheep': int(form.getvalue('giveSheep')),'wood': int(form.getvalue('giveWood'))}
 	get = {'clay': int(form.getvalue('getClay')),'ore': int(form.getvalue('getOre')), 'wheat': int(form.getvalue('getWheat')),'sheep': int(form.getvalue('getSheep')),'wood': int(form.getvalue('getWood'))}
-	give = dict((key, val) for key, val in give.items() if val != 0)
-	get = dict((key, val) for key, val in get.items() if val != 0)
+	give = dict((key, val) for key, val in give.iteritems() if val != 0)
+	get = dict((key, val) for key, val in get.iteritems() if val != 0)
 	if (len(give) == 0 or len(get) == 0):
-		print("Location: index.py?trade=invalid#modal")
+		print "Location: index.py?trade=invalid#modal"
 	elif (chkResources(playerInfo, give) == False):
-		print("Location: index.py?trade=invalid#modal")
+		print "Location: index.py?trade=invalid#modal"
 	else:
 		#So now we're sure we can do the trade on this end, so save this info in a json store.
 		writeJson(TRADE_FILE, {'from':playerID, 'give':give, 'get':get})
@@ -348,24 +340,14 @@ elif "confirmTrade" in form:
 elif "doNotTrade" in form:
 	#From remote player, denying trade.
 	setRefresh(int(form.getvalue('tradeFrom')), REFRESH_VALUE['tradeDeny'])
-elif "victory" in form:
-	print("Location: index.py?play=victory#modal")
-elif "monopoly" in form:
-	print("Location: index.py?play=monopoly#modal")
-elif "roadDev" in form:
-	print("Location: index.py?play=road#modal")
-elif "knights" in form:
-	print("Location: index.py?play=knights#modal")
-elif "plenty" in form:
-	print("Location: index.py?play=plenty#modal")
 
 
 #################################PAGE GENERATION BELOW##################################
 
 #This stuff needs to go at the top of all pages.
-print("Content-Type: text/html;charset=utf-8")
-print()
-print("""<!DOCTYPE HTML>
+print "Content-Type: text/html;charset=utf-8"
+print
+print """<!DOCTYPE HTML>
    <html>
       <head>
          <!-- Required for mobile devices -->
@@ -427,9 +409,9 @@ print("""<!DOCTYPE HTML>
 				
    		</script>
       </head>
-""")
+"""
 if playerID == -1:
-	print("""<body class="error">
+	print """<body class="error">
         		 <div id="container">
            		 <div id="head">
                	<h2>Max Players Reached!</h2>
@@ -439,25 +421,25 @@ if playerID == -1:
 	             </div>
     	      </div>
 	      </body>
-	""")
+	"""
 
 else:
 	script = ""
 	#Go through the query string, and check for queries that would bring up a box. If we see one,
 	#add a script that calls AJAX to bring in the correct box.
-	if "purchase" in pairs:
+	if pairs.has_key("purchase"):
 		if pairs["resources"][0] == "false":
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?invalid=" + pairs["purchase"][0] + "')</script>"
 		elif pairs["resources"][0] == "true":
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?confirm=" + pairs["purchase"][0] + "')</script>"
-	elif "obtained" in pairs:
+	elif pairs.has_key("obtained"):
 		script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?obtained=" + pairs["obtained"][0] + "')</script>"
-	elif "development" in pairs:
+	elif pairs.has_key("development"):
 		if pairs["development"][0] == "none":
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?development=none')</script>"
-	elif "place" in pairs:
+	elif pairs.has_key("place"):
 		script = "<script>loadXMLDoc('ModalBox', '/dialogs/purchase.py?place=piece')</script>"
-	elif "trade" in pairs:
+	elif pairs.has_key("trade"):
 		if pairs["trade"][0] == "invalid":
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?invalid=current')</script>"
 		elif pairs["trade"][0] == "check":
@@ -468,17 +450,6 @@ else:
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?deny=true')</script>"
 		elif pairs["trade"][0] == "fail":
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?invalid=remote')</script>"
-	elif "play" in pairs:
-		if pairs["play"][0] == "victory":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=victory&player=" + str(playerID) + "')</script>"
-		elif pairs["play"][0] == "monopoly":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=monopoly&player=" + str(playerID) + "')</script>"
-		elif pairs["play"][0] == "road":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=road&player=" + str(playerID) + "')</script>"
-		elif pairs["play"][0] == "knights":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=knights&player=" + str(playerID) + "')</script>"
-		elif pairs["play"][0] == "plenty":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=plenty&player=" + str(playerID) + "')</script>"
 	output = """
 		<body>
 			<!--Need to pause when modal is active...this is just testing now.-->
@@ -522,11 +493,9 @@ else:
 						<p class="amount">{7}</p>
 					</div>
 					<div id="cards" class="resource">
-						<a href="#modal" id="cardsLink" onclick="loadXMLDoc('ModalBox', '/dialogs/devCards.py?player={9}')">
-							<img src="images/sea.png" class="resourceImg"/>
-							<p class="resourceTitle">Dev. Cards</p>
-							<p class="amount">{8}</p>
-						</a>
+						<img src="images/sea.png" class="resourceImg"/>
+						<p class="resourceTitle">Dev. Cards</p>
+						<p class="amount">{8}</p>
 					</div>
 				</div>
 				<div class="clear"></div>
@@ -544,10 +513,10 @@ else:
 	if 'victory' in playerInfo['onHold']:
 		curPoints = curPoints + playerInfo['onHold']['victory']
 	if 'victory' in playerInfo['cards']:
-		curPoints = curPoints + playerInfo['cards']['victory']
+		curPoints = curPoints + playerInfo['onHold']['cards']
 
-	print(output.format(script,playerInfo['playerName'], str(curPoints), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())),playerID))
+	print output.format(script,playerInfo['playerName'], str(curPoints), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())),playerID)
 #This needs to go at the end of all pages.
-print("</html>")
+print "</html>"
 #Debug variable, prints after main html. Most browsers will still render.
-print(debug)
+print debug

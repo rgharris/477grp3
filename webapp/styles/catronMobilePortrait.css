@@ -83,6 +83,10 @@ div#head h2{
 #clay, #wood, #cards{
 	color: #fff;
 }
+#cardsLink{
+	text-decoration: none;
+	color: #fff;
+}
 .button{
 	float:left;
 	border-right:solid 1px #000;
@@ -173,7 +177,6 @@ a.playerName{
 	 min-height: 30%;
 	 display: inline;
 }
-}
 
 .modal a.bottom {
 	display: inline-block;
@@ -215,6 +218,9 @@ a.playerName{
 }
 .modal input[type="submit"].top{
 	bottom:22%;
+}
+.modal input[type="submit"].moreTop{
+	bottom:44%;
 }
 .modal input[type="submit"].left{
 	left:0;
@@ -259,7 +265,7 @@ a.playerName{
 
 /*-- Added by Robert -- */
 
-.modal form.trade {
+.modal form.trade, .modal form.cards{
   height: 415px;
 }
 
