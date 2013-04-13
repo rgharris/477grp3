@@ -344,14 +344,19 @@ elif "doNotTrade" in form:
 	setRefresh(int(form.getvalue('tradeFrom')), REFRESH_VALUE['tradeDeny'])
 elif "victory" in form:
 	print("Location: index.py?play=victory#modal")
+	debug = debug + "VICTORY!"
 elif "monopoly" in form:
 	print("Location: index.py?play=monopoly#modal")
+	debug = debug + "MONOPOLY!"
 elif "road" in form:
 	print("Location: index.py?play=road#modal")
+	debug = debug + "ROAD!"
 elif "knights" in form:
 	print("Location: index.py?play=knights#modal")
+	debug = debug + "KNIGHTS!"
 elif "plenty" in form:
 	print("Location: index.py?play=plenty#modal")
+	debug = debug + "PLENTY!"
 
 
 #################################PAGE GENERATION BELOW##################################
