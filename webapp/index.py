@@ -79,7 +79,8 @@ def createPlayer(playerFile, playerID):
 		#points: The player's current score, minus their Victory Point cards.
 		#playedKnights: The number of knights the player has played.
 		#currentTurn: 1 if it's the player's turn, 0 if it is not.
-	newPlayer = {'playerName':"Player " + str(playerID+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'active':time.time(), 'awards':[], 'points':0, 'currentTurn':0}
+		#playedDevCard: only 1 dev card per turn, so turns to 1 after a dev card has been played, and 0 at turn end.
+	newPlayer = {'playerName':"Player " + str(playerID+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'active':time.time(), 'awards':[], 'points':0, 'currentTurn':0, 'playedDevCard':0}
 	writeJson(playerFile, newPlayer)
 	return newPlayer
 
@@ -130,6 +131,7 @@ def endTurn(playerFile, playerInfo):
 	for resource in playerInfo['cards']:
 		playerInfo['cards'][resource] = playerInfo['cards'][resource] + playerInfo['onHold'][resource]
 	playerInfo['onHold'] = {'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}
+	playerInfo['playedDevCard'] = 0
 	writeJson(playerFile, playerInfo)
 
 ####################PRE DISPLAY IS BELOW###################
@@ -146,7 +148,7 @@ DEV_CARD_FILE="players/dev.json"
 TRADE_FILE = "players/trade.json"
 TIMEOUT = 3600 #one hour (3600 seconds)
 #This is a map of values that could be in the refresh file, and are checked in javascript.
-REFRESH_VALUE = {'reset':0, 'generic':1, 'tradeRequest':2, 'tradeConfirm':3, 'tradeDeny':4, 'cannotTrade':5}
+REFRESH_VALUE = {'reset':0, 'generic':1, 'tradeRequest':2, 'tradeConfirm':3, 'tradeDeny':4, 'cannotTrade':5, 'monopoly':6}
 
 #Get cookies!
 cookies = os.environ.get('HTTP_COOKIE')
@@ -358,6 +360,34 @@ elif "knights" in form:
 	print("Location: index.py?play=knights#modal")
 elif "plenty" in form:
 	print("Location: index.py?play=plenty#modal")
+elif "playMonopoly" in form:
+	print("Location: index.py?playing=monopoly#modal")
+elif "playRoadDev" in form:　
+	pass
+elif "playKnights" in form:
+	pass
+elif "playPlenty" in form:
+	print("Location: index.py?playing=plenty#modal")
+elif "plentySelected" in form:
+	playerInfo['resources'][form.getvalue('resource1')] = playerInfo['resources'][form.getvalue('resource1')] + 1
+	playerInfo['resources'][form.getvalue('resource2')] = playerInfo['resources'][form.getvalue('resource2')] + 1
+	writeJson(playerFile, playerInfo)
+	print("Location: index.py?played=plenty#modal")
+elif "monopolySelected" in form:
+	for fn in os.listdir(PLAYER_FILE):
+      if fn != 'dev.json' and fn != 'trade.json':
+			monopolyPlayerInfo = readJson(PLAYER_FILE + fn)
+			playerInfo['resources'][form.getvalue('resource')] = monopolyPlayerInfo['resources'][form.getvalue('resource')] + playerInfo['resources'][form.getvalue('resource')]
+			monopolyPlayerInfo['resources'][form.getvalue('resource')] = 0
+			writeJson(fn, monopolyPlayerInfo)
+			monopolyPlayerID = fn.split('.')[0]
+			setRefresh(monopolyPlayerID, REFRESH_VALUE['monopoly'])
+	writeJson(playerFile, playerInfo)
+	print("Location: index.py?played=monopoly#modal")
+elif "knightsSelected" in form:
+	pass
+elif "roadDevSelected" in form:
+	pass
 
 
 #################################PAGE GENERATION BELOW##################################
@@ -419,6 +449,10 @@ print("""<!DOCTYPE HTML>
 							{
 								window.location = "./index.py?trade=fail#modal";
 							}
+							else if(xmlhttp.responseText == 6)
+							{
+								window.location = "./index.py?monopoly=taken#modal";
+							}
 						}
 					}
 					xmlhttp.open("GET", "/chkRefresh/chk.py?id=" + playerID, true);
@@ -470,15 +504,35 @@ else:
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?invalid=remote')</script>"
 	elif "play" in pairs:
 		if pairs["play"][0] == "victory":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=victory&player=" + str(playerID) + "')</script>"
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=victory&player=" + str(playerID) + "&playedDev=" + str(playerInfo['playedDevCard']) + "')</script>"
 		elif pairs["play"][0] == "monopoly":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=monopoly&player=" + str(playerID) + "')</script>"
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=monopoly&player=" + str(playerID) + "&playedDev=" + str(playerInfo['playedDevCard']) + "')</script>"
 		elif pairs["play"][0] == "road":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=road&player=" + str(playerID) + "')</script>"
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=road&player=" + str(playerID) + "&playedDev=" + str(playerInfo['playedDevCard']) + "')</script>"
 		elif pairs["play"][0] == "knights":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=knights&player=" + str(playerID) + "')</script>"
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=knights&player=" + str(playerID) + "&playedDev=" + str(playerInfo['playedDevCard']) + "')</script>"
 		elif pairs["play"][0] == "plenty":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=plenty&player=" + str(playerID) + "')</script>"
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=plenty&player=" + str(playerID) + "&playedDev=" + str(playerInfo['playedDevCard']) + "')</script>"
+	elif "playing" in pairs:
+		if pairs["playing"][0] == "monopoly":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?confirm=monopoly&player=" + str(playerID) + "')</script>"
+		elif pairs["playing"][0] == "plenty":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?confirm=plenty&player=" + str(playerID) + "')</script>"
+		elif pairs["playing"][0] == "road":
+			pass
+		elif pairs["playing"][0] == "knights":
+			pass
+	elif "played" in pairs:
+		if pairs["played"][0] == "monopoly":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?success=monopoly&player=" + str(playerID) + "')</script>"
+		elif pairs["played"][0] == "plenty":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?success=plenty&player=" + str(playerID) + "')</script>"
+		elif pairs["played"][0] == "road":
+			pass
+		elif pairs["played"][0] == "knights":
+			pass
+	elif "monopoly" in pairs:
+		script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?against=monopoly&player=" + str(playerID) + "')</script>"
 	output = """
 		<body>
 			<!--Need to pause when modal is active...this is just testing now.-->
