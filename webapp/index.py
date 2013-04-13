@@ -342,6 +342,16 @@ elif "confirmTrade" in form:
 elif "doNotTrade" in form:
 	#From remote player, denying trade.
 	setRefresh(int(form.getvalue('tradeFrom')), REFRESH_VALUE['tradeDeny'])
+elif "victory" in form:
+	print("Location: index.py?play=victory#modal")
+elif "monopoly" in form:
+	print("Location: index.py?play=monopoly#modal")
+elif "road" in form:
+	print("Location: index.py?play=road#modal")
+elif "knights" in form:
+	print("Location: index.py?play=knights#modal")
+elif "plenty" in form:
+	print("Location: index.py?play=plenty#modal")
 
 
 #################################PAGE GENERATION BELOW##################################
@@ -452,6 +462,17 @@ else:
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?deny=true')</script>"
 		elif pairs["trade"][0] == "fail":
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?invalid=remote')</script>"
+	elif "play" in pairs:
+		if pairs["play"][0] == "victory":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=victory')</script>"
+		elif pairs["play"][0] == "monopoly":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=monopoly')</script>"
+		elif pairs["play"][0] == "road":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=road')</script>"
+		elif pairs["play"][0] == "knights":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=knights')</script>"
+		elif pairs["play"][0] == "plenty":
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=plenty')</script>"
 	output = """
 		<body>
 			<!--Need to pause when modal is active...this is just testing now.-->
