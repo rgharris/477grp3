@@ -80,7 +80,7 @@ else:
 				<p>You have the following available.</p>
 				<input type="submit" value="Victory: {4}" class="bottom moreTop left" name="victory" />
 				<input type="submit" value="Monopoly: {1}" class="bottom half top left" name="monopoly" />
-				<input type="submit" value="Road Building: {2}" class="bottom half top right" name="road" />
+				<input type="submit" value="Road Building: {2}" class="bottom half top right" name="roadDev" />
 				<input type="submit" value="Knight: {3}" class="bottom half bot left" name="knights" />
 				<input type="submit" value="Year of Plenty: {0}" class="bottom half bot right" name="plenty" />
 			    </form>"""

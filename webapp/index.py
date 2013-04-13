@@ -346,7 +346,7 @@ elif "victory" in form:
 	print("Location: index.py?play=victory#modal")
 elif "monopoly" in form:
 	print("Location: index.py?play=monopoly#modal")
-elif "road" in form:
+elif "roadDev" in form:
 	print("Location: index.py?play=road#modal")
 elif "knights" in form:
 	print("Location: index.py?play=knights#modal")
