@@ -130,7 +130,7 @@ static void twi_slave_stop( void )
 }
 
 uint8_t isDiceRolled(void){
-	if (s_memory[PI_EVENT_REG] & PI_DICE_ROLL)
+	if (s_memory[PI_EVENT_REG] == PI_DICE_ROLL)
 	{
 		return 1;
 	}
@@ -138,7 +138,7 @@ uint8_t isDiceRolled(void){
 }
 
 uint8_t isTurnOver(void){
-	if (s_memory[PI_EVENT_REG] & PI_END_TURN)
+	if (s_memory[PI_EVENT_REG] == PI_END_TURN)
 	{
 		return 1;
 	}
@@ -146,7 +146,7 @@ uint8_t isTurnOver(void){
 }
 
 uint8_t isNewGame(void){
-	if (s_memory[PI_EVENT_REG] & PI_NEW_GAME)
+	if (s_memory[PI_EVENT_REG] == PI_NEW_GAME)
 	{
 		return 1;
 	}
@@ -155,7 +155,7 @@ uint8_t isNewGame(void){
 
 uint8_t isRoadBuildingPlayed(void)
 {
-	if (s_memory[PI_EVENT_REG] & PI_DEV_ROAD)
+	if (s_memory[PI_EVENT_REG] == PI_DEV_ROAD)
 	{
 		return 1;
 	}
@@ -163,7 +163,7 @@ uint8_t isRoadBuildingPlayed(void)
 }
 
 uint8_t isKnightPlayed(void){
-	if (s_memory[PI_EVENT_REG] & PI_DEV_KNIGHT)
+	if (s_memory[PI_EVENT_REG] == PI_DEV_KNIGHT)
 	{
 		return 1;
 	}
@@ -171,19 +171,23 @@ uint8_t isKnightPlayed(void){
 }
 
 uint8_t isNewPieceConfirm(void){
-	if (s_memory[PI_EVENT_REG] & PI_NEW_PIECE_CONFIRM)
+	if (s_memory[PI_EVENT_REG] == PI_NEW_PIECE_CONFIRM)
 	{
 		return 1;
 	}
 	return 0;
 }
 uint8_t isNewPieceReject(void){
-	if (s_memory[PI_EVENT_REG] & PI_NEW_PIECE_REJECT)
+	if (s_memory[PI_EVENT_REG] == PI_NEW_PIECE_REJECT)
 	{
 		return 1;
 	}
 	return 0;
 }
 uint8_t PiecePurchased(void){
-	return s_memory[PI_EVENT_REG] & PI_PIECE_PURCHASE;
+	if (s_memory[PI_EVENT_REG] >= PI_ROAD_PURCHASE)
+	{
+		return s_memory[PI_EVENT_REG] - PI_ROAD_PURCHASE;
+	}
+	
 }

@@ -38,31 +38,47 @@
 
 // Register Map
 #define PI_EVENT_REG				0		// Flags for the Pi to set
-#define MCU_EVENT_REG				1		// Flags for the MCU to set
-#define NEW_PIECE_LOC_REG			2		// Position of the piece to be confirmed, used as a check for the Pi
-#define PIECE_TYPE_REG				3		// The Type of the piece of interest (To be confirmed or error)
-#define NEW_PIECE_PORT_REG			4		// Set to appropriate value if new piece is next to port
-#define PLAYER_COUNT_REG			5		// Number of players playing this game
-#define CURRENT_PLAYER_REG			6		// The current turn's player
-#define LONGEST_ROAD_REG			7		// Which player has the longest road?
-#define DIE_VALUE_REG				8		// The value on the die roll
-#define PLAYERS_THIEFED_REG			9		// Players which are adjacent to the thief
+#define CURRENT_PLAYER_REG			1		// The current turn's player
+#define PLAYER_COUNT_REG			2		// Number of players playing this game
+#define MCU_EVENT_REG				3		// Flags for the MCU to set
+#define PLAYERS_THIEFED_REG			4		// Players which are adjacent to the thief
+#define NEW_PIECE_LOC_REG			5		// Position of the piece to be confirmed, used as a check for the Pi
+#define PIECE_TYPE_REG				6		// The Type of the piece of interest (To be confirmed or error)
+#define NEW_PIECE_PORT_REG			7		// Set to appropriate value if new piece is next to port
+#define LONGEST_ROAD_REG			8		// Which player has the longest road?
+#define DIE_VALUE_REG				9		// The value on the die roll
 #define RESOURCE_REC_REG			10		// 4x5 Array of resources each player receives on the die roll
 
-// Register 0: Pi Event Flags
-#define PI_NEW_GAME				0x01		// Set if New Game should start
-#define PI_DICE_ROLL			0x02		// Set if a player has rolled the dice
-#define PI_END_TURN				0x04		// Set if the current player ended their turn
-#define PI_DEV_ROAD				0x08		// Set if the player played a Road Building development card
-#define PI_DEV_KNIGHT			0x10		// Set if the player played a Knight development card or after a 7 roll
-#define PI_NEW_PIECE_CONFIRM	0x20		// Set if the piece in the NEW_PIECE_LOC_REG is confirmed by player
-#define PI_NEW_PIECE_REJECT		0x40		// Set if the piece in NEW_PIECE_LOC_REG is rejected
-#define PI_PIECE_PURCHASE		0xC0		// 0 = no purchase, 1 = road, 2 = settlement, 3 = city
+// Register 0: Pi Events
+#define PI_TURN_ON				1			// Pi is booted
+#define PI_NEW_GAME				2			// Start a new game
+#define PI_DICE_ROLL			3			// A player wants to roll the dice
+#define PI_END_TURN				4			// End the current player's turn
+#define PI_DEV_ROAD				5			// A road building card was played
+#define PI_DEV_KNIGHT			6			// A knight was played
+#define PI_NEW_PIECE_CONFIRM	7			// Confirm the new piece in NEW_PIECE_LOC_REG
+#define PI_NEW_PIECE_REJECT		8			// Deny the new piece in NEW_PIECE_LOC_REG
 
-// Register 1: MCU Event Flags
-#define MCU_NEW_PIECE_TBC		0x01		// Set if the MCU finds a new piece to be confirmed (indicated in NEW_PIECE_LOC_REG)
-#define MCU_ERROR_REMOVE		0x02		// Set if MCU detects piece that needs to be removed
-#define MCU_ERROR_REPLACE		0x04		// Set if MCU detects piece that needs to be replaced
+#define PI_ROAD_PURCHASE		10			// A road was purchased
+#define PI_SETTLEMENT_PURCHASE	11			// A settlement was purchased
+#define PI_CITY_PURCHASE		12			// A city was purchased via web interface
+ 
+
+// Register 3: MCU Events (points to first register I2c should read)
+#define MCU_NEW_PIECE_TBC		NEW_PIECE_LOC_REG		// Set if the MCU finds a new piece to be confirmed (indicated in NEW_PIECE_LOC_REG)
+#define MCU_NEW_THIEF_TBC		PLAYERS_THIEFED_REG		// Set if the MCU is asking a thief to be confirmed
+#define MCU_ERROR				PIECE_TYPE_REG			// Set if MCU detects piece that needs to be removed or replaced
+#define MCU_DICE_READY			DIE_VALUE_REG			// Set when the Pi requests a dice roll
+#define MCU_NEW_LONG_ROAD		LONGEST_ROAD_REG		// Set when a new player has longest road (0 if none)
+
+// Register 6: Piece Type Code (10's digit is what action is needed, 1's digit is the type of piece
+#define PIECE_TYPE_TBC			10			// The piece needs confirmation from the player	
+#define PIECE_TYPE_REMOVE		20			// The piece needs to be removed by the player
+#define PIECE_TYPE_REPLACE		30			// The piece needs to be replaced by the player
+#define PIECE_TYPE_THIEF		 0			// The piece is a thief
+#define PIECE_TYPE_ROAD			 1			// The piece is a road
+#define PIECE_TYPE_SETTLEMENT	 2			// The piece is a settlement
+#define PIECE_TYPE_CITY			 3			// The piece is a city
 
 // Global Variables
 extern U8  s_memory[TWI_MEM_SIZE];

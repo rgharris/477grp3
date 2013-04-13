@@ -196,6 +196,9 @@ void assign_resources(void);
 // - Returns a 1 if valid, 0 otherwise
 //int isLegal (int pos, int owner, int settlement, int road, int city, int theif);
 
+int8_t isLegalInit (uint8_t pos, int8_t settlement, int8_t road, uint8_t last_settlement_pos);
+int8_t isLegal (uint8_t pos, int8_t settlement, int8_t road, int8_t city, int8_t thief, uint8_t thief_pos_last);
+
 // Translate a row and col number to a position number; returns -1 on failure
 int rowCol2Pos(int row, int col);
 
