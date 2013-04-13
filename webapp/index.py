@@ -375,7 +375,7 @@ elif "plentySelected" in form:
 	print("Location: index.py?played=plenty#modal")
 elif "monopolySelected" in form:
 	for fn in os.listdir(PLAYER_FILE):
-      if fn != 'dev.json' and fn != 'trade.json':
+		if fn != 'dev.json' and fn != 'trade.json':
 			monopolyPlayerInfo = readJson(PLAYER_FILE + fn)
 			playerInfo['resources'][form.getvalue('resource')] = monopolyPlayerInfo['resources'][form.getvalue('resource')] + playerInfo['resources'][form.getvalue('resource')]
 			monopolyPlayerInfo['resources'][form.getvalue('resource')] = 0
