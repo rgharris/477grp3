@@ -45,7 +45,7 @@ else:
 						<p>This card allows you to take two of any one resource you have a settlement on. You currently have {0} Year of Plenty cards available. Would you like to play one?</p>
 					"""
 			else:
-				output = "<h2>Year of Plenty Card</h2>\n<p>This card allows you to take two of any one resource you have a settlement on. You currently have no Year of Plenty cards available.</p>"
+				output = "<h2>Year of Plenty Card</h2>\n<p>This card allows you to take two of any one resource you have a settlement on. You currently have no Year of Plenty cards available.</p><a href=\"#x\" class=\"bottom left\">Got it!</a>"
 		elif pairs['card'][0] == "monopoly":
 			if playerInfo['cards']['monopoly'] > 0:
 				output = """<form method="post" action="index.py">
@@ -53,7 +53,7 @@ else:
 						<p>This card allows you to take a monopoly on a single resource, forcing all players currently holding that resource to hand it over to you. You currently have {1} Monopoly cards available. Would you like to play one?</p>
 					"""
 			else:
-				output = "<h2>Monopoly card</h2>\n<p>This card allows you to take a monopoly on a single resource, forcing all players currently holding that resource to hand it over to you. You currently have no Monopoly cards available.</p>"
+				output = "<h2>Monopoly card</h2>\n<p>This card allows you to take a monopoly on a single resource, forcing all players currently holding that resource to hand it over to you. You currently have no Monopoly cards available.</p><a href=\"#x\" class=\"bottom left\">Got it!</a>"
 		elif pairs['card'][0] == "road":
 			if playerInfo['cards']['road'] > 0:
 				output = """<form method="post" action="index.py">
@@ -61,7 +61,7 @@ else:
 						<p>This card allows you to place two roads at no additional cost. You currently have {2} Road Building cards available. Would you like to play one?</p>
 					"""
 			else:
-				output = "<h2>Road Building Card</h2>\n<p>This card allows you to place two roads at no additional cost. You have no road building cards available.</p>"
+				output = "<h2>Road Building Card</h2>\n<p>This card allows you to place two roads at no additional cost. You have no road building cards available.</p><a href=\"#x\" class=\"bottom left\">Got it!</a>"
 		elif pairs['card'][0] == "knights":
 			if playerInfo['cards']['knights'] > 0:
 				output = """<form method="post" action="index.py">	
@@ -69,7 +69,7 @@ else:
 						<p>This card allows you to move the thief and steal a single, random resource from a given player. You have played {5} knight cards, and currently have {3} unplayed Knight cards available. Would you like to play one?</p>
 					"""
 			else:
-				output = "<h2>Knight card</h2>\n<p>This card allows you to move the thief and steal a single, random resource from a given player. You have played {5} knight cards, and have none available.</p>"
+				output = "<h2>Knight card</h2>\n<p>This card allows you to move the thief and steal a single, random resource from a given player. You have played {5} knight cards, and have none available.</p><a href=\"#x\" class=\"bottom left\">Got it!</a>"
 		elif pairs['card'][0] == "victory":
 			output = """<h2>Victory card</h2>
 					<p>This card gets you an additional victory point, hidden from the other players. It cannot be played, but counts toward your total score. Your opponents will only see your score without these cards. You currently have {4} victory cards.</p>
