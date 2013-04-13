@@ -457,7 +457,7 @@ print("""<!DOCTYPE HTML>
 							}
 							else if(xmlhttp.responseText == 6)
 							{
-								window.location = "./index.py?monopoly=taken#modal";
+								window.location = "./index.py?against=monopoly#modal";
 							}
 						}
 					}
@@ -537,7 +537,7 @@ else:
 			pass
 		elif pairs["played"][0] == "knights":
 			pass
-	elif "monopoly" in pairs:
+	elif "against" in pairs:
 		script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?against=monopoly&player=" + str(playerID) + "')</script>"
 	output = """
 		<body>
