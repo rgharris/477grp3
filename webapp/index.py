@@ -383,7 +383,7 @@ elif "monopolySelected" in form:
 			playerInfo['resources'][form.getvalue('resource')] = monopolyPlayerInfo['resources'][form.getvalue('resource')] + playerInfo['resources'][form.getvalue('resource')]
 			obtained = obtained + monopolyPlayerInfo['resources'][form.getvalue('resource')]
 			monopolyPlayerInfo['resources'][form.getvalue('resource')] = 0
-			writeJson(fn, monopolyPlayerInfo)
+			writeJson(PLAYER_FILE + fn, monopolyPlayerInfo)
 			monopolyPlayerID = fn.split('.')[0]
 			setRefresh(monopolyPlayerID, REFRESH_VALUE['monopoly'])
 	playerInfo['playedDevCard'] = 1
