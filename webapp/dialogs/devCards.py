@@ -93,6 +93,7 @@ else:
 				output = "<h2>Year of Plenty Card</h2>\n<p>This card allows you to take two of any one resource you have a settlement on. You currently have {0} Year of Plenty cards available, but cannot play another development card this turn.</p><a href=\"#x\" class=\"bottom left\">Got it!</a>"
 			else:
 				output = "<h2>Year of Plenty Card</h2>\n<p>This card allows you to take two of any one resource you have a settlement on. You currently have no Year of Plenty cards available.</p><a href=\"#x\" class=\"bottom left\">Got it!</a>"
+				print playedDevCard
 		elif pairs['card'][0] == "monopoly":
 			if playerInfo['cards']['monopoly'] > 0:
 				output = """<form method="post" action="index.py">
