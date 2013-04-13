@@ -378,7 +378,7 @@ elif "plentySelected" in form:
 elif "monopolySelected" in form:
 	obtained = 0
 	for fn in os.listdir(PLAYER_FILE):
-		if fn != 'dev.json' and fn != 'trade.json':
+		if fn != 'dev.json' and fn != 'trade.json' and fn != str(playerID) + ".json":
 			monopolyPlayerInfo = readJson(PLAYER_FILE + fn)
 			playerInfo['resources'][form.getvalue('resource')] = monopolyPlayerInfo['resources'][form.getvalue('resource')] + playerInfo['resources'][form.getvalue('resource')]
 			obtained = obtained + monopolyPlayerInfo['resources'][form.getvalue('resource')]
