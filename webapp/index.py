@@ -126,6 +126,11 @@ def chkDeck(deckFile, timeout):
 			return True
 		return False
 
+def endTurn(playerFile, playerInfo):
+	playerInfo['cards'] = playerInfo['onHold']
+	playerInfo['onHold'] = {'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}
+	writeJson(playerFile, playerInfo)
+
 ####################PRE DISPLAY IS BELOW###################
 #Debug variable, append strings for debugging to this variable
 #and they will be output after the main HTML.
@@ -213,7 +218,7 @@ if 'user' in form:
 	playerInfo['playerName'] = cgi.escape(newUsername)
 	writeJson(playerFile, playerInfo)
 elif "endTurn" in form:
-	pass
+	endTurn(playerFile, playerInfo)
 elif "noEndTurn" in form:
 	pass
 elif "confirmPurchase" in form:
