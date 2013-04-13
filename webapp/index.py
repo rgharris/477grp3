@@ -464,15 +464,15 @@ else:
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/trade.py?invalid=remote')</script>"
 	elif "play" in pairs:
 		if pairs["play"][0] == "victory":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=victory')</script>"
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=victory&player=" + str(playerID) + "')</script>"
 		elif pairs["play"][0] == "monopoly":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=monopoly')</script>"
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=monopoly&player=" + str(playerID) + "')</script>"
 		elif pairs["play"][0] == "road":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=road')</script>"
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=road&player=" + str(playerID) + "')</script>"
 		elif pairs["play"][0] == "knights":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=knights')</script>"
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=knights&player=" + str(playerID) + "')</script>"
 		elif pairs["play"][0] == "plenty":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=plenty')</script>"
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?card=plenty&player=" + str(playerID) + "')</script>"
 	output = """
 		<body>
 			<!--Need to pause when modal is active...this is just testing now.-->
