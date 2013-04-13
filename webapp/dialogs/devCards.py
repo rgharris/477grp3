@@ -72,7 +72,7 @@ else:
 				output = "<h2>Knight card</h2>\n<p>This card allows you to move the thief and steal a single, random resource from a given player. You have played {5} knight cards, and have none available.</p><a href=\"#x\" class=\"bottom left\">Got it!</a>"
 		elif pairs['card'][0] == "victory":
 			output = """<h2>Victory card</h2>
-					<p>This card gets you an additional victory point, hidden from the other players. It cannot be played, but counts toward your total score. Your opponents will only see your score without these cards. You currently have {4} victory cards.</p>
+					<p>This card gets you an additional victory point, hidden from the other players. It cannot be played, but counts toward your total score. Your opponents will only see your score without these cards. You currently have {4} victory cards.</p><a href=\"#x\" class=\"bottom left\">Got it!</a>
 				"""
 	else:
 		output = """<form method="post" action="index.py" class="cards">
