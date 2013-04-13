@@ -389,7 +389,7 @@ elif "monopolySelected" in form:
 	playerInfo['playedDevCard'] = 1
 	playerInfo['cards']['monopoly'] = playerInfo['cards']['monopoly'] - 1
 	writeJson(playerFile, playerInfo)
-	print("Location: index.py?played=monopoly&obtained=" + str(obtained) + "&resource=" + str(form.getvalue('resource')) + "#modal")
+	print("Location: index.py?played=monopoly&received=" + str(obtained) + "&resource=" + str(form.getvalue('resource')) + "#modal")
 elif "knightsSelected" in form:
 	pass
 elif "roadDevSelected" in form:
@@ -530,7 +530,7 @@ else:
 			pass
 	elif "played" in pairs:
 		if pairs["played"][0] == "monopoly":
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?success=monopoly&player=" + str(playerID) + "&num=" + str(pairs["obtained"][0]) + "&resource=" + str(pairs["resource"][0]) + "')</script>"
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?success=monopoly&player=" + str(playerID) + "&num=" + str(pairs["received"][0]) + "&resource=" + str(pairs["resource"][0]) + "')</script>"
 		elif pairs["played"][0] == "plenty":
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?success=plenty&player=" + str(playerID) + "')</script>"
 		elif pairs["played"][0] == "road":
