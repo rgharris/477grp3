@@ -21,4 +21,3 @@ if __name__ == "__main__":
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, BOOTUP))
 		time.sleep(1)
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, STARTGAME))
-	print("Write attmpted. Completion not ensured.")
