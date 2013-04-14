@@ -320,6 +320,15 @@ div#body.wait{
 	border-radius: 10px;
 }
 
+div#body.wait a.readyLink{
+	display:block;
+	width:100%;
+	text-decoration: none;
+	border-top: 1 px #FFFDD0;
+	font-size: 18pt;
+	color: #FFFDD0;
+}
+
 /*Error pages. Use the same (general) layout, add an error class to the body.*/
 body.error{
 	background-image: url("../images/zenbge1.png"), url("../images/zenbge2.png");
