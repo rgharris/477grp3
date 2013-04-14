@@ -4,6 +4,7 @@
 
 import quick2wire.i2c as i2c
 import sys,os
+import time #debugging...
 import random as r
 
 MICROADDR = 0x50
@@ -17,6 +18,7 @@ if __name__ == "__main__":
 	random.seed() #Uses system time by default
 	with i2c.I2CMaster() as bus:
 		bus.transaction(i2c.writing_bytes(MICROADDR, STARTRAND, r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250))) #Too lazy to figure out the 'pythonic' way to do this. This should work. Repeated 19 times.
-		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, BOOTUP)
-		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, STARTGAME)
+		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, BOOTUP))
+		time.sleep(1)
+		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, STARTGAME))
 	print("Write attmpted. Completion not ensured.")
