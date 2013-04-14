@@ -540,11 +540,11 @@ elif gameState['gameStart'] == 0:
      	          	<h2>Error!</h2>
 			          </div>
      	 	       <div id="body">
-     	      		    <p>This game has reached the maximum number of players. Enjoy watching this game, and try to join the next one!</p>
+     	      		    <p>This game has reached the maximum number of players. Enjoy watching this game, and try to join the next one! %d</p>
 	  	           </div>
     		      </div>
 	  	    </body>
-		""")
+		""", playerID)
 	else:
 		output = """<body class="wait">
 						<script>setInterval("heartbeat({2})", 5000)</script>
