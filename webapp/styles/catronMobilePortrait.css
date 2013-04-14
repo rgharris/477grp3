@@ -321,6 +321,10 @@ body.wait div#body{
 	border-radius: 10px;
 }
 
+body.wait div#body p{
+	padding: 0 5px 0 5px;
+}
+
 body.wait div#body a.readyLink{
 	display:block;
 	width:100%;
