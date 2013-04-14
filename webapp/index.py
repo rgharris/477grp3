@@ -193,7 +193,7 @@ else:
 		if gameState['active'] + TIMEOUT*0.75 < time.time():
 			#refresh the gamestate file if we're nearing the timeout.
 			writeJson(GAME_STATE_FILE, gameState)
-debug = debug + " playerInfo = " + playerInfo + " gameState['gameStart'] = " + gameState['gameStart'] + " ready in pairs = " + "ready" in pairs + "."
+debug = debug + " playerInfo = " + playerInfo + " gameState['gameStart'] = " + str(gameState['gameStart']) + " ready in pairs = " + str("ready" in pairs) + "."
 if playerInfo == '' and gameState['gameStart'] == 0 and "ready" in pairs:
 	#First, go through and remove all player files that have timed out.
 	#(Move them to a backup file for testing purposes)
