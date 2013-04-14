@@ -40,21 +40,21 @@ def cookieChk(cookies, playerFile, timeout):
 	cookie.load(cookies)
 	#"cookies" exist, but don't contain our cookies.
 	if 'lastactive' not in cookie or 'playerid' not in cookie:
-		return ('','')
+		return ('-1','')
 	lastactive = float(cookie['lastactive'].value)
 	#We have timed out.
 	if (lastactive + timeout <= time.time()):
-		return ('','')
+		return ('-1','')
 	playerID = int(cookie['playerid'].value)
 	#The player file doesn't exist, so make a new one.
 	if not os.path.isfile(playerFile + str(playerID) + ".json"):
-		return ('','')
+		return ('-1','')
 	jsonInfo = open(playerFile + str(playerID) + ".json")
 	checkInfo = json.load(jsonInfo)
 	jsonInfo.close
 	#The file has timed out.
 	if (checkInfo['active'] + timeout <= time.time()):
-		return ('','')
+		return ('-1','')
 	playerID = int(cookie['playerid'].value)
 	playerInfo = json.load(open(playerFile + str(playerID) + ".json"))
 	return (playerID, playerInfo)
