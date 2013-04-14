@@ -165,149 +165,151 @@ a.playerName{
 
 /* Fix modal box for larger screens (keep it a constant width) */
 @media all and (min-width: 600px) {
-.modal {
-  left: 50%;
-  margin-left: -250px;
-}
-.overlay:target+.modal {
-    top: 35%;
-    opacity: 1;
-    visibility: visible;
-  width: 500px;
-	 min-height: 30%;
-	 display: inline;
-}
 
-.modal a.bottom {
-	display: inline-block;
-	position: absolute;
-	bottom: 0;
-	background-color: rgba(0,0,0,0);
-	border: none;
-	border-top: solid 1px #fffdd0;
-	width: 100%;
-	height: 20%;
-	line-height: 100%;
-	padding: 10px 0 10px 0;
-	color: #FFFDD0;
-	vertical-align: middle;
-	font-size: 16pt;
-	font-family: 'Arapey', 'Times New Roman', serif;
-	text-decoration: none;
-}
-
-.modal a.left {
-  left: 0;
-}
-
-.modal input[type="submit"].bottom {
-	position:absolute;
-	bottom: 2%;
-	background-color: rgba(0,0,0,0);
-	border: none;
-	border-top: solid 1px #fffdd0;
-	width: 100%;
-	height: 50px;/*20%;*/
-	color: #FFFDD0;
-	font-size: 16pt;
-	font-family: 'Arapey', 'Times New Roman', serif;
-}
-
-.modal input[type="submit"].half{
-	width: 50%;
-}
-.modal input[type="submit"].top{
-	bottom:22%;
-}
-.modal input[type="submit"].moreTop{
-	bottom:44%;
-}
-.modal input[type="submit"].left{
-	left:0;
-}
-.modal input[type="submit"].right{
-	right:0;
-	border-left: solid 1px #fffdd0;
-}
-
-.modal input[type="text"] {
-	width: 90%;
-	font-size: 16pt;
-	border: none;
-	background-color: #fffdd0;
-	color: #000;
-	font-family: 'Arapey', 'Times New Roman', serif;
-}
-
-.modal input[type="number"] {
-	width: 10%;
-	font-size: 16pt;
-	border: none;
-	background-color: #fffdd0;
-	margin-left: 5px;
-	color: #000;
-	font-family: 'Arapey', 'Times New Roman', serif;
-}
-
-.modal select {
-	width: 60%;
-	font-size: 16pt;
-	border: none;
-	border-bottom: 1px solid #fffdd0;
-	border-left: 1px solid #fffdd0;
-	border-right: 1px solid #fffdd0;
-	margin-right: 5px;
-	background: none;
-	color: #fffdd0;
-	font-family: 'Arapey', 'Times New Roman', serif;
-}
+	.modal {
+	  left: 50%;
+	  margin-left: -250px;
+	}
+	.overlay:target+.modal {
+	    top: 35%;
+	    opacity: 1;
+	    visibility: visible;
+	  width: 500px;
+		 min-height: 30%;
+		 display: inline;
+	}
 	
-
-/*-- Added by Robert -- */
-
-.modal form.trade, .modal form.cards{
-  height: 415px;
+	.modal a.bottom {
+		display: inline-block;
+		position: absolute;
+		bottom: 0;
+		background-color: rgba(0,0,0,0);
+		border: none;
+		border-top: solid 1px #fffdd0;
+		width: 100%;
+		height: 20%;
+		line-height: 100%;
+		padding: 10px 0 10px 0;
+		color: #FFFDD0;
+		vertical-align: middle;
+		font-size: 16pt;
+		font-family: 'Arapey', 'Times New Roman', serif;
+		text-decoration: none;
+	}
+	
+	.modal a.left {
+	  left: 0;
+	}
+	
+	.modal input[type="submit"].bottom {
+		position:absolute;
+		bottom: 2%;
+		background-color: rgba(0,0,0,0);
+		border: none;
+		border-top: solid 1px #fffdd0;
+		width: 100%;
+		height: 50px;/*20%;*/
+		color: #FFFDD0;
+		font-size: 16pt;
+		font-family: 'Arapey', 'Times New Roman', serif;
+	}
+	
+	.modal input[type="submit"].half{
+		width: 50%;
+	}
+	.modal input[type="submit"].top{
+		bottom:22%;
+	}
+	.modal input[type="submit"].moreTop{
+		bottom:44%;
+	}
+	.modal input[type="submit"].left{
+		left:0;
+	}
+	.modal input[type="submit"].right{
+		right:0;
+		border-left: solid 1px #fffdd0;
+	}
+	
+	.modal input[type="text"] {
+		width: 90%;
+		font-size: 16pt;
+		border: none;
+		background-color: #fffdd0;
+		color: #000;
+		font-family: 'Arapey', 'Times New Roman', serif;
+	}
+	
+	.modal input[type="number"] {
+		width: 10%;
+		font-size: 16pt;
+		border: none;
+		background-color: #fffdd0;
+		margin-left: 5px;
+		color: #000;
+		font-family: 'Arapey', 'Times New Roman', serif;
+	}
+	
+	.modal select {
+		width: 60%;
+		font-size: 16pt;
+		border: none;
+		border-bottom: 1px solid #fffdd0;
+		border-left: 1px solid #fffdd0;
+		border-right: 1px solid #fffdd0;
+		margin-right: 5px;
+		background: none;
+		color: #fffdd0;
+		font-family: 'Arapey', 'Times New Roman', serif;
+	}
+		
+	
+	/*-- Added by Robert -- */
+	
+	.modal form.trade, .modal form.cards{
+	  height: 415px;
+	}
+	
+	.trade .resourceName {
+	  width: 100%;
+	  margin: 10px 0px;
+	}
+	
+	.trade  h3.resourceHeader {
+	  width: 100%;
+	  margin: 0px 0px 3px 0px;
+	}
+	
+	.trade h3.countHeader {
+	  width: 100%;
+	  margin: 0px 0px 1px 0px;
+	}
+	
+	.trade input.countValue {
+	  width: 20px; 
+	  height: 1em;
+	  margin: 5px 30%;
+	  text-align: center;
+	}
+	
+	.trade .playerSelect {
+	  width: 100px;
+	  background-color: white;
+	  border: none;
+	  color: black;
+	  }
+	
+	.trade .resourceColumn {
+	  float: left;
+	  width: 40%;
+	}
+	.trade .countColumn {
+	  float: left;
+	  width: 30%;
+	}
+	
+	/*-- End Added by Robert -- */
 }
-
-.trade .resourceName {
-  width: 100%;
-  margin: 10px 0px;
-}
-
-.trade  h3.resourceHeader {
-  width: 100%;
-  margin: 0px 0px 3px 0px;
-}
-
-.trade h3.countHeader {
-  width: 100%;
-  margin: 0px 0px 1px 0px;
-}
-
-.trade input.countValue {
-  width: 20px; 
-  height: 1em;
-  margin: 5px 30%;
-  text-align: center;
-}
-
-.trade .playerSelect {
-  width: 100px;
-  background-color: white;
-  border: none;
-  color: black;
-  }
-
-.trade .resourceColumn {
-  float: left;
-  width: 40%;
-}
-.trade .countColumn {
-  float: left;
-  width: 30%;
-}
-
-/*-- End Added by Robert -- */
 
 body.wait div#body{
 	width:100%;
