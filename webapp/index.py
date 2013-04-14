@@ -153,7 +153,7 @@ DEV_CARD_FILE="players/dev.json"
 TRADE_FILE = "players/trade.json"
 TIMEOUT = 3600 #one hour (3600 seconds)
 #This is a map of values that could be in the refresh file, and are checked in javascript.
-REFRESH_VALUE = {'reset':0, 'generic':1, 'tradeRequest':2, 'tradeConfirm':3, 'tradeDeny':4, 'cannotTrade':5, 'monopoly':6}
+REFRESH_VALUE = {'reset':0, 'generic':1, 'tradeRequest':2, 'tradeConfirm':3, 'tradeDeny':4, 'cannotTrade':5, 'monopoly':6, 'dice':7}
 GAME_STATE_FILE="chkRefresh/gamestate.json"
 
 #i2c constants
@@ -181,7 +181,7 @@ else:
 
 #Get the game state.
 if not os.path.isfile(GAME_STATE_FILE):
-	gameState = {'gameStart':0, 'ready':{'0':0, '1':0, '2':0, '3':0}}
+	gameState = {'gameStart':0, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'diceRolled': 0}
 	writeJson(GAME_STATE_FILE, gameState)
 else:
 	gameState = readJson(GAME_STATE_FILE)
@@ -509,6 +509,10 @@ print("""<!DOCTYPE HTML>
 							{
 								window.location = "./index.py?against=monoCardd#modal";
 							}
+							else if(xmlhttp.responseText == 7)
+							{
+								window.location = "./index.py?dice=new";
+							}
 						}
 					}
 					xmlhttp.open("GET", "/chkRefresh/chk.py?id=" + playerID, true);
@@ -678,10 +682,10 @@ elif gameState['gameStart'] == 1:
 				</div>
 				<div class="clear"></div>
 				<div id="footer">
-					<a href="#modal" id="b1" class="button" onclick="loadXMLDoc('ModalBox', '/dialogs/purchase.py')">Purchase</a>
-					<a href="#modal" id="b2" class="button" onclick="loadXMLDoc('ModalBox', '/dialogs/trade.py')">Trade</a>
+					{10}
+					{11}
 					<a href="#modal" id="b3" class="button" onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')">Status</a>
-					<a href="#modal" id="b4" class="button" onclick="loadXMLDoc('ModalBox', '/dialogs/endTurn.py')">End Turn</a>
+					{13}
 				</div>
 			</div>
 		</body>
@@ -692,6 +696,17 @@ elif gameState['gameStart'] == 1:
 		curPoints = curPoints + playerInfo['onHold']['victory']
 	if 'victory' in playerInfo['cards']:
 		curPoints = curPoints + playerInfo['cards']['victory']
+	if playerInfo['curPlayerTurn'] == 1:
+		purchaseLink = "<a href=\"#modal\" id=\"b1\" class=\"button\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/purchase.py')\">Purchase</a>"
+		tradeLink = "<a href=\"#modal\" id=\"b2\" class=\"button\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/trade.py')\">Trade</a>"
+		if gameState['diceRolled'] == 0:
+			turnLink = "<a href=\"#dice\" id=\"b4\" class=\"button\" onclick=\"loadXMLDoc('dierolled', '/dialogs/roll.py')\">Roll Dice</a><div id=\"dierolled\" style=\"display:none\"></div>"
+		else:
+			turnLink = "<a href=\"#modal\" id=\"b4\" class=\"button\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/endTurn.py')\">End Turn</a>"
+	else:
+		purchaseLink = "<span class=\"button\">&nbsp;</span>"
+		tradeLink = "<span class=\"button\">&nbsp;</span>"
+		turnLink = "<span class=\"button\">&nbsp;</span>"
 
 	print(output.format(script,playerInfo['playerName'], str(curPoints), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())),playerID))
 #This needs to go at the end of all pages.
