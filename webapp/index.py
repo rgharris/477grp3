@@ -518,7 +518,7 @@ print("""<!DOCTYPE HTML>
    		</script>
       </head>
 """)
-if playerID == -1 and gameState['gameStart'] == 1:
+if playerID == -1 and (gameState['gameStart'] == 1 or len(dict((key, val) for key, val in gameState['ready'].items() if val!= 0)) >= 4):
 	print("""<body class="error">
         		 <div id="container">
            		 <div id="head">
