@@ -84,7 +84,7 @@ def createPlayer(playerFile, playerID):
 		#playedKnights: The number of knights the player has played.
 		#currentTurn: 1 if it's the player's turn, 0 if it is not.
 		#playedDevCard: only 1 dev card per turn, so turns to 1 after a dev card has been played, and 0 at turn end.
-	newPlayer = {'playerName':"Player " + str(playerID+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'active':time.time(), 'awards':[], 'points':0, 'currentTurn':0, 'playedDevCard':0, 'playerReady':0, 'gameStart':0}
+	newPlayer = {'playerName':"Player " + str(playerID+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'active':time.time(), 'awards':[], 'points':0, 'currentTurn':0, 'playedDevCard':0}
 	writeJson(playerFile, newPlayer)
 	return newPlayer
 
@@ -696,7 +696,7 @@ elif gameState['gameStart'] == 1:
 		curPoints = curPoints + playerInfo['onHold']['victory']
 	if 'victory' in playerInfo['cards']:
 		curPoints = curPoints + playerInfo['cards']['victory']
-	if playerInfo['curPlayerTurn'] == 1:
+	if playerInfo['currentTurn'] == 1:
 		purchaseLink = "<a href=\"#modal\" id=\"b1\" class=\"button\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/purchase.py')\">Purchase</a>"
 		tradeLink = "<a href=\"#modal\" id=\"b2\" class=\"button\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/trade.py')\">Trade</a>"
 		if gameState['diceRolled'] == 0:
