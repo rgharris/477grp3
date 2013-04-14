@@ -421,7 +421,7 @@ elif "roadDevSelected" in form:
 if "ready" in pairs:
 	gameState['ready'][str(playerID)] = 1
 	writeJson(GAME_STATE_FILE, gameState)
-	refreshAll()
+	refreshAll(1)
 if "start" in pairs:
 	gameState['gameStart'] = 1
 	writeJson(GAME_STATE_FILE, gameState)
@@ -435,7 +435,7 @@ if "start" in pairs:
 		bus.transaction(MICROADDR, NUMPLAYERREG, ready)
 		bus.transaction(MICROADDR, CURPLAYERREG, startPlayer)
 		bus.transaction(MICROADDR, PIREG, STARTGAMEFLAG)
-	refreshAll()
+	refreshAll(1)
 
 #################################PAGE GENERATION BELOW##################################
 
