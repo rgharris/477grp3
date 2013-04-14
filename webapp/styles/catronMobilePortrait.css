@@ -310,7 +310,7 @@ a.playerName{
 /*-- End Added by Robert -- */
 
 /*Wait page. Uses the same layout, but adds a bit of text in the middle. */
-div#body.wait{
+div#wait{
 	width:100%;
    background-color: rgba(0, 0, 0, 0.6);
 	text-align:center;
@@ -320,7 +320,7 @@ div#body.wait{
 	border-radius: 10px;
 }
 
-div#body.wait .readyLink{
+div#wait .readyLink{
 	display:block;
 	width:100%;
 	margin-top: 10px;
@@ -331,7 +331,7 @@ div#body.wait .readyLink{
 	color: #FFFDD0;
 }
 
-div#body.wait span.readyLink {
+div#wait span.readyLink {
 	color: #555;
 }
 
