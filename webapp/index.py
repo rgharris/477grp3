@@ -214,7 +214,7 @@ if playerInfo == '' and gameState['gameStart'] == 0 and "ready" in pairs:
 			playerID = i
 			refreshAll(1)
 			playerInfo = createPlayer(playerFile, playerID)
-			debug = debug + " playerID is now " + playerID + "."
+			debug = debug + " playerID is now " + str(playerID) + "."
 			break
 		else:
 			#That json file exists, so check it's timeout!
@@ -226,12 +226,12 @@ if playerInfo == '' and gameState['gameStart'] == 0 and "ready" in pairs:
 				playerID = i
 				refreshAll(1)
 				playerInfo = createPlayer(playerFile, playerID)				
-				debug = debug + " playerID is now " + playerID + "."
+				debug = debug + " playerID is now " + str(playerID) + "."
 				break
 			else:
 				continue
 
-debug = debug + " playerID is now " + playerID + "."
+debug = debug + " playerID is now " + str(playerID) + "."
 #This will make it easy later.
 playerFile = PLAYER_FILE + str(playerID) + ".json"
 
