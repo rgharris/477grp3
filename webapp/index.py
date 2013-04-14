@@ -177,6 +177,7 @@ if cookies:
 	playerID, playerInfo = cookieChk(cookies, PLAYER_FILE, TIMEOUT)
 else:
 	playerInfo = ''
+	playerID = -1
 
 #Get the game state.
 if not os.path.isfile(GAME_STATE_FILE):
