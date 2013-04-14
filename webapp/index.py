@@ -565,7 +565,7 @@ elif gameState['gameStart'] == 0:
 								<img src="images/settings.png" class="settingsImg" />
 							</div>
 							<div id="body">
-								Waiting for players! Currently have {0} players ready.
+								Waiting for players! Currently have {0} players ready.<br />
 								{1}
 							</div>
 						</div>
