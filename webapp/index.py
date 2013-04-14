@@ -537,10 +537,11 @@ elif gameState['gameStart'] == 0:
 					<script>setInterval("heartbeat({2})", 5000)</script>
 					<div id="container">
 						<div id="head">
-							<h2>Waiting for players...</h2>
+							Waiing for Players
+							<img src="images/settings.png" class="settingsImg" />
 						</div>
 						<div id="body">
-							<p>Waiting for players! Currently have {0} players ready.</p>
+							<p class="wait">Waiting for players! Currently have {0} players ready.</p>
 							{1}
 						</div>
 					</div>
