@@ -22,6 +22,7 @@
 import cgitb
 #Everything else.
 import os, sys, json, http.cookies, time, cgi, random, shutil
+import quick2wire.i2c as i2c
 #Enable debugging
 cgitb.enable()
 
@@ -154,6 +155,14 @@ TIMEOUT = 3600 #one hour (3600 seconds)
 #This is a map of values that could be in the refresh file, and are checked in javascript.
 REFRESH_VALUE = {'reset':0, 'generic':1, 'tradeRequest':2, 'tradeConfirm':3, 'tradeDeny':4, 'cannotTrade':5, 'monopoly':6}
 GAME_STATE_FILE="chkRefresh/gamestate.json"
+
+#i2c constants
+MICROADDR = 0x50
+PIREG = 1
+CURPLAYERREG = 2
+NUMPLAYERREG = 3
+
+STARTGAMEFLAG = 2
 
 #Get cookies!
 cookies = os.environ.get('HTTP_COOKIE')
@@ -416,6 +425,16 @@ if "ready" in pairs:
 if "start" in pairs:
 	gameState['gameStart'] = 1
 	writeJson(GAME_STATE_FILE, gameState)
+	startPlayer = random.randint(0,3)
+	startPlayerInfo = readJson(PLAYER_FILE + str(startPlayer) + ".json")
+	startPlayerInfo['currentTurn'] = 1
+	writeJson(PLAYER_FILE + str(startPlayer) + ".json", startPlayerInfo)
+	####i2c - write info to micro###
+	with i2c.I2CMaster() as bus:
+		ready = dict((key, val) for key, val in gameState['ready'].items() if val != 0)
+		bus.transaction(MICROADDR, NUMPLAYERREG, ready)
+		bus.transaction(MICROADDR, CURPLAYERREG, startPlayer)
+		bus.transaction(MICROADDR, PIREG, STARTGAMEFLAG)
 	refreshAll()
 
 #################################PAGE GENERATION BELOW##################################
@@ -515,15 +534,15 @@ elif gameState['gameStart'] == 0:
 						</div>
 					</div>
 					</body>"""
+	ready = dict((key, val) for key, val in gameState['ready'].items() if val != 0)
 	if gameState['ready'][playerID] == 0:
 		stateLink = "<a href=\"index.py?ready=" + playerID + "\" class=\"readyLink\">I'm ready!</a>"
 	elif gameState['ready'][playerID] == 0:
-		ready = dict((key, val) for key, val in gameState['ready'].items() if val != 0)
 		if len(ready) < 3:
 			stateLink = "<span class=\"readyLink\">Waiting for players...</a>"
 		else:
 			stateLink = "<a href=\"index.py?start=true\" class=\"readyLink\">Start game!</a>"
-	print(output.format())
+	print(output.format(ready,stateLink))
 
 elif gameState['gameStart'] == 1:
 	script = ""
