@@ -685,7 +685,7 @@ elif gameState['gameStart'] == 1:
 					{10}
 					{11}
 					<a href="#modal" id="b3" class="button" onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')">Status</a>
-					{13}
+					{12}
 				</div>
 			</div>
 		</body>
