@@ -436,6 +436,12 @@ if "ready" in pairs:
 		refreshAll(1)
 		#Refresh again to get rid of 'ready' in pairs. Prevents infinite refresh.
 	print("Location: index.py")
+if "notready" in pairs:
+	if (playerID != -1):
+		gameState['ready'][str(plyaerID)] = 0
+		writeJson(GAME_STATE_FILE, gameState)
+		refreshAll(1)
+	print("Location: index.py")
 if "start" in pairs:
 	gameState['gameStart'] = 1
 	writeJson(GAME_STATE_FILE, gameState)
@@ -576,7 +582,7 @@ elif gameState['gameStart'] == 0:
 			if len(ready) < 3:
 				stateLink = "<span class=\"waitLink\">Waiting...</span><a href=\"index.py?notready=" + str(playerID) +  "\" class=\"notReadyLink\">I'm not ready!</a>"
 			else:
-				stateLink = "<a href=\"index.py?start=true\" class=\"halfReadyLink\">Start game!</a><a href=\"index.py?notread=" + str(playerID) + "\" class=\"notReadyLink\">I'm not ready!</a>"
+				stateLink = "<a href=\"index.py?start=true\" class=\"halfReadyLink\">Start game!</a><a href=\"index.py?notready=" + str(playerID) + "\" class=\"notReadyLink\">I'm not ready!</a>"
 		print(output.format(str(len(ready)),stateLink,str(playerID)))
 	
 elif gameState['gameStart'] == 1:
