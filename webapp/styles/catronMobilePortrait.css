@@ -331,7 +331,7 @@ body.wait div#body a.readyLink{
 	width:100%;
 	float: left;
 	margin-top: 10px;
-	padding-top: 10px;
+	padding: 10px 0 10px 0;
 	text-decoration: none;
 	border-top: 1px solid #FFFDD0;
 	font-size: 18pt;
@@ -346,11 +346,13 @@ body.wait div#body span.waitLink {
 	width:50%;
 	float:left;
 	margin-top: 10px;
-	padding-top: 10px;
+	padding: 10px 0 10px 0;
 	text-decoration: none;
 	border-top: 1px solid #FFFDD0;
 	font-size: 18pt;
 	color: #555;
+	background-color: rgba(0,0,0,0.6);
+	border-bottom-left-radius: 10px;
 }
 
 body.wait div#body a.halfReadyLink {
@@ -358,11 +360,13 @@ body.wait div#body a.halfReadyLink {
 	width:50%;
 	float:left;
 	margin-top: 10px;
-	padding-top: 10px;
+	padding: 10px 0 10px 0;
 	text-decoration: none;
 	border-top: 1px solid #FFFDD0;
 	font-size: 18pt;
 	color: #FFFDD0;
+	background-color: rgba(0,0,0,0.6);
+	border-bottom-left-radius: 10px;
 }
 
 body.wait div#body a.notReadyLink {
@@ -370,11 +374,13 @@ body.wait div#body a.notReadyLink {
 	width:50%;
 	float:right;
 	margin-top: 10px;
-	padding-top: 10px;
+	padding: 10px 0 10px 0;
 	text-decoration: none;
 	border-top: 1px solid #FFFDD0;
 	font-size: 18pt;
 	color: #FFFDD0;
+	background-color: rgba(0,0,0,0.6);
+	border-bottom-right-radius: 10px;
 }
 /*Error pages. Use the same (general) layout, add an error class to the body.*/
 body.error{
