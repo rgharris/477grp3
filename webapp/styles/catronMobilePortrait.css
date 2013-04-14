@@ -312,6 +312,7 @@ a.playerName{
 /*Wait page. Uses the same layout, but adds a bit of text in the middle. */
 div#body p.wait{
 	width:100%;
+   background-color: rgba(0, 0, 0, 0.6);
 	text-align:center;
 	color: #FFFDD0;
 	font-size: 18pt;
