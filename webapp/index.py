@@ -533,18 +533,18 @@ if gameState['gameStart'] == 1:
 
 elif gameState['gameStart'] == 0:
 	ready = dict((key, val) for key, val in gameState['ready'].items() if val != 0)
-	if len(ready) >= 4 and playerID != -1:
+	if len(ready) >= 4 and playerID == -1:
 		print("""<body class="error">
      	   		 <div id="container">
      	      		 <div id="head">
      	          	<h2>Error!</h2>
 			          </div>
      	 	       <div id="body">
-     	      		    <p>This game has reached the maximum number of players. Enjoy watching this game, and try to join the next one! {0}</p>
+     	      		    <p>This game has reached the maximum number of players. Enjoy watching this game, and try to join the next one!</p>
 	  	           </div>
     		      </div>
 	  	    </body>
-		""".format(playerID))
+		""")
 	else:
 		output = """<body class="wait">
 						<script>setInterval("heartbeat({2})", 5000)</script>
