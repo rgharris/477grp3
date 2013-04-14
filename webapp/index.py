@@ -438,7 +438,7 @@ if "ready" in pairs:
 	print("Location: index.py")
 if "notready" in pairs:
 	if (playerID != -1):
-		gameState['ready'][str(plyaerID)] = 0
+		gameState['ready'][str(playerID)] = 0
 		writeJson(GAME_STATE_FILE, gameState)
 		refreshAll(1)
 	print("Location: index.py")
