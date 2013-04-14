@@ -518,43 +518,56 @@ print("""<!DOCTYPE HTML>
    		</script>
       </head>
 """)
-if playerID == -1 and (gameState['gameStart'] == 1 or len(dict((key, val) for key, val in gameState['ready'].items() if val!= 0)) >= 4):
+if gameState['gameStart'] == 1:
 	print("""<body class="error">
         		 <div id="container">
            		 <div id="head">
                	<h2>Error!</h2>
 		          </div>
       	       <div id="body">
-           		    <p>This game already has the maximum number of players, or is currently in progress. Enjoy watching this game, and try to join the next one!</p>
+           		    <p>This game is currently in progress. Enjoy watching this game, and try to join the next one!</p>
 	             </div>
     	      </div>
 	      </body>
 	""")
 
 elif gameState['gameStart'] == 0:
-	output = """<body class="wait">
-					<script>setInterval("heartbeat({2})", 5000)</script>
-					<div id="container">
-						<div id="head">
-							<h2>Waiting for Players</h2>
-							<img src="images/settings.png" class="settingsImg" />
-						</div>
-						<div id="body">
-							Waiting for players! Currently have {0} players ready.
-							{1}
-						</div>
-					</div>
-					</body>"""
 	ready = dict((key, val) for key, val in gameState['ready'].items() if val != 0)
-	if playerID == -1 or gameState['ready'][str(playerID)] == 0:
-		stateLink = "<a href=\"index.py?ready=" + str(playerID) + "\" class=\"readyLink\">I'm ready!</a>"
-	elif gameState['ready'][str(playerID)] == 1:
-		if len(ready) < 3:
-			stateLink = "<span class=\"readyLink\">Waiting for players...</a>"
-		else:
-			stateLink = "<a href=\"index.py?start=true\" class=\"readyLink\">Start game!</a>"
-	print(output.format(str(len(ready)),stateLink,str(playerID)))
-
+	if len(ready) >= 4:
+		print("""<body class="error">
+     	   		 <div id="container">
+     	      		 <div id="head">
+     	          	<h2>Error!</h2>
+			          </div>
+     	 	       <div id="body">
+     	      		    <p>This game has reached the maximum number of players. Enjoy watching this game, and try to join the next one!</p>
+	  	           </div>
+    		      </div>
+	  	    </body>
+		""")
+	else:
+		output = """<body class="wait">
+						<script>setInterval("heartbeat({2})", 5000)</script>
+						<div id="container">
+							<div id="head">
+								<h2>Waiting for Players</h2>
+								<img src="images/settings.png" class="settingsImg" />
+							</div>
+							<div id="body">
+								Waiting for players! Currently have {0} players ready.
+								{1}
+							</div>
+						</div>
+						</body>"""
+		if playerID == -1 or gameState['ready'][str(playerID)] == 0:
+			stateLink = "<a href=\"index.py?ready=" + str(playerID) + "\" class=\"readyLink\">I'm ready!</a>"
+		elif gameState['ready'][str(playerID)] == 1:
+			if len(ready) < 3:
+				stateLink = "<span class=\"readyLink\">Waiting for players...</a>"
+			else:
+				stateLink = "<a href=\"index.py?start=true\" class=\"readyLink\">Start game!</a>"
+		print(output.format(str(len(ready)),stateLink,str(playerID)))
+	
 elif gameState['gameStart'] == 1:
 	script = ""
 	#Go through the query string, and check for queries that would bring up a box. If we see one,
