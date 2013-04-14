@@ -99,7 +99,7 @@ div#head h2{
 	color: #000000;
 }
 .fade{
-	color: #DDD;
+	color: rgb(0,0,0,.3);
 }
 #b2, #b4{
 	border-right: none;
