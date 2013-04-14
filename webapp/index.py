@@ -23,6 +23,7 @@ import cgitb
 #Everything else.
 import os, sys, json, http.cookies, time, cgi, random, shutil
 import quick2wire.i2c as i2c
+from quick2wire.gpio input pins,In
 #Enable debugging
 cgitb.enable()
 #Debug variable, append strings for debugging to this variable
@@ -84,7 +85,7 @@ def createPlayer(playerFile, playerID):
 		#playedKnights: The number of knights the player has played.
 		#currentTurn: 1 if it's the player's turn, 0 if it is not.
 		#playedDevCard: only 1 dev card per turn, so turns to 1 after a dev card has been played, and 0 at turn end.
-	newPlayer = {'playerName':"Player " + str(playerID+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'active':time.time(), 'awards':[], 'points':0, 'currentTurn':0, 'playedDevCard':0}
+	newPlayer = {'playerName':"Player " + str(playerID+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'active':time.time(), 'awards':[], 'points':0, 'currentTurn':0, 'playedDevCard':0, 'initialPlacements':{'settlements':0,'roads':0}}
 	writeJson(playerFile, newPlayer)
 	return newPlayer
 
@@ -153,16 +154,19 @@ DEV_CARD_FILE="players/dev.json"
 TRADE_FILE = "players/trade.json"
 TIMEOUT = 3600 #one hour (3600 seconds)
 #This is a map of values that could be in the refresh file, and are checked in javascript.
-REFRESH_VALUE = {'reset':0, 'generic':1, 'tradeRequest':2, 'tradeConfirm':3, 'tradeDeny':4, 'cannotTrade':5, 'monopoly':6, 'dice':7}
+REFRESH_VALUE = {'reset':0, 'generic':1, 'tradeRequest':2, 'tradeConfirm':3, 'tradeDeny':4, 'cannotTrade':5, 'monopoly':6, 'dice':7, 'i2c':9}
 GAME_STATE_FILE="chkRefresh/gamestate.json"
 
 #i2c constants
 MICROADDR = 0x50
 PIREG = 0
-CURPLAYERREG = 2
-NUMPLAYERREG = 3
+CURPLAYERREG = 1
+NUMPLAYERREG = 2
+MCUEVENTREG = 3
 
 STARTGAMEFLAG = 2
+
+GPIOPIN = 7
 
 #Get cookies!
 cookies = os.environ.get('HTTP_COOKIE')
@@ -181,7 +185,7 @@ else:
 
 #Get the game state.
 if not os.path.isfile(GAME_STATE_FILE):
-	gameState = {'gameStart':0, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'diceRolled': 0}
+	gameState = {'gameStart':0, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'diceRolled': 0, 'setupComplete':0}
 	writeJson(GAME_STATE_FILE, gameState)
 	#If we're writing a new one, delete all old player files.
 	for fn in os.listdir(PLAYER_FILE):
@@ -189,7 +193,7 @@ if not os.path.isfile(GAME_STATE_FILE):
 else:
 	gameState = readJson(GAME_STATE_FILE)
 	if gameState['active'] + TIMEOUT < time.time():
-		gameState = {'gameStart':0, 'ready':{'0':0,'1':0, '2':0, '3':0}, 'diceRolled':0}
+		gameState = {'gameStart':0, 'ready':{'0':0,'1':0, '2':0, '3':0}, 'diceRolled':0, 'setupComplete':0}
 		#If we're writing a new one, delete all old player files.
 		for fn in os.listdir(PLAYER_FILE):
 			shutil.move(PLAYER_FILE + fn, "backup" + PLAYER_FILE + fn)
@@ -248,6 +252,22 @@ if playerID != -1:
 #the "autorefresh" file with a 0, so it doesn't autorefresh again.
 setRefresh(playerID,REFRESH_VALUE['reset'])
 
+#################################i2c CHECK#############################################
+pinIn = pins.pin(GPIOPIN, direction=In)
+modalConfirm = 0
+with pinIn:
+	if pinIn.value == 1:
+		if playerInfo['currentTurn'] != 1:
+			refreshAll(9)
+		else:
+			with i2c.I2CMaster() as bus:
+				readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, MCUEVENTREG), i2c.reading(MICROADDR, 1))
+				if readMCU == 4 or readMCU == 5:
+					readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, 6), i2c.reading(MICROADDR, 1))
+					modalConfirm = 1
+				elif readMCU == 6:
+					readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, 6), i2c.reading(MICROADDR, 1))
+					modalConfirm = 1
 #################################FORM RETRIEVAL BELOW##################################
 if 'user' in form:
 	newUsername = form.getvalue("user", "Player " + str(playerID + 1))
@@ -526,6 +546,10 @@ print("""<!DOCTYPE HTML>
 							{
 								window.location = "./index.py?dice=new";
 							}
+							else if(xmlhttp.responseText == 9)
+							{
+								location.reload(true);
+							}
 						}
 					}
 					xmlhttp.open("GET", "/chkRefresh/chk.py?id=" + playerID, true);
@@ -643,6 +667,11 @@ elif gameState['gameStart'] == 1:
 			pass
 	elif "against" in pairs:
 		script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?against=monopoly&player=" + str(playerID) + "')</script>"
+	#Put elif in for i2c stuff
+	elif modalConfirm == 1:
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/i2c.py?read=" + str(readMCU) + "')</script>"
+	elif gameStatus['setupComplete'] == 0:
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/initSetup.py?player=" + str(playerID) + "')</script>"
 	output = """
 		<body>
 			<!--Need to pause when modal is active...this is just testing now.-->
