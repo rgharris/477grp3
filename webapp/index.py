@@ -574,7 +574,7 @@ elif gameState['gameStart'] == 0:
 			stateLink = "<a href=\"index.py?ready=" + str(playerID) + "\" class=\"readyLink\">I'm ready!</a>"
 		elif gameState['ready'][str(playerID)] == 1:
 			if len(ready) < 3:
-				stateLink = "<span class=\"readyLink\">Waiting for players...</a>"
+				stateLink = "<span class=\"waitLink\">Waiting for players...</a><a href=\"index.py?notready=" + str(playerID) +  "\" class=\"notReadyLink\">I'm not ready!</a>"
 			else:
 				stateLink = "<a href=\"index.py?start=true\" class=\"readyLink\">Start game!</a>"
 		print(output.format(str(len(ready)),stateLink,str(playerID)))
