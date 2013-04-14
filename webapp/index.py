@@ -41,31 +41,25 @@ def weighted_choice_sub(weights):
 
 def cookieChk(cookies, playerFile, timeout):
 	cookie.load(cookies)
-	debug = "Got into cookie check."
 	#"cookies" exist, but don't contain our cookies.
 	if 'catronLastactive' not in cookie or 'catronPlayerid' not in cookie:
-		debug = debug + "No catron cookie."
 		return (-1,'')
 	lastactive = float(cookie['catronLastactive'].value)
 	#We have timed out.
 	if (lastactive + timeout <= time.time()):
-		debug = debug + "Timeout."
 		return (-1,'')
 	playerID = int(cookie['catronPlayerid'].value)
 	#The player file doesn't exist, so make a new one.
 	if not os.path.isfile(playerFile + str(playerID) + ".json"):
-		debug = debug + "No json file."
 		return (-1,'')
 	jsonInfo = open(playerFile + str(playerID) + ".json")
 	checkInfo = json.load(jsonInfo)
 	jsonInfo.close
 	#The file has timed out.
 	if (checkInfo['active'] + timeout <= time.time()):
-		debug = debug + "Timeout (2)."
 		return (-1,'')
 	playerID = int(cookie['catronPlayerid'].value)
 	playerInfo = json.load(open(playerFile + str(playerID) + ".json"))
-	debug = debug  + "Made it to the end."
 	return (playerID, playerInfo)
 
 def writeJson(jfile, info):
@@ -203,6 +197,7 @@ else:
 if playerInfo == '' and gameState['gameStart'] == 0 and "ready" in pairs:
 	#First, go through and remove all player files that have timed out.
 	#(Move them to a backup file for testing purposes)
+	debug = debug + " Clearing out old json files."
 	for i in range(0, 4):
 		playerFile = PLAYER_FILE + str(i) + ".json"
 		if os.path.isfile(playerFile):
@@ -215,23 +210,28 @@ if playerInfo == '' and gameState['gameStart'] == 0 and "ready" in pairs:
 	for i in range(0, 4):
 		playerFile = PLAYER_FILE + str(i) + ".json"
 		if not os.path.isfile(playerFile):
+			debug = debug + " " + playerFile " does not exist, creating."
 			playerID = i
 			refreshAll(1)
 			playerInfo = createPlayer(playerFile, playerID)
+			debug = debug + " playerID is now " + playerID + "."
 			break
 		else:
 			#That json file exists, so check it's timeout!
 			#This bit of code should never be executed now, but I'm leaving it for historical purposes.
 			playerInfo = readJson(playerFile)
 			if (playerInfo["active"] == 0 or playerInfo["active"] + TIMEOUT < time.time()):
+				debug = debug + " Timed out player in use."
 				#This player is inactive or has timed out, so here we go!
 				playerID = i
 				refreshAll(1)
 				playerInfo = createPlayer(playerFile, playerID)				
+				debug = debug + " playerID is now " + playerID + "."
 				break
 			else:
 				continue
 
+debug = debug + " playerID is now " + playerID + "."
 #This will make it easy later.
 playerFile = PLAYER_FILE + str(playerID) + ".json"
 
