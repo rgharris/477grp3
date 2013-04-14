@@ -323,7 +323,8 @@ div#body.wait{
 div#body.wait a.readyLink{
 	display:block;
 	width:100%;
-	margin-top: 5px;
+	margin-top: 10px;
+	padding-top: 10px;
 	text-decoration: none;
 	border-top: 1px solid #FFFDD0;
 	font-size: 18pt;
