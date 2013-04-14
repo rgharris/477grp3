@@ -182,7 +182,7 @@ pairs = cgi.parse_qs(query)
 if cookies:
 	debug = debug + "going into cookie check."
 	playerID, playerInfo = cookieChk(cookies, PLAYER_FILE, TIMEOUT)
-	debug = debug + "Came out of cookie check. Values: " + playerID + " " + playerInfo + "."
+	debug = debug + "Came out of cookie check. Values: " + str(playerID) + " " + playerInfo + "."
 else:
 	playerInfo = ''
 	playerID = -1
