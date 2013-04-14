@@ -262,53 +262,6 @@ a.playerName{
 	font-family: 'Arapey', 'Times New Roman', serif;
 }
 	
-
-/*-- Added by Robert -- */
-
-.modal form.trade, .modal form.cards{
-  height: 415px;
-}
-
-.trade .resourceName {
-  width: 100%;
-  margin: 10px 0px;
-}
-
-.trade  h3.resourceHeader {
-  width: 100%;
-  margin: 0px 0px 3px 0px;
-}
-
-.trade h3.countHeader {
-  width: 100%;
-  margin: 0px 0px 1px 0px;
-}
-
-.trade input.countValue {
-  width: 20px; 
-  height: 1em;
-  margin: 5px 30%;
-  text-align: center;
-}
-
-.trade .playerSelect {
-  width: 100px;
-  background-color: white;
-  border: none;
-  color: black;
-  }
-
-.trade .resourceColumn {
-  float: left;
-  width: 40%;
-}
-.trade .countColumn {
-  float: left;
-  width: 30%;
-}
-
-/*-- End Added by Robert -- */
-
 /*Wait page. Uses the same layout, but adds a bit of text in the middle. */
 body.wait div#body{
 	width:100%;
@@ -359,3 +312,51 @@ body.error div#body {
 	color: #FFFDD0;
 	font-size: 18pt;	
 }
+
+/*-- Added by Robert -- */
+
+.modal form.trade, .modal form.cards{
+  height: 415px;
+}
+
+.trade .resourceName {
+  width: 100%;
+  margin: 10px 0px;
+}
+
+.trade  h3.resourceHeader {
+  width: 100%;
+  margin: 0px 0px 3px 0px;
+}
+
+.trade h3.countHeader {
+  width: 100%;
+  margin: 0px 0px 1px 0px;
+}
+
+.trade input.countValue {
+  width: 20px; 
+  height: 1em;
+  margin: 5px 30%;
+  text-align: center;
+}
+
+.trade .playerSelect {
+  width: 100px;
+  background-color: white;
+  border: none;
+  color: black;
+  }
+
+.trade .resourceColumn {
+  float: left;
+  width: 40%;
+}
+.trade .countColumn {
+  float: left;
+  width: 30%;
+}
+
+/*-- End Added by Robert -- */
+
+
