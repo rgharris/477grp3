@@ -184,6 +184,12 @@ if not os.path.isfile(GAME_STATE_FILE):
 	writeJson(GAME_STATE_FILE, gameState)
 else:
 	gameState = readJson(GAME_STATE_FILE)
+	if gameState['active'] + TIMEOUT < time.time():
+		gameState = {'gameStart':0, 'ready':{'0':0,'1':0, '2':0, '3':0}}
+	else:
+		if gameState['active'] + TIMEOUT*0.75 < time.time():
+			#refresh the gamestate file if we're nearing the timeout.
+			writeJson(GAME_STATE_FILE, gameState)
 
 if playerInfo == '' and gameState['gameStart'] == 0:
 	playerID = -1
