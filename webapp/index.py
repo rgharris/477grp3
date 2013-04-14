@@ -158,7 +158,7 @@ GAME_STATE_FILE="chkRefresh/gamestate.json"
 
 #i2c constants
 MICROADDR = 0x50
-PIREG = 1
+PIREG = 0
 CURPLAYERREG = 2
 NUMPLAYERREG = 3
 
@@ -428,7 +428,7 @@ if "start" in pairs:
 	gameState['gameStart'] = 1
 	writeJson(GAME_STATE_FILE, gameState)
 	ready = dict((key, val) for key, val in gameState['ready'].items() if val != 0)
-	startPlayer = random.randint(0,int(len(ready)))
+	startPlayer = random.randint(0,int(len(ready))-1)
 	startPlayerInfo = readJson(PLAYER_FILE + str(startPlayer) + ".json")
 	startPlayerInfo['currentTurn'] = 1
 	writeJson(PLAYER_FILE + str(startPlayer) + ".json", startPlayerInfo)
@@ -438,6 +438,8 @@ if "start" in pairs:
 		bus.transaction(i2c.writing_bytes(MICROADDR, CURPLAYERREG, startPlayer))
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, STARTGAMEFLAG))
 	refreshAll(1)
+	#Locate to index to get rid of infinite refresh.
+	print("Location: index.py")
 
 #################################PAGE GENERATION BELOW##################################
 
