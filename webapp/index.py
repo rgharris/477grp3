@@ -80,7 +80,7 @@ def createPlayer(playerFile, playerID):
 		#playedKnights: The number of knights the player has played.
 		#currentTurn: 1 if it's the player's turn, 0 if it is not.
 		#playedDevCard: only 1 dev card per turn, so turns to 1 after a dev card has been played, and 0 at turn end.
-	newPlayer = {'playerName':"Player " + str(playerID+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'active':time.time(), 'awards':[], 'points':0, 'currentTurn':0, 'playedDevCard':0}
+	newPlayer = {'playerName':"Player " + str(playerID+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'active':time.time(), 'awards':[], 'points':0, 'currentTurn':0, 'playedDevCard':0, 'playerReady':0, 'gameStart':0}
 	writeJson(playerFile, newPlayer)
 	return newPlayer
 
@@ -94,6 +94,10 @@ def setRefresh(playerID, value):
 	f = open("./chkRefresh/" + str(playerID), 'w')
 	f.write(str(value))
 	f.close()
+
+def refreshAll(value):
+	for i in range(0,4):
+		setRefresh(i, value)
 
 def payForPurchase(playerInfo, resourceDict):
 	for resource in resourceDict:
@@ -149,6 +153,7 @@ TRADE_FILE = "players/trade.json"
 TIMEOUT = 3600 #one hour (3600 seconds)
 #This is a map of values that could be in the refresh file, and are checked in javascript.
 REFRESH_VALUE = {'reset':0, 'generic':1, 'tradeRequest':2, 'tradeConfirm':3, 'tradeDeny':4, 'cannotTrade':5, 'monopoly':6}
+GAME_STATE_FILE="chkRefresh/gamestate.json"
 
 #Get cookies!
 cookies = os.environ.get('HTTP_COOKIE')
@@ -164,7 +169,14 @@ if cookies:
 else:
 	playerInfo = ''
 
-if playerInfo == '':
+#Get the game state.
+if not os.path.isfile(GAME_STATE_FILE):
+	gameState = {'gameStart':0, 'ready':{'0':0, '1':0, '2':0, '3':0}}
+	writeJson(GAME_STATE_FILE, gameState)
+else:
+	gameState = readJson(GAME_STATE_FILE)
+
+if playerInfo == '' and gameState['gameStart'] == 0:
 	playerID = -1
 	#First, go through and remove all player files that have timed out.
 	#(Move them to a backup file for testing purposes)
@@ -181,6 +193,7 @@ if playerInfo == '':
 		playerFile = PLAYER_FILE + str(i) + ".json"
 		if not os.path.isfile(playerFile):
 			playerID = i
+			refreshAll(1)
 			playerInfo = createPlayer(playerFile, playerID)
 			break
 		else:
@@ -190,6 +203,7 @@ if playerInfo == '':
 			if (playerInfo["active"] == 0 or playerInfo["active"] + TIMEOUT < time.time()):
 				#This player is inactive or has timed out, so here we go!
 				playerID = i
+				refreshAll(1)
 				playerInfo = createPlayer(playerFile, playerID)				
 				break
 			else:
@@ -213,7 +227,6 @@ if playerID != -1:
 #Now that we've set the cookie, we need to simply overwrite
 #the "autorefresh" file with a 0, so it doesn't autorefresh again.
 setRefresh(playerID,REFRESH_VALUE['reset'])
-
 
 #################################FORM RETRIEVAL BELOW##################################
 if 'user' in form:
@@ -395,6 +408,15 @@ elif "knightsSelected" in form:
 elif "roadDevSelected" in form:
 	pass
 
+#################################GAME START AND READY CHECK#############################
+if "ready" in pairs:
+	gameState['ready'][playerID] = 1
+	writeJson(GAME_STATE_FILE, gameState)
+	refreshAll()
+if "start" in pairs:
+	gameState['gameStart'] = 1
+	writeJson(GAME_STATE_FILE, gameState)
+	refreshAll()
 
 #################################PAGE GENERATION BELOW##################################
 
@@ -481,7 +503,29 @@ if playerID == -1:
 	      </body>
 	""")
 
-else:
+elif gameState['gameStart'] == 0:
+	output = """<body>
+					<div id="container">
+						<div id="head">
+							<h2>Waiting for players...</h2>
+						</div>
+						<div id="body">
+							<p>Waiting for players! Currently have {0} players ready.</p>
+							{1}
+						</div>
+					</div>
+					</body>"""
+	if gameState['ready'][playerID] == 0:
+		stateLink = "<a href=\"index.py?ready=" + playerID + "\" class=\"readyLink\">I'm ready!</a>"
+	elif gameState['ready'][playerID] == 0:
+		ready = dict((key, val) for key, val in gameState['ready'].items() if val != 0)
+		if len(ready) < 3:
+			stateLink = "<span class=\"readyLink\">Waiting for players...</a>"
+		else:
+			stateLink = "<a href=\"index.py?start=true\" class=\"readyLink\">Start game!</a>"
+	print(output.format())
+
+elif gameState['gameStart'] == 1:
 	script = ""
 	#Go through the query string, and check for queries that would bring up a box. If we see one,
 	#add a script that calls AJAX to bring in the correct box.
