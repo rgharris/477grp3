@@ -25,6 +25,9 @@ import os, sys, json, http.cookies, time, cgi, random, shutil
 import quick2wire.i2c as i2c
 #Enable debugging
 cgitb.enable()
+#Debug variable, append strings for debugging to this variable
+#and they will be output after the main HTML.
+debug = ''
 
 #####################USEFUL FUNCTIONS###########################
 #Weighted random number - used for picking a development card
@@ -146,9 +149,6 @@ def endTurn(playerFile, playerInfo):
 	writeJson(playerFile, playerInfo)
 
 ####################PRE DISPLAY IS BELOW###################
-#Debug variable, append strings for debugging to this variable
-#and they will be output after the main HTML.
-debug = ''
 
 #Store form data
 form = cgi.FieldStorage()
