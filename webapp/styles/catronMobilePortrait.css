@@ -320,7 +320,7 @@ div#body.wait{
 	border-radius: 10px;
 }
 
-div#body.wait a.readyLink{
+div#body.wait .readyLink{
 	display:block;
 	width:100%;
 	margin-top: 10px;
@@ -329,6 +329,10 @@ div#body.wait a.readyLink{
 	border-top: 1px solid #FFFDD0;
 	font-size: 18pt;
 	color: #FFFDD0;
+}
+
+div#body.wait span.readyLink {
+	color: #555;
 }
 
 /*Error pages. Use the same (general) layout, add an error class to the body.*/
