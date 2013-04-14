@@ -98,6 +98,9 @@ div#head h2{
 	text-decoration: none;
 	color: #000000;
 }
+.fade{
+	color: #DDD;
+}
 #b2, #b4{
 	border-right: none;
 }

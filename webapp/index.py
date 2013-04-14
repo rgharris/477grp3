@@ -704,9 +704,9 @@ elif gameState['gameStart'] == 1:
 		else:
 			turnLink = "<a href=\"#modal\" id=\"b4\" class=\"button\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/endTurn.py')\">End Turn</a>"
 	else:
-		purchaseLink = "<span class=\"button\">&nbsp;</span>"
-		tradeLink = "<span class=\"button\">&nbsp;</span>"
-		turnLink = "<span class=\"button\">&nbsp;</span>"
+		purchaseLink = "<span class=\"button fade\">Purchase</span>"
+		tradeLink = "<span class=\"button fade\">Trade</span>"
+		turnLink = "<span class=\"button fade\">Wait for Turn</span>"
 
 	print(output.format(script,playerInfo['playerName'], str(curPoints), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())),playerID,purchaseLink,tradeLink,turnLink))
 #This needs to go at the end of all pages.
