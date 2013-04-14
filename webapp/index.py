@@ -183,10 +183,16 @@ else:
 if not os.path.isfile(GAME_STATE_FILE):
 	gameState = {'gameStart':0, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'diceRolled': 0}
 	writeJson(GAME_STATE_FILE, gameState)
+	#If we're writing a new one, delete all old player files.
+	for fn in os.listdir(PLAYER_FILE):
+		shutil.move(fn, "backup" + fn)
 else:
 	gameState = readJson(GAME_STATE_FILE)
 	if gameState['active'] + TIMEOUT < time.time():
-		gameState = {'gameStart':0, 'ready':{'0':0,'1':0, '2':0, '3':0}}
+		gameState = {'gameStart':0, 'ready':{'0':0,'1':0, '2':0, '3':0}, 'diceRolled':0}
+		#If we're writing a new one, delete all old player files.
+		for fn in os.listdir(PLAYER_FILE):
+			shutil.move(fn, "backup" + fn)
 	else:
 		if gameState['active'] + TIMEOUT*0.75 < time.time():
 			#refresh the gamestate file if we're nearing the timeout.
