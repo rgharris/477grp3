@@ -176,7 +176,6 @@ pairs = cgi.parse_qs(query)
 if cookies:
 	playerID, playerInfo = cookieChk(cookies, PLAYER_FILE, TIMEOUT)
 else:
-	playerID = -1
 	playerInfo = ''
 
 #Get the game state.
@@ -520,7 +519,7 @@ print("""<!DOCTYPE HTML>
    		</script>
       </head>
 """)
-if playerID == -1:
+if playerID == -1 and gameState['gameStart'] == 1:
 	print("""<body class="error">
         		 <div id="container">
            		 <div id="head">
