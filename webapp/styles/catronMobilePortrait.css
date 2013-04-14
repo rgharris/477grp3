@@ -347,6 +347,17 @@ body.wait div#body span.waitLink {
 	color: #555;
 }
 
+body.wait div#body a.halfReadyLink {
+	display:block;
+	width:50%;
+	margin-top: 10px;
+	padding-top: 10px;
+	text-decoration: none;
+	border-top: 1px solid #FFFDD0;
+	font-size: 18pt;
+	color: #FFFDD0;
+}
+
 body.wait div#body a.notReadyLink {
 	display:block;
 	width:50%;
@@ -355,7 +366,7 @@ body.wait div#body a.notReadyLink {
 	text-decoration: none;
 	border-top: 1px solid #FFFDD0;
 	font-size: 18pt;
-	color: #555;
+	color: #FFFDD0;
 }
 /*Error pages. Use the same (general) layout, add an error class to the body.*/
 body.error{
