@@ -192,8 +192,7 @@ else:
 			#refresh the gamestate file if we're nearing the timeout.
 			writeJson(GAME_STATE_FILE, gameState)
 
-if playerInfo == '' and gameState['gameStart'] == 0 and 'ready' in pairs:
-	playerID = -1
+if playerInfo == '' and gameState['gameStart'] == 0 and "ready" in pairs:
 	#First, go through and remove all player files that have timed out.
 	#(Move them to a backup file for testing purposes)
 	for i in range(0, 4):
