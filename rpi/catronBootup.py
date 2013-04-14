@@ -15,7 +15,7 @@ BOOTUP = 1
 STARTGAME = 2
 
 if __name__ == "__main__":
-	random.seed() #Uses system time by default
+	r.seed() #Uses system time by default
 	with i2c.I2CMaster() as bus:
 		bus.transaction(i2c.writing_bytes(MICROADDR, STARTRAND, r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250))) #Too lazy to figure out the 'pythonic' way to do this. This should work. Repeated 19 times.
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, BOOTUP))
