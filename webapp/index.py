@@ -432,7 +432,7 @@ if "start" in pairs:
 	####i2c - write info to micro###
 	with i2c.I2CMaster() as bus:
 		ready = dict((key, val) for key, val in gameState['ready'].items() if val != 0)
-		bus.transaction(MICROADDR, NUMPLAYERREG, ready)
+		bus.transaction(MICROADDR, NUMPLAYERREG, int(len(ready)))
 		bus.transaction(MICROADDR, CURPLAYERREG, startPlayer)
 		bus.transaction(MICROADDR, PIREG, STARTGAMEFLAG)
 	refreshAll(1)
@@ -542,7 +542,7 @@ elif gameState['gameStart'] == 0:
 			stateLink = "<span class=\"readyLink\">Waiting for players...</a>"
 		else:
 			stateLink = "<a href=\"index.py?start=true\" class=\"readyLink\">Start game!</a>"
-	print(output.format(ready,stateLink))
+	print(output.format(str(len(ready)),stateLink))
 
 elif gameState['gameStart'] == 1:
 	script = ""
