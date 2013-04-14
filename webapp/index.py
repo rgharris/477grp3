@@ -524,7 +524,7 @@ if playerID == -1:
 
 elif gameState['gameStart'] == 0:
 	output = """<body>
-					<script>setInterval("heartbeat({9})", 5000)</script>
+					<script>setInterval("heartbeat({2})", 5000)</script>
 					<div id="container">
 						<div id="head">
 							<h2>Waiting for players...</h2>
@@ -543,7 +543,7 @@ elif gameState['gameStart'] == 0:
 			stateLink = "<span class=\"readyLink\">Waiting for players...</a>"
 		else:
 			stateLink = "<a href=\"index.py?start=true\" class=\"readyLink\">Start game!</a>"
-	print(output.format(str(len(ready)),stateLink))
+	print(output.format(str(len(ready)),stateLink),str(playerID))
 
 elif gameState['gameStart'] == 1:
 	script = ""
