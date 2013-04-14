@@ -513,10 +513,10 @@ if playerID == -1:
 	print("""<body class="error">
         		 <div id="container">
            		 <div id="head">
-               	<h2>Max Players Reached!</h2>
+               	<h2>Error!</h2>
 		          </div>
       	       <div id="body">
-           		    <p>This game already has the maximum number of players. Enjoy watching this game, and try to join the next one!</p>
+           		    <p>This game already has the maximum number of players, or is currently in progress. Enjoy watching this game, and try to join the next one!</p>
 	             </div>
     	      </div>
 	      </body>
@@ -524,6 +524,7 @@ if playerID == -1:
 
 elif gameState['gameStart'] == 0:
 	output = """<body>
+					<script>setInterval("heartbeat({9})", 5000)</script>
 					<div id="container">
 						<div id="head">
 							<h2>Waiting for players...</h2>
