@@ -522,7 +522,7 @@ print("""<!DOCTYPE HTML>
    		</script>
       </head>
 """)
-if gameState['gameStart'] == 1:
+if gameState['gameStart'] == 1 and playerID == -1:
 	print("""<body class="error">
         		 <div id="container">
            		 <div id="head">
