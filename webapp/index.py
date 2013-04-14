@@ -41,7 +41,7 @@ def weighted_choice_sub(weights):
 
 def cookieChk(cookies, playerFile, timeout):
 	cookie.load(cookies)
-	debug = debug + "Got into cookie check."
+	debug = "Got into cookie check."
 	#"cookies" exist, but don't contain our cookies.
 	if 'catronLastactive' not in cookie or 'catronPlayerid' not in cookie:
 		debug = debug + "No catron cookie."
