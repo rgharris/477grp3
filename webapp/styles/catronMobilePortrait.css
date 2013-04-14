@@ -339,7 +339,6 @@ body.wait div#body a.readyLink{
 body.wait div#body span.waitLink {
 	display:block;
 	width:50%;
-	float:left;
 	margin-top: 10px;
 	padding-top: 10px;
 	text-decoration: none;
@@ -351,7 +350,6 @@ body.wait div#body span.waitLink {
 body.wait div#body a.notReadyLink {
 	display:block;
 	width:50%;
-	float:right;
 	margin-top: 10px;
 	padding-top: 10px;
 	text-decoration: none;
