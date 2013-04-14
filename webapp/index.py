@@ -432,9 +432,9 @@ if "start" in pairs:
 	####i2c - write info to micro###
 	with i2c.I2CMaster() as bus:
 		ready = dict((key, val) for key, val in gameState['ready'].items() if val != 0)
-		bus.transaction(MICROADDR, NUMPLAYERREG, int(len(ready)))
-		bus.transaction(MICROADDR, CURPLAYERREG, startPlayer)
-		bus.transaction(MICROADDR, PIREG, STARTGAMEFLAG)
+		bus.transaction(i2c.writing_bytes(MICROADDR, NUMPLAYERREG, int(len(ready))))
+		bus.transaction(i2c.writing_bytes(MICROADDR, CURPLAYERREG, startPlayer))
+		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, STARTGAMEFLAG))
 	refreshAll(1)
 
 #################################PAGE GENERATION BELOW##################################
