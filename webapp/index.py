@@ -533,7 +533,7 @@ if gameState['gameStart'] == 1:
 
 elif gameState['gameStart'] == 0:
 	ready = dict((key, val) for key, val in gameState['ready'].items() if val != 0)
-	if len(ready) >= 4:
+	if len(ready) >= 4 and playerID != -1:
 		print("""<body class="error">
      	   		 <div id="container">
      	      		 <div id="head">
