@@ -543,7 +543,7 @@ elif gameState['gameStart'] == 0:
 			stateLink = "<span class=\"readyLink\">Waiting for players...</a>"
 		else:
 			stateLink = "<a href=\"index.py?start=true\" class=\"readyLink\">Start game!</a>"
-	print(output.format(str(len(ready)),stateLink),str(playerID))
+	print(output.format(str(len(ready)),stateLink,str(playerID)))
 
 elif gameState['gameStart'] == 1:
 	script = ""
