@@ -40,21 +40,21 @@ def cookieChk(cookies, playerFile, timeout):
 	cookie.load(cookies)
 	#"cookies" exist, but don't contain our cookies.
 	if 'catronLastactive' not in cookie or 'catronPlayerid' not in cookie:
-		return ('-1','')
+		return (-1,'')
 	lastactive = float(cookie['catronLastactive'].value)
 	#We have timed out.
 	if (lastactive + timeout <= time.time()):
-		return ('-1','')
+		return (-1,'')
 	playerID = int(cookie['catronPlayerid'].value)
 	#The player file doesn't exist, so make a new one.
 	if not os.path.isfile(playerFile + str(playerID) + ".json"):
-		return ('-1','')
+		return (-1,'')
 	jsonInfo = open(playerFile + str(playerID) + ".json")
 	checkInfo = json.load(jsonInfo)
 	jsonInfo.close
 	#The file has timed out.
 	if (checkInfo['active'] + timeout <= time.time()):
-		return ('-1','')
+		return (-1,'')
 	playerID = int(cookie['catronPlayerid'].value)
 	playerInfo = json.load(open(playerFile + str(playerID) + ".json"))
 	return (playerID, playerInfo)
@@ -548,9 +548,7 @@ elif gameState['gameStart'] == 0:
 					</div>
 					</body>"""
 	ready = dict((key, val) for key, val in gameState['ready'].items() if val != 0)
-	if playerID == -1:
-		stateLink = "<a href=\"index.py?ready=" + str(playerID) + "\" class=\"readyLink\">I'm ready!</a>"
-	elif gameState['ready'][str(playerID)] == 0:
+	if playerID == -1 or gameState['ready'][str(playerID)] == 0:
 		stateLink = "<a href=\"index.py?ready=" + str(playerID) + "\" class=\"readyLink\">I'm ready!</a>"
 	elif gameState['ready'][str(playerID)] == 1:
 		if len(ready) < 3:
