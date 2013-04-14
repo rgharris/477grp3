@@ -318,7 +318,8 @@ body.wait div#body{
 	color: #FFFDD0;
 	font-size: 18pt;
 	padding: 10px 0 10px 0;
-	border-radius: 10px;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
 }
 
 body.wait div#body p{
@@ -328,12 +329,16 @@ body.wait div#body p{
 body.wait div#body a.readyLink{
 	display:block;
 	width:100%;
+	float: left;
 	margin-top: 10px;
 	padding-top: 10px;
 	text-decoration: none;
 	border-top: 1px solid #FFFDD0;
 	font-size: 18pt;
 	color: #FFFDD0;
+	background-color: rgba(0,0,0,0.6);
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
 }
 
 body.wait div#body span.waitLink {
