@@ -174,9 +174,7 @@ pairs = cgi.parse_qs(query)
 
 #First start by checking and seeing if they have a cookie. If so, check it and use it!
 if cookies:
-	debug = debug + "going into cookie check."
 	playerID, playerInfo = cookieChk(cookies, PLAYER_FILE, TIMEOUT)
-	debug = debug + "Came out of cookie check. Values: " + str(playerID) + " " + playerInfo + "."
 else:
 	playerInfo = ''
 	playerID = -1
@@ -193,11 +191,9 @@ else:
 		if gameState['active'] + TIMEOUT*0.75 < time.time():
 			#refresh the gamestate file if we're nearing the timeout.
 			writeJson(GAME_STATE_FILE, gameState)
-debug = debug + " playerInfo = " + playerInfo + " gameState['gameStart'] = " + str(gameState['gameStart']) + " ready in pairs = " + str("ready" in pairs) + "."
 if playerInfo == '' and gameState['gameStart'] == 0 and "ready" in pairs:
 	#First, go through and remove all player files that have timed out.
 	#(Move them to a backup file for testing purposes)
-	debug = debug + " Clearing out old json files."
 	for i in range(0, 4):
 		playerFile = PLAYER_FILE + str(i) + ".json"
 		if os.path.isfile(playerFile):
@@ -210,28 +206,23 @@ if playerInfo == '' and gameState['gameStart'] == 0 and "ready" in pairs:
 	for i in range(0, 4):
 		playerFile = PLAYER_FILE + str(i) + ".json"
 		if not os.path.isfile(playerFile):
-			debug = debug + " " + playerFile + " does not exist, creating."
 			playerID = i
 			refreshAll(1)
 			playerInfo = createPlayer(playerFile, playerID)
-			debug = debug + " playerID is now " + str(playerID) + "."
 			break
 		else:
 			#That json file exists, so check it's timeout!
 			#This bit of code should never be executed now, but I'm leaving it for historical purposes.
 			playerInfo = readJson(playerFile)
 			if (playerInfo["active"] == 0 or playerInfo["active"] + TIMEOUT < time.time()):
-				debug = debug + " Timed out player in use."
 				#This player is inactive or has timed out, so here we go!
 				playerID = i
 				refreshAll(1)
 				playerInfo = createPlayer(playerFile, playerID)				
-				debug = debug + " playerID is now " + str(playerID) + "."
 				break
 			else:
 				continue
 
-debug = debug + " playerID is now " + str(playerID) + "."
 #This will make it easy later.
 playerFile = PLAYER_FILE + str(playerID) + ".json"
 
@@ -242,8 +233,8 @@ if playerID != -1:
 	#already.
 	#(Clear cookie var in the process)
 	cookie = http.cookies.SimpleCookie()
-	cookie['playerid'] = str(playerID)
-	cookie['lastactive'] = str(time.time())
+	cookie['catronPlayerid'] = str(playerID)
+	cookie['catronLastactive'] = str(time.time())
 	#Cookies need to be sent before other headers
 	print(cookie)
 
