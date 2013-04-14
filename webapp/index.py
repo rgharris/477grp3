@@ -210,7 +210,7 @@ if playerInfo == '' and gameState['gameStart'] == 0 and "ready" in pairs:
 	for i in range(0, 4):
 		playerFile = PLAYER_FILE + str(i) + ".json"
 		if not os.path.isfile(playerFile):
-			debug = debug + " " + playerFile " does not exist, creating."
+			debug = debug + " " + playerFile + " does not exist, creating."
 			playerID = i
 			refreshAll(1)
 			playerInfo = createPlayer(playerFile, playerID)
