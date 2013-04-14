@@ -97,7 +97,7 @@ def setRefresh(playerID, value):
 	f.close()
 
 def refreshAll(value):
-	for i in range(0,4):
+	for i in range(-1,4):
 		setRefresh(i, value)
 
 def payForPurchase(playerInfo, resourceDict):
@@ -191,7 +191,7 @@ else:
 			#refresh the gamestate file if we're nearing the timeout.
 			writeJson(GAME_STATE_FILE, gameState)
 
-if playerInfo == '' and gameState['gameStart'] == 0:
+if playerInfo == '' and gameState['gameStart'] == 0 and 'ready' in pairs:
 	playerID = -1
 	#First, go through and remove all player files that have timed out.
 	#(Move them to a backup file for testing purposes)
