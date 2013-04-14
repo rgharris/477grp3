@@ -224,8 +224,6 @@ if playerInfo == '' and gameState['gameStart'] == 0 and 'ready' in pairs:
 			else:
 				continue
 
-#This will make it easy later.
-playerFile = PLAYER_FILE + str(playerID) + ".json"
 
 if playerID != -1:
 	#Set cookie for player ID and last active time.
@@ -238,6 +236,9 @@ if playerID != -1:
 	cookie['lastactive'] = str(time.time())
 	#Cookies need to be sent before other headers
 	print(cookie)
+
+	#This will make it easy later.
+	playerFile = PLAYER_FILE + str(playerID) + ".json"
 
 #Now that we've set the cookie, we need to simply overwrite
 #the "autorefresh" file with a 0, so it doesn't autorefresh again.
