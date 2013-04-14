@@ -180,7 +180,9 @@ pairs = cgi.parse_qs(query)
 
 #First start by checking and seeing if they have a cookie. If so, check it and use it!
 if cookies:
+	debug = debug + "going into cookie check."
 	playerID, playerInfo = cookieChk(cookies, PLAYER_FILE, TIMEOUT)
+	debug = debug + "Came out of cookie check. Values: " + playerID + " " + playerInfo + "."
 else:
 	playerInfo = ''
 	playerID = -1
