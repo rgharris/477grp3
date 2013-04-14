@@ -437,7 +437,7 @@ if "ready" in pairs:
 	writeJson(GAME_STATE_FILE, gameState)
 	refreshAll(1)
 	#Refresh again to get rid of 'ready' in pairs. Prevents infinite refresh.
-	print("Location: index.py")
+	#print("Location: index.py")
 if "start" in pairs:
 	gameState['gameStart'] = 1
 	writeJson(GAME_STATE_FILE, gameState)
