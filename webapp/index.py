@@ -427,13 +427,13 @@ if "ready" in pairs:
 if "start" in pairs:
 	gameState['gameStart'] = 1
 	writeJson(GAME_STATE_FILE, gameState)
-	startPlayer = random.randint(0,3)
+	ready = dict((key, val) for key, val in gameState['ready'].items() if val != 0)
+	startPlayer = random.randint(0,ready)
 	startPlayerInfo = readJson(PLAYER_FILE + str(startPlayer) + ".json")
 	startPlayerInfo['currentTurn'] = 1
 	writeJson(PLAYER_FILE + str(startPlayer) + ".json", startPlayerInfo)
 	####i2c - write info to micro###
 	with i2c.I2CMaster() as bus:
-		ready = dict((key, val) for key, val in gameState['ready'].items() if val != 0)
 		bus.transaction(i2c.writing_bytes(MICROADDR, NUMPLAYERREG, int(len(ready))))
 		bus.transaction(i2c.writing_bytes(MICROADDR, CURPLAYERREG, startPlayer))
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, STARTGAMEFLAG))
