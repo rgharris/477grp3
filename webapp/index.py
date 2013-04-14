@@ -39,13 +39,13 @@ def weighted_choice_sub(weights):
 def cookieChk(cookies, playerFile, timeout):
 	cookie.load(cookies)
 	#"cookies" exist, but don't contain our cookies.
-	if 'lastactive' not in cookie or 'playerid' not in cookie:
+	if 'catronLastactive' not in cookie or 'catronPlayerid' not in cookie:
 		return ('-1','')
-	lastactive = float(cookie['lastactive'].value)
+	lastactive = float(cookie['catronLastactive'].value)
 	#We have timed out.
 	if (lastactive + timeout <= time.time()):
 		return ('-1','')
-	playerID = int(cookie['playerid'].value)
+	playerID = int(cookie['catronPlayerid'].value)
 	#The player file doesn't exist, so make a new one.
 	if not os.path.isfile(playerFile + str(playerID) + ".json"):
 		return ('-1','')
@@ -55,7 +55,7 @@ def cookieChk(cookies, playerFile, timeout):
 	#The file has timed out.
 	if (checkInfo['active'] + timeout <= time.time()):
 		return ('-1','')
-	playerID = int(cookie['playerid'].value)
+	playerID = int(cookie['catronPlayerid'].value)
 	playerInfo = json.load(open(playerFile + str(playerID) + ".json"))
 	return (playerID, playerInfo)
 
