@@ -537,7 +537,7 @@ elif gameState['gameStart'] == 0:
 	ready = dict((key, val) for key, val in gameState['ready'].items() if val != 0)
 	if gameState['ready'][str(playerID)] == 0:
 		stateLink = "<a href=\"index.py?ready=" + str(playerID) + "\" class=\"readyLink\">I'm ready!</a>"
-	elif gameState['ready'][str(playerID)] == 0:
+	elif gameState['ready'][str(playerID)] == 1:
 		if len(ready) < 3:
 			stateLink = "<span class=\"readyLink\">Waiting for players...</a>"
 		else:
