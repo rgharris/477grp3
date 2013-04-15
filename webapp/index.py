@@ -166,7 +166,7 @@ def endTurn(playerFile, playerInfo, gameState):
 	nextPlayerInfo['currentTurn'] = 1
 	writeJson(PLAYER_FILE + nextPlayerID + ".json", nextPlayerInfo)
 	with i2c.I2CMaster() as bus:
-		bus.transaction(i2c.writing_bytes(MICROADDR, CURPLAYERREG, nextPlayerID))
+		bus.transaction(i2c.writing_bytes(MICROADDR, CURPLAYERREG, nextPlayerID + 1))
 	setRefresh(nextPlayerID, 1)
 
 	
@@ -492,7 +492,7 @@ elif "confirmPiecePlacement" in form:
 	with i2c.I2CMaster() as bus:
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, CONFIRMPIECE))
 	if gameState['setupComplete'] == 0:
-		playerInfo['initialPlacements'][form.getvalue('pieceType')] = playerInfo['initialPlacements'][form.getvalue('piecetype')] + 1	
+		playerInfo['initialPlacements'][str(form.getvalue('pieceType'))] = playerInfo['initialPlacements'][str(form.getvalue('piecetype'))] + 1	
 		if form.getvalue('piecetype') == 'road':
 			endTurn(playerFile, playerInfo, gameState)
 	setrefresh(playerID, REFRESH_VALUE['generic']) 
@@ -525,7 +525,7 @@ if "start" in pairs:
 	####i2c - write info to micro###
 	with i2c.I2CMaster() as bus:
 		bus.transaction(i2c.writing_bytes(MICROADDR, NUMPLAYERREG, int(len(ready))))
-		bus.transaction(i2c.writing_bytes(MICROADDR, CURPLAYERREG, startPlayer))
+		bus.transaction(i2c.writing_bytes(MICROADDR, CURPLAYERREG, startPlayer + 1))
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, STARTGAMEFLAG))
 	refreshAll(1)
 	#Locate to index to get rid of infinite refresh.
