@@ -89,7 +89,8 @@ div#head h2{
 }
 .button{
 	float:left;
-	border-right:solid 1px #000;
+	/*border-right:solid 1px #000;*/
+	border: none;
 	width:49%;
 	text-align:center;
 	font-size:20pt;
@@ -98,7 +99,18 @@ div#head h2{
 	text-decoration: none;
 	color: #000000;
 }
-#b2, #b4{
+
+.borderRight {
+  border-right: solid 1px #000;
+}
+.borderTop {
+  border-top: solid 1px #000;
+}
+.leftSpacing {
+  margin-left: 1%;
+}
+
+/*#b2, #b4{
 	border-right: none;
 }
 #b3, #b4{
@@ -106,7 +118,7 @@ div#head h2{
 }
 #b1, #b3{
 	margin-left: 1%;
-}
+}*/
 ul.gameStatus{
 	margin: 0 auto;
 	padding: 0;
