@@ -21,7 +21,7 @@
 # Import debugging
 import cgitb
 #Everything else.
-import os, sys, json, http.cookies, time, cgi, random, shutil
+import os, sys, json, http.cookies, time, cgi, random, shutil, struct
 import quick2wire.i2c as i2c
 from quick2wire.gpio import pins,In
 #Enable debugging
@@ -295,13 +295,15 @@ if "i2c" in pairs:
 	else:
 		with i2c.I2CMaster() as bus:
 			readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, MCUEVENTREG), i2c.reading(MICROADDR, 1))
-			debug = debug + "readMCU: " + str(int(readMCU, 0))
+			readMCU = struct.unpack('B', readMCU[0])[0]
 			if readMCU == 4 or readMCU == 5:
 				readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, PIECETYPEREG), i2c.reading(MICROADDR, 1))
+				readMCU = struct.unpack('B', readMCU[0])[0]
 				bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
 				print("Location: index.py?modalConfirm=1#modal")
 			elif readMCU == 6:
 				readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, PIECETYPEREG), i2c.reading(MICROADDR, 1))
+				readMCU = struct.unpack('B', readMCU[0])[0]
 				bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
 				print("Location: index.py?modalConfirm=2#modal")
 			elif readMCU == 11:
