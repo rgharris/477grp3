@@ -285,7 +285,7 @@ with pinIn:
 					modalConfirm = 2
 				elif readMCU == 11:
 					modalConfirm = 0
-				bus.transaction(i2c.writing_bytes(MICROADDR, PIFLAG, RESETGPIOFLAG))
+				bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
 #################################FORM RETRIEVAL BELOW##################################
 if 'user' in form:
 	newUsername = form.getvalue("user", "Player " + str(playerID + 1))
@@ -699,7 +699,7 @@ elif gameState['gameStart'] == 1:
 	#Put elif in for i2c stuff
 	elif modalConfirm != 0:
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/i2c.py?read=" + str(readMCU) + "&confirm=" + str(modalConfirm) + "')</script>"
-	elif gameStatus['setupComplete'] == 0:
+	elif gameState['setupComplete'] == 0:
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/initSetup.py?player=" + str(playerID) + "')</script>"
 	output = """
 		<body>
