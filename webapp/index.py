@@ -33,7 +33,7 @@ import sys
 times.append(time.time()-start)
 import json
 times.append(time.time()-start)
-import http.cookies
+from http.cookies import SimpleCookie
 times.append(time.time()-start)
 from cgi import FieldStorage, parse_qs, escape
 times.append(time.time()-start)
@@ -230,7 +230,7 @@ GPIOPIN = 7
 
 #Get cookies!
 cookies = os.environ.get('HTTP_COOKIE')
-cookie = http.cookies.SimpleCookie()
+cookie = SimpleCookie()
 
 #Throw query string in a var for later.
 query = os.environ.get('QUERY_STRING')
@@ -306,7 +306,7 @@ if playerID != -1:
 	#last active time if the the cookie existed
 	#already.
 	#(Clear cookie var in the process)
-	cookie = http.cookies.SimpleCookie()
+	cookie = SimpleCookie()
 	cookie['catronPlayerid'] = str(playerID)
 	cookie['catronLastactive'] = str(time.time())
 	#Cookies need to be sent before other headers
