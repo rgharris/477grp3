@@ -829,7 +829,7 @@ elif gameState['gameStart'] == 1:
 				<div id="footer">
 					{10}
 					{11}
-					<a href="#modal" id="b3" class="button" onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')">Status</a>
+					<a href="#modal" id="b3" class="button borderTop borderRight spacingLeft" onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')">Status</a>
 					{12}
 					{13}
 					{14}
@@ -838,26 +838,26 @@ elif gameState['gameStart'] == 1:
 		</body>
 	"""
 
-	confirmLink = "<span id=\"b2\" class=\"button fade\">&nbsp;</span>"
-	denyLink = "<span id=\"b4\" class=\"button fade\">&nbsp;</span>"
+	confirmLink = "<span id=\"b2\" class=\"button fade borderTop borderRight spacingLeft\">&nbsp;</span>"
+	denyLink = "<span id=\"b4\" class=\"button fade borderTop\">&nbsp;</span>"
 	curPoints = playerInfo['points']
 	if 'victory' in playerInfo['onHold']:
 		curPoints = curPoints + playerInfo['onHold']['victory']
 	if 'victory' in playerInfo['cards']:
 		curPoints = curPoints + playerInfo['cards']['victory']
 	if playerInfo['currentTurn'] == 1:
-		purchaseLink = "<a href=\"#modal\" id=\"b1\" class=\"button\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/purchase.py')\">Purchase</a>"
+		purchaseLink = "<a href=\"#modal\" id=\"b1\" class=\"button borderRight spacingLeft\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/purchase.py')\">Purchase</a>"
 		tradeLink = "<a href=\"#modal\" id=\"b2\" class=\"button\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/trade.py')\">Trade</a>"
 		if gameState['diceRolled'] == 0:
-			turnLink = "<a href=\"#dice\" id=\"b4\" class=\"button\" onclick=\"loadXMLDoc('dierolled', '/dialogs/roll.py')\">Roll Dice</a><div id=\"dierolled\" style=\"display:none\"></div>"
+			turnLink = "<a href=\"#dice\" id=\"b4\" class=\"button borderTop\" onclick=\"loadXMLDoc('dierolled', '/dialogs/roll.py')\">Roll Dice</a><div id=\"dierolled\" style=\"display:none\"></div>"
 		else:
-			turnLink = "<a href=\"#modal\" id=\"b4\" class=\"button\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/endTurn.py')\">End Turn</a>"
-			confirmLink = "<a href=\"trade=confirm#modal\" id=\"b4\" class=\"button\" onclick=\"\">Confirm</a>"
-			denyLink = "<a href=\"trade=deny#modal\" id=\"b4\" class=\"button\" onclick=\"\">Deny</a>"
+			turnLink = "<a href=\"#modal\" id=\"b4\" class=\"button borderTop\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/endTurn.py')\">End Turn</a>"
+			confirmLink = "<a href=\"trade=confirm#modal\" id=\"b4\" class=\"button borderTop borderRight spacingLeft\" onclick=\"\">Confirm</a>"
+			denyLink = "<a href=\"trade=deny#modal\" id=\"b4\" class=\"button borderTop\" onclick=\"\">Deny</a>"
 	else:
-		purchaseLink = "<span id=\"b1\" class=\"button fade\">&nbsp;</span>"
+		purchaseLink = "<span id=\"b1\" class=\"button fade borderRight spacingLeft\">&nbsp;</span>"
 		tradeLink = "<span id=\"b2\" class=\"button fade\">&nbsp;</span>"
-		turnLink = "<span id=\"b4\" class=\"button fade\">&nbsp;</span>"
+		turnLink = "<span id=\"b4\" class=\"button fade borderTop\">&nbsp;</span>"
 
 	print(output.format(script,playerInfo['playerName'], str(curPoints), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())),playerID,purchaseLink,tradeLink,turnLink,confirmLink,denyLink))
 #This needs to go at the end of all pages.
