@@ -99,7 +99,6 @@ div#head h2{
 	text-decoration: none;
 	color: #000000;
 }
-
 .borderRight {
   border-right: solid 1px #000;
 }
@@ -109,16 +108,6 @@ div#head h2{
 .spacingLeft {
   margin-left: 1%;
 }
-
-/*#b2, #b4{
-	border-right: none;
-}
-#b3, #b4{
-	border-top: solid 1px #000;
-}
-#b1, #b3{
-	margin-left: 1%;
-}*/
 ul.gameStatus{
 	margin: 0 auto;
 	padding: 0;
