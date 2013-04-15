@@ -161,37 +161,46 @@ def chkDeck(deckFile, timeout):
 		return False
 
 def endTurn(playerFile, playerInfo, gameState):
-	for resource in playerInfo['cards']:
-		playerInfo['cards'][resource] = playerInfo['cards'][resource] + playerInfo['onHold'][resource]
-	playerInfo['onHold'] = {'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}
-	playerInfo['playedDevCard'] = 0
-	playerInfo['currentTurn'] = 0
-	writeJson(playerFile, playerInfo)
-	numPlayers = len(dict((key, val) for key, val in gameState['ready'].items() if val != 0))
-	if gameState['setupComplete'] == 1:
-		if playerID == numPlayers - 1:
-			nextPlayerID = 0
-		else:
-			nextPlayerID = playerID + 1
-	else:
-		if gameState['reverse'] == 0:
-			if playerID == numPlayers - 1:
-				nextPlayerID = 0
-			else:
-				nextPlayerID = playerID + 1
-		else:
-			if playerID == 0:
-				nextPlayerID = numPlayers - 1
-			elif playerID == gameState['firstPlayer']:
-				gameState['setupComplete'] = 1
-			else:
-				nextPlayerID = playerID - 1
-	nextPlayerInfo = readJson(PLAYER_FILE + str(nextPlayerID) + ".json")
-	nextPlayerInfo['currentTurn'] = 1
-	writeJson(PLAYER_FILE + str(nextPlayerID) + ".json", nextPlayerInfo)
-	with i2c.I2CMaster() as bus:
-		bus.transaction(i2c.writing_bytes(MICROADDR, CURPLAYERREG, nextPlayerID + 1))
-	setRefresh(nextPlayerID, 1)
+   for resource in playerInfo['cards']:
+      playerInfo['cards'][resource] = playerInfo['cards'][resource] + playerInfo['onHold'][resource]
+   playerInfo['onHold'] = {'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}
+   playerInfo['playedDevCard'] = 0
+   playerInfo['currentTurn'] = 0
+   writeJson(playerFile, playerInfo)
+   numPlayers = len(dict((key, val) for key, val in gameState['ready'].items() if val != 0))
+   if gameState['firstPlayer'] == numPlayers -1:
+      lastPlayer = 0
+   else:
+      lastPlayer = gameState['firstPlayer'] - 1
+   if gameState['setupComplete'] == 1:
+      if playerID == numPlayers - 1:
+         nextPlayerID = 0
+      else:
+         nextPlayerID = playerID + 1
+   else:
+      if gameState['reverse'] == 0:
+         if playerID == numPlayers - 1:
+            nextPlayerID = 0
+         else:
+            nextPlayerID = playerID + 1
+         if nextPlayerID == gameState['firstPlayer']:
+            nextPlayerID = playerID
+            gameState['reverse'] = 1
+            writeJson(GAME_STATE_FILE, gameState)
+      else:
+         if playerID == gameState['firstPlayer']:
+            gameState['setupComplete'] = 1
+            writeJson(GAME_STATE_FILE, gameState)
+         if playerID == 0:
+            nextPlayerID = numPlayers - 1
+         else:
+            nextPlayerID = playerID - 1
+   nextPlayerInfo = readJson(PLAYER_FILE + str(nextPlayerID) + ".json")
+   nextPlayerInfo['currentTurn'] = 1
+   writeJson(PLAYER_FILE + str(nextPlayerID) + ".json", nextPlayerInfo)
+   with i2c.I2CMaster() as bus:
+      bus.transaction(i2c.writing_bytes(MICROADDR, CURPLAYERREG, nextPlayerID + 1))
+   setRefresh(nextPlayerID, 1)
 
 	
 ####################PRE DISPLAY IS BELOW###################
