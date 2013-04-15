@@ -176,6 +176,11 @@ def endTurn(playerFile, playerInfo, gameState):
 	
 ####################PRE DISPLAY IS BELOW###################
 
+
+#Remove the next 2 lines at some point, just for debugging
+elapsedTime = time.time() - start
+debug = debug + "\nDone importing all libraries and setting up functions: " + str(elapsedTime) + " seconds\n"
+
 #Store form data
 form = cgi.FieldStorage()
 
@@ -217,6 +222,10 @@ if cookies:
 else:
 	playerInfo = ''
 	playerID = -1
+
+#Remove the next 2 lines at some point, just for debugging
+elapsedTime = time.time() - start
+debug = debug + "\nDone checking cookies: " + str(elapsedTime) + " seconds\n"
 
 #Get the game state.
 if not os.path.isfile(GAME_STATE_FILE):
@@ -287,6 +296,10 @@ if playerID != -1:
 #the "autorefresh" file with a 0, so it doesn't autorefresh again.
 setRefresh(playerID,REFRESH_VALUE['reset'])
 
+#Remove the next 2 lines at some point, just for debugging
+elapsedTime = time.time() - start
+debug = debug + "\nDone checking json files and setting cookies: " + str(elapsedTime) + " seconds\n"
+
 #################################i2c CHECK#############################################
 if "i2c" in pairs:		
 	if playerInfo != '' and playerInfo['currentTurn'] != 1:
@@ -313,6 +326,9 @@ if "i2c" in pairs:
 			elif readMCU == 11:
 				bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
 				print("Location: index.py")
+#Remove the next 2 lines at some point, just for debugging
+elapsedTime = time.time() - start
+debug = debug + "\nDone with I2C check: " + str(elapsedTime) + " seconds\n"
 #################################FORM RETRIEVAL BELOW##################################
 if 'user' in form:
 	newUsername = form.getvalue("user", "Player " + str(playerID + 1))
@@ -505,6 +521,9 @@ elif "denyPiecePlacement" in form:
 	with i2c.I2CMaster() as bus:
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, DENYPIECE))
 	setRefresh(playerID, REFRESH_VALUE['generic'])
+#Remove the next 2 lines at some point, just for debugging
+elapsedTime = time.time() - start
+debug = debug + "\nDone form processing: " + str(elapsedTime) + " seconds\n"
 #################################GAME START AND READY CHECK#############################
 if "ready" in pairs:
 	if (playerID != -1):
@@ -535,6 +554,9 @@ if "start" in pairs:
 	refreshAll(1)
 	#Locate to index to get rid of infinite refresh.
 	print("Location: index.py")
+#Remove the next 2 lines at some point, just for debugging
+elapsedTime = time.time() - start
+debug = debug + "\nDone with game start and ready check: " + str(elapsedTime) + " seconds\n"
 
 #################################PAGE GENERATION BELOW##################################
 
@@ -812,6 +834,6 @@ elif gameState['gameStart'] == 1:
 print("</html>")
 #Remove the next 2 lines at some point, just for debugging
 elapsedTime = time.time() - start
-debug = debug + "\nPython processing time: " + str(elapsedTime) + " seconds\n"
+debug = debug + "\nNow done with everything: " + str(elapsedTime) + " seconds\n"
 #Debug variable, prints after main html. Most browsers will still render.
 print(debug)
