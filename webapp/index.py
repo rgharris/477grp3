@@ -284,7 +284,7 @@ if playerID != -1:
 setRefresh(playerID,REFRESH_VALUE['reset'])
 
 #################################i2c CHECK#############################################
-if 'i2c' in pairs:		
+if "i2c" in pairs:		
 	if playerInfo != '' and playerInfo['currentTurn'] != 1:
 		for i in range(0, 4):
 			chkPlayerFile = PLAYER_FILE + str(i) + ".json"
@@ -295,6 +295,7 @@ if 'i2c' in pairs:
 	else:
 		with i2c.I2CMaster() as bus:
 			readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, MCUEVENTREG), i2c.reading(MICROADDR, 1))
+			debug = debug + "readMCU: " + str(readMCU)
 			if readMCU == 4 or readMCU == 5:
 				readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, PIECETYPEREG), i2c.reading(MICROADDR, 1))
 				bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
