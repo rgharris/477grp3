@@ -812,6 +812,6 @@ elif gameState['gameStart'] == 1:
 print("</html>")
 #Remove the next 2 lines at some point, just for debugging
 elapsedTime = time.time() - start
-debug = debug + "\nPython processing time: " + str(elapsedTime) + " micro seconds\n"
+debug = debug + "\nPython processing time: " + str(elapsedTime) + " seconds\n"
 #Debug variable, prints after main html. Most browsers will still render.
 print(debug)
