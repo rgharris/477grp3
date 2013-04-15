@@ -136,7 +136,7 @@ def chkDeck(deckFile, timeout):
 			return True
 		return False
 
-def endTurn(playerFile, playerInfo):
+def endTurn(playerFile, playerInfo, gameState):
 	for resource in playerInfo['cards']:
 		playerInfo['cards'][resource] = playerInfo['cards'][resource] + playerInfo['onHold'][resource]
 	playerInfo['onHold'] = {'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}
@@ -144,14 +144,24 @@ def endTurn(playerFile, playerInfo):
 	playerInfo['currentTurn'] = 0
 	writeJson(playerFile, playerInfo)
 	numPlayers = len(dict((key, val) for key, val in gameState['ready'].items() if val != 0))
-	if playerID == numPlayers - 1:
-		nextPlayerID = 0
+	if gameState['setupComplete'] == 1:
+		if playerID == numPlayers - 1:
+			nextPlayerID = 0
+		else:
+			nextPlayerID = playerID + 1
+		nextPlayerInfo = readJson(PLAYER_FILE + nextPlayerID + ".json")
+		nextPlayerInfo['currentTurn'] = 1
+		writeJson(PLAYER_FILE + nextPlayerID + ".json", nextPlayerInfo)
+		with i2c.I2CMaster() as bus:
+			bus.transaction(i2c.writing_bytes(MICROADDR, CURPLAYERREG, nextPlayerID))
+		setRefresh(nextPlayerID, 1)
 	else:
-		nextPlayerID = playerID + 1
-	nextPlayerInfo = readJson(PLAYER_FILE + nextPlayerID + ".json")
-	nextPlayerInfo['currentTurn'] = 1
-	writeJson(PLAYER_FILE + nextPlayerID + ".json", nextPlayerInfo)
-	setRefresh(nextPlayerID, 1)
+		if playerID == numPlayers - 1:
+			nextPlayerID = 0
+		else:
+			nextPlayerID = playerID + 1
+		if nextPlayerID = gameState['firstPlayer']:
+			nextPlayerID = playerID#WORKING HERE
 	
 
 ####################PRE DISPLAY IS BELOW###################
@@ -200,7 +210,7 @@ else:
 
 #Get the game state.
 if not os.path.isfile(GAME_STATE_FILE):
-	gameState = {'gameStart':0, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'diceRolled': 0, 'setupComplete':0}
+	gameState = {'gameStart':0, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'diceRolled': 0, 'setupComplete':0, 'firstPlayer':-1}
 	writeJson(GAME_STATE_FILE, gameState)
 	#If we're writing a new one, delete all old player files.
 	for fn in os.listdir(PLAYER_FILE):
@@ -208,7 +218,7 @@ if not os.path.isfile(GAME_STATE_FILE):
 else:
 	gameState = readJson(GAME_STATE_FILE)
 	if gameState['active'] + TIMEOUT < time.time():
-		gameState = {'gameStart':0, 'ready':{'0':0,'1':0, '2':0, '3':0}, 'diceRolled':0, 'setupComplete':0}
+		gameState = {'gameStart':0, 'ready':{'0':0,'1':0, '2':0, '3':0}, 'diceRolled':0, 'setupComplete':0, 'firstPlayer':-1}
 		#If we're writing a new one, delete all old player files.
 		for fn in os.listdir(PLAYER_FILE):
 			shutil.move(PLAYER_FILE + fn, "backup" + PLAYER_FILE + fn)
@@ -269,7 +279,6 @@ setRefresh(playerID,REFRESH_VALUE['reset'])
 
 #################################i2c CHECK#############################################
 pinIn = pins.pin(GPIOPIN, direction=In)
-modalConfirm = 0
 with pinIn:
 	if pinIn.value == 1:
 		if playerInfo['currentTurn'] != 1:
@@ -279,13 +288,15 @@ with pinIn:
 				readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, MCUEVENTREG), i2c.reading(MICROADDR, 1))
 				if readMCU == 4 or readMCU == 5:
 					readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, PIECETYPEREG), i2c.reading(MICROADDR, 1))
-					modalConfirm = 1
+					bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
+					print("Location: index.py?modalConfirm=1#modal")
 				elif readMCU == 6:
 					readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, PIECETYPEREG), i2c.reading(MICROADDR, 1))
-					modalConfirm = 2
+					bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
+					print("Location: index.py?modalConfirm=2#modal")
 				elif readMCU == 11:
-					modalConfirm = 0
-				bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
+					bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
+					print("Location: index.py")
 #################################FORM RETRIEVAL BELOW##################################
 if 'user' in form:
 	newUsername = form.getvalue("user", "Player " + str(playerID + 1))
@@ -697,8 +708,8 @@ elif gameState['gameStart'] == 1:
 	elif "against" in pairs:
 		script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?against=monopoly&player=" + str(playerID) + "')</script>"
 	#Put elif in for i2c stuff
-	elif modalConfirm != 0:
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/i2c.py?read=" + str(readMCU) + "&confirm=" + str(modalConfirm) + "')</script>"
+	elif "modalConfirm" in pairs:
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/i2c.py?read=" + str(pairs['readMCU'][0]) + "&confirm=" + str(pairs['modalConfirm'][0]) + "')</script>"
 	elif gameState['setupComplete'] == 0:
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/initSetup.py?player=" + str(playerID) + "')</script>"
 	output = """

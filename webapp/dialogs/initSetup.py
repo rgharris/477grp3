@@ -37,7 +37,6 @@ else:
 			output = """<h2>Place Road.</h2>
 							<p>Place your road now.</p>
 						"""
-
 		if playerInfo['initialPlacements']['settlement'] == 1 and playerInfo['initialPlacements']['road'] == 1:
 			output = """<h2>Place Settlement.</h2>
 							<p>Place your second settlement now.</p>
