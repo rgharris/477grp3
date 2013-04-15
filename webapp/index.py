@@ -150,6 +150,17 @@ def chkResources(playerInfo, resourceDict):
 			return False
 	return True
 
+def getResources(playerID, playerFile, playerInfo):
+   startReg = (playerID * 5) + 10
+   with i2c.I2CMaster() as bus:
+      readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, startReg), i2c.reading(MICROADDR, 5))
+   playerInfo['resources']['ore'] = playerInfo['resources']['ore'] + struct.unpack('B', readMCU[0])[0]
+   playerInfo['resources']['wheat'] = playerInfo['resources']['wheat'] + struct.unpack('B', readMCU[1])[0]
+   playerInfo['resources']['sheep'] = playerInfo['resources']['sheep'] + struct.unpack('B', readMCU[2])[0]
+   playerInfo['resources']['clay'] = playerInfo['resources']['clay'] + struct.unpack('B', readMCU[3])[0]
+   playerInfo['resources']['wood'] = playerInfo['resources']['wood'] + struct.unpack('B', readMCU[4])[0]
+   writeJson(playerFile, playerInfo)
+
 def chkDeck(deckFile, timeout):
 		if not os.path.isfile(deckFile):
 			return True
@@ -195,6 +206,7 @@ def endTurn(playerFile, playerInfo, gameState):
             nextPlayerID = numPlayers - 1
          else:
             nextPlayerID = playerID - 1
+			getResources(playerID, playerFile, playerInfo)
    nextPlayerInfo = readJson(PLAYER_FILE + str(nextPlayerID) + ".json")
    nextPlayerInfo['currentTurn'] = 1
    writeJson(PLAYER_FILE + str(nextPlayerID) + ".json", nextPlayerInfo)
