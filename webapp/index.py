@@ -300,12 +300,12 @@ if "i2c" in pairs:
 				readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, PIECETYPEREG), i2c.reading(MICROADDR, 1))
 				readMCU = struct.unpack('B', readMCU[0])[0]
 				bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
-				print("Location: index.py?modalConfirm=1#modal")
+				print("Location: index.py?modalConfirm=1&readMCU=" + readMCU + "#modal")
 			elif readMCU == 6:
 				readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, PIECETYPEREG), i2c.reading(MICROADDR, 1))
 				readMCU = struct.unpack('B', readMCU[0])[0]
 				bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
-				print("Location: index.py?modalConfirm=2#modal")
+				print("Location: index.py?modalConfirm=2&readMCU=" + readMCU + "#modal")
 			elif readMCU == 11:
 				bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
 				print("Location: index.py")
