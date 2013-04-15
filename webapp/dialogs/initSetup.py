@@ -29,19 +29,20 @@ else:
 	stateInfo = json.load(stateFile)
 	stateFile.close()
 	if playerInfo['currentTurn'] == 1:
-		if playerInfo['initialPlacements']['settlements'] == 0:
+		if playerInfo['initialPlacements']['settlement'] == 0:
 			output = """<h2>Place Settlement.</h2>
 							<p>Place your settlement now.</p>
 						"""
-		if playerInfo['initialPlacements']['settlements'] == 1 and playerInfo['initialPlacements']['roads'] == 0:
+		if playerInfo['initialPlacements']['settlement'] == 1 and playerInfo['initialPlacements']['road'] == 0:
 			output = """<h2>Place Road.</h2>
 							<p>Place your road now.</p>
 						"""
-		if playerInfo['initialPlacements']['settlements'] == 1 and playerInfo['initialPlacements']['roads'] == 1:
+
+		if playerInfo['initialPlacements']['settlement'] == 1 and playerInfo['initialPlacements']['road'] == 1:
 			output = """<h2>Place Settlement.</h2>
 							<p>Place your second settlement now.</p>
 						"""
-		if playerInfo['initialPlacements']['settlements'] == 2 and playerInfo['initialPlacements']['roads'] == 1:
+		if playerInfo['initialPlacements']['settlement'] == 2 and playerInfo['initialPlacements']['road'] == 1:
 			output = """<h2>Place Road.</h2>
 							<p>Place your second road now.</p>
 						"""

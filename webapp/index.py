@@ -85,7 +85,7 @@ def createPlayer(playerFile, playerID):
 		#playedKnights: The number of knights the player has played.
 		#currentTurn: 1 if it's the player's turn, 0 if it is not.
 		#playedDevCard: only 1 dev card per turn, so turns to 1 after a dev card has been played, and 0 at turn end.
-	newPlayer = {'playerName':"Player " + str(playerID+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'active':time.time(), 'awards':[], 'points':0, 'currentTurn':0, 'playedDevCard':0, 'initialPlacements':{'settlements':0,'roads':0}}
+	newPlayer = {'playerName':"Player " + str(playerID+1), 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'active':time.time(), 'awards':[], 'points':0, 'currentTurn':0, 'playedDevCard':0, 'initialPlacements':{'settlement':0,'road':0}}
 	writeJson(playerFile, newPlayer)
 	return newPlayer
 
@@ -141,7 +141,18 @@ def endTurn(playerFile, playerInfo):
 		playerInfo['cards'][resource] = playerInfo['cards'][resource] + playerInfo['onHold'][resource]
 	playerInfo['onHold'] = {'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}
 	playerInfo['playedDevCard'] = 0
+	playerInfo['currentTurn'] = 0
 	writeJson(playerFile, playerInfo)
+	numPlayers = len(dict((key, val) for key, val in gameState['ready'].items() if val != 0))
+	if playerID == numPlayers - 1:
+		nextPlayerID = 0
+	else:
+		nextPlayerID = playerID + 1
+	nextPlayerInfo = readJson(PLAYER_FILE + nextPlayerID + ".json")
+	nextPlayerInfo['currentTurn'] = 1
+	writeJson(PLAYER_FILE + nextPlayerID + ".json", nextPlayerInfo)
+	setRefresh(nextPlayerID, 1)
+	
 
 ####################PRE DISPLAY IS BELOW###################
 
@@ -163,8 +174,12 @@ PIREG = 0
 CURPLAYERREG = 1
 NUMPLAYERREG = 2
 MCUEVENTREG = 3
+PIECETYPEREG = 6
 
 STARTGAMEFLAG = 2
+RESETGPIOFLAG = 9
+CONFIRMPIECE = 7
+DENYPIECE = 8
 
 GPIOPIN = 7
 
@@ -263,11 +278,14 @@ with pinIn:
 			with i2c.I2CMaster() as bus:
 				readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, MCUEVENTREG), i2c.reading(MICROADDR, 1))
 				if readMCU == 4 or readMCU == 5:
-					readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, 6), i2c.reading(MICROADDR, 1))
+					readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, PIECETYPEREG), i2c.reading(MICROADDR, 1))
 					modalConfirm = 1
 				elif readMCU == 6:
-					readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, 6), i2c.reading(MICROADDR, 1))
-					modalConfirm = 1
+					readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, PIECETYPEREG), i2c.reading(MICROADDR, 1))
+					modalConfirm = 2
+				elif readMCU == 11:
+					modalConfirm = 0
+				bus.transaction(i2c.writing_bytes(MICROADDR, PIFLAG, RESETGPIOFLAG))
 #################################FORM RETRIEVAL BELOW##################################
 if 'user' in form:
 	newUsername = form.getvalue("user", "Player " + str(playerID + 1))
@@ -447,7 +465,18 @@ elif "knightsSelected" in form:
 	pass
 elif "roadDevSelected" in form:
 	pass
-
+elif "confirmPiecePlacement" in form:
+	with i2c.I2CMaster() as bus:
+		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, CONFIRMPIECE))
+	if gameState['setupComplete'] == 0:
+		playerInfo['initialPlacements'][form.getvalue('pieceType')] = playerInfo['initialPlacements'][form.getvalue('piecetype')] + 1	
+		if form.getvalue('piecetype') == 'road':
+			endTurn(playerFile, playerInfo)
+	setrefresh(playerID, REFRESH_VALUE['generic']) 
+elif "denyPiecePlacement" in form:
+	with i2c.I2CMaster() as bus:
+		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, DENYPIECE))
+	setrefresh(playerID, REFRESH_VALUE['generic'])
 #################################GAME START AND READY CHECK#############################
 if "ready" in pairs:
 	if (playerID != -1):
@@ -668,8 +697,8 @@ elif gameState['gameStart'] == 1:
 	elif "against" in pairs:
 		script = "<script>loadXMLDoc('ModalBox', '/dialogs/devCards.py?against=monopoly&player=" + str(playerID) + "')</script>"
 	#Put elif in for i2c stuff
-	elif modalConfirm == 1:
-			script = "<script>loadXMLDoc('ModalBox', '/dialogs/i2c.py?read=" + str(readMCU) + "')</script>"
+	elif modalConfirm != 0:
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/i2c.py?read=" + str(readMCU) + "&confirm=" + str(modalConfirm) + "')</script>"
 	elif gameStatus['setupComplete'] == 0:
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/initSetup.py?player=" + str(playerID) + "')</script>"
 	output = """
