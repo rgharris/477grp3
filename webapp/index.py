@@ -20,24 +20,39 @@
 
 #Remove the next line at some point, just for debugging
 import time
+times = []
 start = time.time()
 
 # Import debugging
 import cgitb
+times.append(time.time()-start)
 #Everything else.
-import os, sys, json, http.cookies, time, cgi, random, shutil, struct
+import os
+times.append(time.time()-start)
+import sys
+times.append(time.time()-start)
+import json
+times.append(time.time()-start)
+import http.cookies
+times.append(time.time()-start)
+import cgi
+times.append(time.time()-start)
+import random
+times.append(time.time()-start)
+import shutil
+times.append(time.time()-start)
+import struct
+times.append(time.time()-start)
 import quick2wire.i2c as i2c
-from quick2wire.gpio import pins,In
+times.append(time.time()-start)
+#from quick2wire.gpio import pins,In
 
-#Remove the next 2 lines at some point, just for debugging
-elapsedTime = time.time() - start
-debug = "\nDone importing all libraries: " + str(elapsedTime) + " seconds\n"
 
 #Enable debugging
 cgitb.enable()
 #Debug variable, append strings for debugging to this variable
 #and they will be output after the main HTML.
-#debug = ''
+debug = ''
 
 #####################USEFUL FUNCTIONS###########################
 #Weighted random number - used for picking a development card
@@ -842,3 +857,4 @@ elapsedTime = time.time() - start
 debug = debug + "\nNow done with everything: " + str(elapsedTime) + " seconds\n"
 #Debug variable, prints after main html. Most browsers will still render.
 print(debug)
+print(times))
