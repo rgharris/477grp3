@@ -836,11 +836,15 @@ elif gameState['gameStart'] == 1:
 					{11}
 					<a href="#modal" id="b3" class="button" onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')">Status</a>
 					{12}
+					{13}
+					{14}
 				</div>
 			</div>
 		</body>
 	"""
 
+	confirmLink = "<span id=\"b2\" class=\"button fade\">&nbsp;</span>"
+	denyLink = "<span id=\"b4\" class=\"button fade\">&nbsp;</span>"
 	curPoints = playerInfo['points']
 	if 'victory' in playerInfo['onHold']:
 		curPoints = curPoints + playerInfo['onHold']['victory']
@@ -853,12 +857,14 @@ elif gameState['gameStart'] == 1:
 			turnLink = "<a href=\"#dice\" id=\"b4\" class=\"button\" onclick=\"loadXMLDoc('dierolled', '/dialogs/roll.py')\">Roll Dice</a><div id=\"dierolled\" style=\"display:none\"></div>"
 		else:
 			turnLink = "<a href=\"#modal\" id=\"b4\" class=\"button\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/endTurn.py')\">End Turn</a>"
+			confirmLink = "<a href=\"trade=confirm#modal\" id=\"b4\" class=\"button\" onclick=\"\">Confirm</a>"
+			denyLink = "<a href=\"trade=deny#modal\" id=\"b4\" class=\"button\" onclick=\"\">Deny</a>"
 	else:
 		purchaseLink = "<span id=\"b1\" class=\"button fade\">&nbsp;</span>"
 		tradeLink = "<span id=\"b2\" class=\"button fade\">&nbsp;</span>"
 		turnLink = "<span id=\"b4\" class=\"button fade\">&nbsp;</span>"
 
-	print(output.format(script,playerInfo['playerName'], str(curPoints), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())),playerID,purchaseLink,tradeLink,turnLink))
+	print(output.format(script,playerInfo['playerName'], str(curPoints), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())),playerID,purchaseLink,tradeLink,turnLink,confirmLink,denyLink))
 #This needs to go at the end of all pages.
 print("</html>")
 #Remove the next 2 lines at some point, just for debugging
