@@ -722,7 +722,6 @@ elif gameState['gameStart'] == 1:
 	#Put elif in for i2c stuff
 	elif "modalConfirm" in pairs:
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/i2c.py?read=" + str(pairs['readMCU'][0]) + "&confirm=" + str(pairs['modalConfirm'][0]) + "')</script>"
-			debug = debug + "modalConfirm: " + str(pairs['modalConfirm'][0]) + "read: " + str(pairs['readMCU'][0])
 	elif gameState['setupComplete'] == 0:
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/initSetup.py?player=" + str(playerID) + "')</script>"
 	output = """

@@ -22,6 +22,7 @@ if len(pairs) == 0:
 
 else:
 	read = pairs['read'][0]
+	output = "<h2>Testing</h2>\n<p>confirm: " + str(pairs['confirm'][0]) + " and read: " + str(pairs['read'][0]) + "."
 	if pairs['confirm'][0] == 1:
 		if read % 10 == 0:
 			piece = "thief"
