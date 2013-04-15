@@ -493,6 +493,7 @@ elif "confirmPiecePlacement" in form:
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, CONFIRMPIECE))
 	if gameState['setupComplete'] == 0:
 		playerInfo['initialPlacements'][str(form.getvalue('piecetype'))] = playerInfo['initialPlacements'][str(form.getvalue('piecetype'))] + 1	
+		writeJson(playerFile, playerInfo)
 		if form.getvalue('piecetype') == 'road':
 			endTurn(playerFile, playerInfo, gameState)
 	setRefresh(playerID, REFRESH_VALUE['generic']) 
