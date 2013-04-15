@@ -331,14 +331,7 @@ debug = debug + "\nDone checking json files and setting cookies: " + str(elapsed
 
 #################################i2c CHECK#############################################
 if "i2c" in pairs:		
-	if playerInfo != '' and playerInfo['currentTurn'] != 1:
-		for i in range(0, 4):
-			chkPlayerFile = PLAYER_FILE + str(i) + ".json"
-			if os.path.isfile(chkPlayerFile):
-				chkPlayerInfo = readJson(chkPlayerFile)
-				if chkPlayerInfo['currentTurn'] == 1:
-					setRefresh(i, REFRESH_VALUE['i2c'])
-	else:
+	if playerInfo != '' and playerInfo['currentTurn'] == 1:
 		with i2c.I2CMaster() as bus:
 			readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, MCUEVENTREG), i2c.reading(MICROADDR, 1))
 			readMCU = struct.unpack('B', readMCU[0])[0]
