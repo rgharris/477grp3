@@ -31,7 +31,7 @@ else:
 			piece = "settlement"
 		elif read % 10 == 3:
 			piece = "city"
-		output = "<form action=\"index.py\" method=\"post\"><h2>Confirm piece</h2>\n<p>Would you like to place a " + piece + " in the indicated location on the board?<input type=\"hidden\" value=\"" + piece + "\" name=\"pieceType\" /><input type=\"submit\" value=\"No I don't!\" class=\"bottom half left\" name=\"denyPiecePlacement\"/><input type=\"submit\" value=\"Yes I do!\" class=\"bottom half right\" name=\"confirmPiecePlacement\"/></form>"
+		output = "<form action=\"index.py\" method=\"post\"><h2>Confirm piece</h2>\n<p>Would you like to place a " + piece + " in the indicated location on the board?<input type=\"hidden\" value=\"" + piece + "\" name=\"piecetype\" /><input type=\"submit\" value=\"No I don't!\" class=\"bottom half left\" name=\"denyPiecePlacement\"/><input type=\"submit\" value=\"Yes I do!\" class=\"bottom half right\" name=\"confirmPiecePlacement\"/></form>"
 	elif pairs['confirm'][0] == "2":
 		if read < 30:
 			action = "remove"
