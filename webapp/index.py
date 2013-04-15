@@ -24,8 +24,8 @@ times = []
 start = time.time()
 
 # Import debugging
-import cgitb
-times.append(time.time()-start)
+#import cgitb
+#times.append(time.time()-start)
 #Everything else.
 import os
 times.append(time.time()-start)
@@ -35,7 +35,7 @@ import json
 times.append(time.time()-start)
 import http.cookies
 times.append(time.time()-start)
-import cgi
+from cgi import FieldStorage, parse_qs, escape
 times.append(time.time()-start)
 import random
 times.append(time.time()-start)
@@ -49,7 +49,7 @@ times.append(time.time()-start)
 
 
 #Enable debugging
-cgitb.enable()
+#cgitb.enable()
 #Debug variable, append strings for debugging to this variable
 #and they will be output after the main HTML.
 debug = ''
@@ -202,7 +202,7 @@ elapsedTime = time.time() - start
 debug = debug + "\nDone importing all libraries and setting up functions: " + str(elapsedTime) + " seconds\n"
 
 #Store form data
-form = cgi.FieldStorage()
+form = FieldStorage()
 
 #Some basic "constants"
 PLAYER_FILE="players/"
@@ -234,7 +234,7 @@ cookie = http.cookies.SimpleCookie()
 
 #Throw query string in a var for later.
 query = os.environ.get('QUERY_STRING')
-pairs = cgi.parse_qs(query)
+pairs = parse_qs(query)
 
 #First start by checking and seeing if they have a cookie. If so, check it and use it!
 if cookies:
@@ -352,7 +352,7 @@ debug = debug + "\nDone with I2C check: " + str(elapsedTime) + " seconds\n"
 #################################FORM RETRIEVAL BELOW##################################
 if 'user' in form:
 	newUsername = form.getvalue("user", "Player " + str(playerID + 1))
-	playerInfo['playerName'] = cgi.escape(newUsername)
+	playerInfo['playerName'] = escape(newUsername)
 	writeJson(playerFile, playerInfo)
 elif "endTurn" in form:
 	endTurn(playerFile, playerInfo, gameState)
