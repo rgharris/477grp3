@@ -565,6 +565,8 @@ if "start" in pairs:
 	writeJson(GAME_STATE_FILE, gameState)
 	ready = dict((key, val) for key, val in gameState['ready'].items() if val != 0)
 	startPlayer = random.randint(0,int(len(ready))-1)
+	gameState['firstPlayer'] = startPlayer
+	writeJson(GAME_STATE_FILE, gameState)
 	startPlayerInfo = readJson(PLAYER_FILE + str(startPlayer) + ".json")
 	startPlayerInfo['currentTurn'] = 1
 	writeJson(PLAYER_FILE + str(startPlayer) + ".json", startPlayerInfo)

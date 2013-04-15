@@ -3,17 +3,17 @@
 #
 # This is the dialog that deals with trading.
 # It should deal with both traders.
-#import debugging
-import cgitb
-#Everything else.
-import os, sys, cgi, json
+
+from os import environ
+from cgi import parse_qs
+from json import load
 
 PLAYER_FILE = "../players/"
 GAME_STATE_FILE = "../chkRefresh/gamestate.json"
 
-query = os.environ["QUERY_STRING"]
+query = environ["QUERY_STRING"]
 
-pairs = cgi.parse_qs(query)
+pairs = parse_qs(query)
 
 print("Content-type: text/html;charset=utf-8\n\n")
 
@@ -23,10 +23,10 @@ if len(pairs) == 0:
 else:
 	playerID = pairs['player'][0]
 	playerFile = open(PLAYER_FILE + playerID + ".json")
-	playerInfo = json.load(playerFile)
+	playerInfo = load(playerFile)
 	playerFile.close()
 	stateFile = open(GAME_STATE_FILE)
-	stateInfo = json.load(stateFile)
+	stateInfo = load(stateFile)
 	stateFile.close()
 	if playerInfo['currentTurn'] == 1:
 		if playerInfo['initialPlacements']['settlement'] == 0:
