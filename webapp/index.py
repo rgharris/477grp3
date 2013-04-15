@@ -162,9 +162,9 @@ def endTurn(playerFile, playerInfo, gameState):
 				gameState['setupComplete'] = 1
 			else:
 				nextPlayerID = playerID - 1
-	nextPlayerInfo = readJson(PLAYER_FILE + nextPlayerID + ".json")
+	nextPlayerInfo = readJson(PLAYER_FILE + str(nextPlayerID) + ".json")
 	nextPlayerInfo['currentTurn'] = 1
-	writeJson(PLAYER_FILE + nextPlayerID + ".json", nextPlayerInfo)
+	writeJson(PLAYER_FILE + str(nextPlayerID) + ".json", nextPlayerInfo)
 	with i2c.I2CMaster() as bus:
 		bus.transaction(i2c.writing_bytes(MICROADDR, CURPLAYERREG, nextPlayerID + 1))
 	setRefresh(nextPlayerID, 1)
