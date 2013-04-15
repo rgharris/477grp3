@@ -18,6 +18,10 @@
 #I don't think anything else needs stored on the server, right?
 #Everything else can be done by live communication with the micro.
 
+#Remove the next line at some point, just for debugging
+import time
+start = time.time()
+
 # Import debugging
 import cgitb
 #Everything else.
@@ -806,5 +810,8 @@ elif gameState['gameStart'] == 1:
 	print(output.format(script,playerInfo['playerName'], str(curPoints), str(playerInfo['resources']['clay']), str(playerInfo['resources']['ore']), str(playerInfo['resources']['sheep']), str(playerInfo['resources']['wheat']), str(playerInfo['resources']['wood']), str(sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())),playerID,purchaseLink,tradeLink,turnLink))
 #This needs to go at the end of all pages.
 print("</html>")
+#Remove the next 2 lines at some point, just for debugging
+elapsedTime = time.time() - start
+debug = debug + "\nPython processing time: " + str(elapsedTime) + " micro seconds\n"
 #Debug variable, prints after main html. Most browsers will still render.
 print(debug)
