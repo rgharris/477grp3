@@ -4,16 +4,17 @@
 # This is the dialog that deals with trading.
 # It should deal with both traders.
 #import debugging
-import cgitb
 #Everything else.
-import os, sys, cgi, json
+import os
+from cgi import parse_qs
+from json import load
 
 PLAYER_FILE = "../players/"
 TRADE_FILE = "../players/trade.json"
 
 query = os.environ["QUERY_STRING"]
 
-pairs = cgi.parse_qs(query)
+pairs = parse_qs(query)
 playerList = []
 
 print("Content-type: text/html;charset=utf-8\n\n")
@@ -33,19 +34,19 @@ if len(pairs) == 0:
 			</div>
 			<div class="countColumn">
 				<h3 class="countHeader">Give</h3>
-				<input name="giveClay" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
-				<input name="giveOre" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
-				<input name="giveSheep" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
-				<input name="giveWheat" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
-				<input name="giveWood" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="giveClay" type="text" pattern="[0-9]" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="giveOre" type="text" pattern="[0-9]" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="giveSheep" type="text" pattern="[0-9]" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="giveWheat" type="text" pattern="[0-9]" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="giveWood" type="text" pattern="[0-9]" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
 			</div>
 			<div class="countColumn">
 				<h3 class="countHeader">Get</h3>
-				<input name="getClay" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
-				<input name="getOre" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
-				<input name="getSheep" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
-				<input name="getWheat" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
-				<input name="getWood" type="number" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="getClay" type="text" pattern="[0-9]" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="getOre" type="text" pattern="[0-9]" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="getSheep" type="text" pattern="[0-9]" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="getWheat" type="text" pattern="[0-9]" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
+				<input name="getWood" type="text" pattern="[0-9]" class="countValue" value="0"  onfocus="{1}" onblur="{2}"/>
 			</div>
 			</div>
 			<h3>Player to trade with: </h3>
@@ -59,7 +60,7 @@ if len(pairs) == 0:
 	for fn in os.listdir(PLAYER_FILE):
 		if fn != 'dev.json' and fn != 'trade.json':
 			jsonInfo = open(PLAYER_FILE + fn)
-			playerInfo = json.load(jsonInfo)
+			playerInfo = load(jsonInfo)
 			playerID = os.path.splitext(os.path.basename(fn))[0] #I have no idea why I forced this hilarious stupidity upon myself.
 			playerList.append("<option value=\"" + playerID + "\">" + playerInfo["playerName"] + "</option>")
 			jsonInfo.close()
@@ -72,13 +73,13 @@ else:
 			output = "<h2>Trade Error</h2>\n<p>You don't have enough resources to trade or you have selected an invalid option.</p><a href=\"index.py#x\" class=\"bottom\">Got it!</a>"
 		if pairs['invalid'][0] == "remote":
 			jsonInfo = open(TRADE_FILE)
-			tradeInfo = json.load(jsonInfo)
+			tradeInfo = load(jsonInfo)
 			output = "<form method=\"post\" action=\"index.py\">\n<h2>Trade Error</h2>\n<p>You don't have enough resources to trade.</p><input type=\"hidden\" value=\"" + str(tradeInfo['from']) + "\" name=\"tradeFrom\"><input type=\"submit\" value=\"Got it!\" class=\"bottom\" name=\"doNotTrade\"></form>"
 	elif "confirm" in pairs:
 		#Shows up on remote player's screen to confirm trade.
 		output = "<form method=\"post\" action=\"index.py\">\n<h2>Confirm Trade</h2>\n"
 		jsonInfo = open(TRADE_FILE)
-		tradeInfo = json.load(jsonInfo)
+		tradeInfo = load(jsonInfo)
 		getString = ''
 		giveString = ''
 		#Would really like to add some magic to throw "and" in there...
