@@ -149,21 +149,27 @@ def endTurn(playerFile, playerInfo, gameState):
 			nextPlayerID = 0
 		else:
 			nextPlayerID = playerID + 1
-		nextPlayerInfo = readJson(PLAYER_FILE + nextPlayerID + ".json")
-		nextPlayerInfo['currentTurn'] = 1
-		writeJson(PLAYER_FILE + nextPlayerID + ".json", nextPlayerInfo)
-		with i2c.I2CMaster() as bus:
-			bus.transaction(i2c.writing_bytes(MICROADDR, CURPLAYERREG, nextPlayerID))
-		setRefresh(nextPlayerID, 1)
 	else:
-		if playerID == numPlayers - 1:
-			nextPlayerID = 0
+		if gameState['reverse'] == 0:
+			if playerID == numPlayers - 1:
+				nextPlayerID = 0
+			else:
+				nextPlayerID = playerID + 1
 		else:
-			nextPlayerID = playerID + 1
-		if nextPlayerID = gameState['firstPlayer']:
-			nextPlayerID = playerID#WORKING HERE
-	
+			if playerID == 0:
+				nextPlayerID = numPlayers - 1
+			elif playerID == gameState['firstPlayer']:
+				gameState['setupComplete'] = 1
+			else:
+				nextPlayerID = playerID - 1
+	nextPlayerInfo = readJson(PLAYER_FILE + nextPlayerID + ".json")
+	nextPlayerInfo['currentTurn'] = 1
+	writeJson(PLAYER_FILE + nextPlayerID + ".json", nextPlayerInfo)
+	with i2c.I2CMaster() as bus:
+		bus.transaction(i2c.writing_bytes(MICROADDR, CURPLAYERREG, nextPlayerID))
+	setRefresh(nextPlayerID, 1)
 
+	
 ####################PRE DISPLAY IS BELOW###################
 
 #Store form data
@@ -210,7 +216,7 @@ else:
 
 #Get the game state.
 if not os.path.isfile(GAME_STATE_FILE):
-	gameState = {'gameStart':0, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'diceRolled': 0, 'setupComplete':0, 'firstPlayer':-1}
+	gameState = {'gameStart':0, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'diceRolled': 0, 'setupComplete':0, 'firstPlayer':-1, 'reverse':0}
 	writeJson(GAME_STATE_FILE, gameState)
 	#If we're writing a new one, delete all old player files.
 	for fn in os.listdir(PLAYER_FILE):
@@ -218,7 +224,7 @@ if not os.path.isfile(GAME_STATE_FILE):
 else:
 	gameState = readJson(GAME_STATE_FILE)
 	if gameState['active'] + TIMEOUT < time.time():
-		gameState = {'gameStart':0, 'ready':{'0':0,'1':0, '2':0, '3':0}, 'diceRolled':0, 'setupComplete':0, 'firstPlayer':-1}
+		gameState = {'gameStart':0, 'ready':{'0':0,'1':0, '2':0, '3':0}, 'diceRolled':0, 'setupComplete':0, 'firstPlayer':-1, 'reverse':0}
 		#If we're writing a new one, delete all old player files.
 		for fn in os.listdir(PLAYER_FILE):
 			shutil.move(PLAYER_FILE + fn, "backup" + PLAYER_FILE + fn)
@@ -303,7 +309,7 @@ if 'user' in form:
 	playerInfo['playerName'] = cgi.escape(newUsername)
 	writeJson(playerFile, playerInfo)
 elif "endTurn" in form:
-	endTurn(playerFile, playerInfo)
+	endTurn(playerFile, playerInfo, gameState)
 elif "noEndTurn" in form:
 	pass
 elif "confirmPurchase" in form:
@@ -482,7 +488,7 @@ elif "confirmPiecePlacement" in form:
 	if gameState['setupComplete'] == 0:
 		playerInfo['initialPlacements'][form.getvalue('pieceType')] = playerInfo['initialPlacements'][form.getvalue('piecetype')] + 1	
 		if form.getvalue('piecetype') == 'road':
-			endTurn(playerFile, playerInfo)
+			endTurn(playerFile, playerInfo, gameState)
 	setrefresh(playerID, REFRESH_VALUE['generic']) 
 elif "denyPiecePlacement" in form:
 	with i2c.I2CMaster() as bus:
