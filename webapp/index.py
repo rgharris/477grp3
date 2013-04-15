@@ -284,25 +284,28 @@ if playerID != -1:
 setRefresh(playerID,REFRESH_VALUE['reset'])
 
 #################################i2c CHECK#############################################
-pinIn = pins.pin(GPIOPIN, direction=In)
-with pinIn:
-	if pinIn.value == 1:
-		if playerInfo['currentTurn'] != 1:
-			refreshAll(9)
-		else:
-			with i2c.I2CMaster() as bus:
-				readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, MCUEVENTREG), i2c.reading(MICROADDR, 1))
-				if readMCU == 4 or readMCU == 5:
-					readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, PIECETYPEREG), i2c.reading(MICROADDR, 1))
-					bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
-					print("Location: index.py?modalConfirm=1#modal")
-				elif readMCU == 6:
-					readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, PIECETYPEREG), i2c.reading(MICROADDR, 1))
-					bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
-					print("Location: index.py?modalConfirm=2#modal")
-				elif readMCU == 11:
-					bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
-					print("Location: index.py")
+if 'i2c' in pairs:		
+	if playerInfo['currentTurn'] != 1:
+		for i in range(0, 4):
+			chkPlayerFile = PLAYER_FILE + str(i) + ".json"
+				if os.path.isfile(chkPlayerFile):
+					chkPlayerInfo = readJson(chkPlayerFile)
+					if chkPlayerInfo['currentTurn'] == 1:
+						setRefresh(i, REFRESH_VALUE['i2c'])
+	else:
+		with i2c.I2CMaster() as bus:
+			readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, MCUEVENTREG), i2c.reading(MICROADDR, 1))
+			if readMCU == 4 or readMCU == 5:
+				readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, PIECETYPEREG), i2c.reading(MICROADDR, 1))
+				bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
+				print("Location: index.py?modalConfirm=1#modal")
+			elif readMCU == 6:
+				readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, PIECETYPEREG), i2c.reading(MICROADDR, 1))
+				bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
+				print("Location: index.py?modalConfirm=2#modal")
+			elif readMCU == 11:
+				bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
+				print("Location: index.py")
 #################################FORM RETRIEVAL BELOW##################################
 if 'user' in form:
 	newUsername = form.getvalue("user", "Player " + str(playerID + 1))
@@ -594,7 +597,7 @@ print("""<!DOCTYPE HTML>
 							}
 							else if(xmlhttp.responseText == 9)
 							{
-								location.reload(true);
+								window.location = "./index.py?i2c=flown";
 							}
 						}
 					}
