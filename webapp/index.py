@@ -848,12 +848,12 @@ elif gameState['gameStart'] == 1:
 	if playerInfo['currentTurn'] == 1:
 		purchaseLink = "<a href=\"#modal\" class=\"button borderRight spacingLeft\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/purchase.py')\">Purchase</a>"
 		tradeLink = "<a href=\"#modal\" class=\"button\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/trade.py')\">Trade</a>"
+		confirmLink = "<a href=\"trade=confirm#modal\" class=\"button borderTop borderRight spacingLeft\" onclick=\"\">Confirm</a>"
+		denyLink = "<a href=\"trade=deny#modal\" class=\"button borderTop\" onclick=\"\">Deny</a>"
 		if gameState['diceRolled'] == 0:
 			turnLink = "<a href=\"#dice\" class=\"button borderTop\" onclick=\"loadXMLDoc('dierolled', '/dialogs/roll.py')\">Roll Dice</a><div id=\"dierolled\" style=\"display:none\"></div>"
 		else:
 			turnLink = "<a href=\"#modal\" class=\"button borderTop\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/endTurn.py')\">End Turn</a>"
-			confirmLink = "<a href=\"trade=confirm#modal\" class=\"button borderTop borderRight spacingLeft\" onclick=\"\">Confirm</a>"
-			denyLink = "<a href=\"trade=deny#modal\" class=\"button borderTop\" onclick=\"\">Deny</a>"
 	else:
 		purchaseLink = "<span class=\"button fade borderRight spacingLeft\">&nbsp;</span>"
 		tradeLink = "<span class=\"button fade\">&nbsp;</span>"
