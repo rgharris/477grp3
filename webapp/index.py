@@ -23,7 +23,7 @@ import cgitb
 #Everything else.
 import os, sys, json, http.cookies, time, cgi, random, shutil
 import quick2wire.i2c as i2c
-from quick2wire.gpio input pins,In
+from quick2wire.gpio import pins,In
 #Enable debugging
 cgitb.enable()
 #Debug variable, append strings for debugging to this variable
