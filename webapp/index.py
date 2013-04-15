@@ -857,4 +857,4 @@ elapsedTime = time.time() - start
 debug = debug + "\nNow done with everything: " + str(elapsedTime) + " seconds\n"
 #Debug variable, prints after main html. Most browsers will still render.
 print(debug)
-print(times))
+print(times)
