@@ -495,11 +495,11 @@ elif "confirmPiecePlacement" in form:
 		playerInfo['initialPlacements'][str(form.getvalue('pieceType'))] = playerInfo['initialPlacements'][str(form.getvalue('piecetype'))] + 1	
 		if form.getvalue('piecetype') == 'road':
 			endTurn(playerFile, playerInfo, gameState)
-	setrefresh(playerID, REFRESH_VALUE['generic']) 
+	setRefresh(playerID, REFRESH_VALUE['generic']) 
 elif "denyPiecePlacement" in form:
 	with i2c.I2CMaster() as bus:
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, DENYPIECE))
-	setrefresh(playerID, REFRESH_VALUE['generic'])
+	setRefresh(playerID, REFRESH_VALUE['generic'])
 #################################GAME START AND READY CHECK#############################
 if "ready" in pairs:
 	if (playerID != -1):
