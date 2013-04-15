@@ -3,17 +3,16 @@
 #
 # This is the dialog that deals with trading.
 # It should deal with both traders.
-#import debugging
-import cgitb
-#Everything else.
-import os, sys, cgi, json
+
+from os import environ
+from cgi import parse_qs
 
 PLAYER_FILE = "../players/"
 GAME_STATE_FILE = "../chkRefresh/gamestate.json"
 
-query = os.environ["QUERY_STRING"]
+query = environ["QUERY_STRING"]
 
-pairs = cgi.parse_qs(query)
+pairs = parse_qs(query)
 
 print("Content-type: text/html;charset=utf-8\n\n")
 

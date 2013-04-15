@@ -3,10 +3,6 @@
 #
 # This is the modal dialog that asks the user
 # for their username.
-#import debugging
-import cgitb
-#Everything else.
-import os, sys, cgi
 
 output = """Content-type: text/html;charset=utf-8
 

@@ -3,14 +3,13 @@
 #
 # This is the modal dialog that asks the user
 # for their username.
-#import debugging
-import cgitb
-#Everything else.
-import os, sys, cgi
 
-query=os.environ[ "QUERY_STRING" ]
+from os import environ
+from cgi import parse_qs
 
-pairs = cgi.parse_qs(query)
+query=environ[ "QUERY_STRING" ]
+
+pairs = parse_qs(query)
 
 output = """Content-type: text/html;charset=utf-8
 

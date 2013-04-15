@@ -4,13 +4,15 @@
 # This is the modal dialog that asks the user
 # for their username.
 #import debugging
-import cgitb
+#import cgitb
 #Everything else.
-import os, sys, cgi, json
+from os import environ
+from cgi import parse_qs
+from json import load
 
-query = os.environ["QUERY_STRING"]
+query = environ["QUERY_STRING"]
 PLAYER_FILE = "../players/"
-pairs = cgi.parse_qs(query)
+pairs = parse_qs(query)
 
 print("Content-type: text/html;charset=utf-8\n\n")
 
@@ -22,7 +24,7 @@ if len(pairs) == 0:
 				"""
 else:
 	playerFile = open(PLAYER_FILE + str(pairs["player"][0]) + ".json")
-	playerInfo = json.load(playerFile)
+	playerInfo = load(playerFile)
 	playerFile.close()
 	if "success" in pairs:
 		if pairs['success'][0] == "plenty":
