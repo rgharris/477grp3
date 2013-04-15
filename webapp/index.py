@@ -28,6 +28,11 @@ import cgitb
 import os, sys, json, http.cookies, time, cgi, random, shutil, struct
 import quick2wire.i2c as i2c
 from quick2wire.gpio import pins,In
+
+#Remove the next 2 lines at some point, just for debugging
+elapsedTime = time.time() - start
+debug = debug + "\nDone importing all libraries: " + str(elapsedTime) + " seconds\n"
+
 #Enable debugging
 cgitb.enable()
 #Debug variable, append strings for debugging to this variable
