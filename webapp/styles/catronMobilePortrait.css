@@ -240,7 +240,7 @@ a.playerName{
 		font-family: 'Arapey', 'Times New Roman', serif;
 	}
 	
-	.modal input[type="number"] {
+	.modal input[type="text"].countValue {
 		width: 10%;
 		font-size: 16pt;
 		border: none;
