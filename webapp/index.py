@@ -31,7 +31,7 @@ import os
 times.append(time.time()-start)
 import sys
 times.append(time.time()-start)
-import json
+from json import load, dump
 times.append(time.time()-start)
 from http.cookies import SimpleCookie
 times.append(time.time()-start)
@@ -78,19 +78,19 @@ def cookieChk(cookies, playerFile, timeout):
 	if not os.path.isfile(playerFile + str(playerID) + ".json"):
 		return (-1,'')
 	jsonInfo = open(playerFile + str(playerID) + ".json")
-	checkInfo = json.load(jsonInfo)
+	checkInfo = load(jsonInfo)
 	jsonInfo.close
 	#The file has timed out.
 	if (checkInfo['active'] + timeout <= time.time()):
 		return (-1,'')
 	playerID = int(cookie['catronPlayerid'].value)
-	playerInfo = json.load(open(playerFile + str(playerID) + ".json"))
+	playerInfo = load(open(playerFile + str(playerID) + ".json"))
 	return (playerID, playerInfo)
 
 def writeJson(jfile, info):
 	info['active'] = time.time()
 	with open(jfile, 'w') as f:
-		json.dump(info, f, ensure_ascii=False)
+		dump(info, f, ensure_ascii=False)
 		f.close()
 	return info
 
@@ -115,7 +115,7 @@ def createPlayer(playerFile, playerID):
 
 def readJson(jfile):
 	jsonInfo = open(jfile)
-	info = json.load(jsonInfo)
+	info = load(jsonInfo)
 	jsonInfo.close()
 	return info
 	
