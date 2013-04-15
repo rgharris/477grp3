@@ -285,7 +285,7 @@ setRefresh(playerID,REFRESH_VALUE['reset'])
 
 #################################i2c CHECK#############################################
 if 'i2c' in pairs:		
-	if playerInfo['currentTurn'] != 1:
+	if playerInfo != '' and playerInfo['currentTurn'] != 1:
 		for i in range(0, 4):
 			chkPlayerFile = PLAYER_FILE + str(i) + ".json"
 			if os.path.isfile(chkPlayerFile):
