@@ -571,11 +571,11 @@ elif "simpleConfirm" in pairs:
 			pieceConfirmed = "settlement"
 		elif readMCU % 10 == 3:
 			pieceConfirmed = "city"
-	if gameState['setupComplete'] == 0:
-		playerInfo['initialPlacements'][pieceConfirmed] = playerInfo['initialPlacements'][pieceConfirmed] + 1	
-		writeJson(playerFile, playerInfo)
-		if pieceConfirmed == 'road':
-			endTurn(playerFile, playerInfo, gameState)
+		if gameState['setupComplete'] == 0:
+			playerInfo['initialPlacements'][pieceConfirmed] = playerInfo['initialPlacements'][pieceConfirmed] + 1	
+			writeJson(playerFile, playerInfo)
+			if pieceConfirmed == 'road':
+				endTurn(playerFile, playerInfo, gameState)
 	print("Location: index.py")
 elif "denyPiecePlacement" in form:
 	with i2c.I2CMaster() as bus:
