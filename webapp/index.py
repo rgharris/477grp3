@@ -41,8 +41,6 @@ import random
 times.append(time.time()-start)
 import shutil
 times.append(time.time()-start)
-import struct
-times.append(time.time()-start)
 import quick2wire.i2c as i2c
 times.append(time.time()-start)
 #from quick2wire.gpio import pins,In
@@ -164,11 +162,11 @@ def getResources(playerID, playerFile, playerInfo):
    startReg = (playerID * 5) + 10
    with i2c.I2CMaster() as bus:
       readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, startReg), i2c.reading(MICROADDR, 5))
-   playerInfo['resources']['ore'] = playerInfo['resources']['ore'] + struct.unpack('B', readMCU[0])[0]
-   playerInfo['resources']['wheat'] = playerInfo['resources']['wheat'] + struct.unpack('B', readMCU[1])[0]
-   playerInfo['resources']['sheep'] = playerInfo['resources']['sheep'] + struct.unpack('B', readMCU[2])[0]
-   playerInfo['resources']['clay'] = playerInfo['resources']['clay'] + struct.unpack('B', readMCU[3])[0]
-   playerInfo['resources']['wood'] = playerInfo['resources']['wood'] + struct.unpack('B', readMCU[4])[0]
+   playerInfo['resources']['ore'] = playerInfo['resources']['ore'] + readMCU[0][0]
+   playerInfo['resources']['wheat'] = playerInfo['resources']['wheat'] +  readMCU[0][1]
+   playerInfo['resources']['sheep'] = playerInfo['resources']['sheep'] + readMCU[0][2]
+   playerInfo['resources']['clay'] = playerInfo['resources']['clay'] + readMCU[0][3]
+   playerInfo['resources']['wood'] = playerInfo['resources']['wood'] + readMCU[0][4]
    writeJson(playerFile, playerInfo)
 
 def endTurn(playerFile, playerInfo, gameState):
@@ -346,15 +344,14 @@ if "i2c" in pairs:
 	if playerInfo != '' and playerInfo['currentTurn'] == 1:
 		with i2c.I2CMaster() as bus:
 			readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, MCUEVENTREG), i2c.reading(MICROADDR, 1))
-			readMCU = struct.unpack('B', readMCU[0])[0]
-			if readMCU == 4 or readMCU == 5:
+			if readMCU[0][0] == 4 or readMCU[0][0] == 5:
 				readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, PIECETYPEREG), i2c.reading(MICROADDR, 1))
-				readMCU = struct.unpack('B', readMCU[0])[0]
+				readMCU = readMCU[0][0]
 				bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
 				print("Location: index.py?modalConfirm=1&readMCU=" + str(readMCU) + "#modal")
 			elif readMCU == 6:
 				readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, PIECETYPEREG), i2c.reading(MICROADDR, 1))
-				readMCU = struct.unpack('B', readMCU[0])[0]
+				readMCU = readMCU[0][0]
 				bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
 				print("Location: index.py?modalConfirm=2&readMCU=" + str(readMCU) + "#modal")
 			elif readMCU == 11:
@@ -554,7 +551,7 @@ elif "confirmPiecePlacement" in form:
 elif "simpleConfirm" in pairs:
 	with i2c.I2CMaster() as bus:
 		readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, PIECETYPEREG), i2c.reading(MICROADDR, 1))
-		readMCU = struct.unpack('B', readMCU[0])[0]
+		readMCU = readMCU[0][0]
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, CONFIRMPIECE))
 	if readMCU >= 10 and readMCU < 20:
