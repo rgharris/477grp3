@@ -186,6 +186,8 @@ def endTurn(playerFile, playerInfo, gameState):
          nextPlayerID = 0
       else:
          nextPlayerID = playerID + 1
+      with i2c.I2CMaster() as bus:
+         bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, ENDTURNFLAG)) 
    else:
       if gameState['reverse'] == 0:
          if playerID == numPlayers - 1:
@@ -201,6 +203,8 @@ def endTurn(playerFile, playerInfo, gameState):
             gameState['setupComplete'] = 1
             writeJson(GAME_STATE_FILE, gameState)
             nextPlayerID = playerID
+            with i2c.I2CMaster() as bus:
+               bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, ENDTURNFLAG)) 
          else:
             if playerID == 0:
                nextPlayerID = numPlayers - 1
@@ -247,6 +251,7 @@ STARTGAMEFLAG = 2
 RESETGPIOFLAG = 9
 CONFIRMPIECE = 7
 DENYPIECE = 8
+ENDTURNFLAG = 4
 
 GPIOPIN = 7
 
