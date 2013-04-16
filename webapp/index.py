@@ -200,6 +200,7 @@ def endTurn(playerFile, playerInfo, gameState):
          if playerID == gameState['firstPlayer']:
             gameState['setupComplete'] = 1
             writeJson(GAME_STATE_FILE, gameState)
+				nextPlayerID = playerID
          else:
             if playerID == 0:
                nextPlayerID = numPlayers - 1
