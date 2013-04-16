@@ -545,7 +545,7 @@ elif "simpleConfirm" in pairs:
 		readMCU = struct.unpack('B', readMCU[0])[0]
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, CONFIRMPIECE))
-  if readMCU >= 10 and readMCU < 20:
+	if readMCU >= 10 and readMCU < 20:
 		if readMCU % 10 == 0:
 			pieceConfirmed = "thief"
 		elif readMCU % 10 == 1:
