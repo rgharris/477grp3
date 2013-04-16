@@ -587,7 +587,7 @@ elif "simpleDeny" in pairs:
 	print("Location: index.py")
 elif "dice" in pairs:
 	newResources = readJson(RESOURCES_FILE)
-	newResources = newResources[playerID]
+	newResources = newResources[str(playerID)]
 	playerInfo['resources']['ore'] = newResources['ore']
 	playerInfo['resources']['wheat'] = newResources['wheat']
 	playerInfo['resources']['clay'] = newResources['clay']
