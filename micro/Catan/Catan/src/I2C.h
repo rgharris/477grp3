@@ -53,7 +53,7 @@
 // Register 0: Pi Events
 #define PI_TURN_ON				1			// Pi is booted
 #define PI_NEW_GAME				2			// Start a new game
-#define PI_DICE_ROLL			3			// A player wants to roll the dice
+#define PI_DICE_ROLLED			3			// A player wants to roll the dice
 #define PI_END_TURN				4			// End the current player's turn
 #define PI_DEV_ROAD				5			// A road building card was played
 #define PI_DEV_KNIGHT			6			// A knight was played
@@ -63,6 +63,8 @@
 #define PI_ROAD_PURCHASE		10			// A road was purchased
 #define PI_SETTLEMENT_PURCHASE	11			// A settlement was purchased
 #define PI_CITY_PURCHASE		12			// A city was purchased via web interface
+#define PI_END_GAME				13			// The Game is Over
+#define PI_SHUTDOWN				14			// The Pi is shutting down 
  
 
 // Register 3: MCU Events (points to first register I2c should read)
@@ -71,11 +73,12 @@
 #define MCU_ERROR				PIECE_TYPE_REG			// Set if MCU detects piece that needs to be removed or replaced
 #define MCU_DICE_READY			DIE_VALUE_REG			// Set when the Pi requests a dice roll
 #define MCU_NEW_LONG_ROAD		LONGEST_ROAD_REG		// Set when a new player has longest road (0 if none)
+#define MCU_ALL_CLEAR			11						// Set when there are no errors or new pieces on the board after there were before
 
 // Register 6: Piece Type Code (10's digit is what action is needed, 1's digit is the type of piece
-#define PIECE_TYPE_TBC			0x10			// The piece needs confirmation from the player	
-#define PIECE_TYPE_REMOVE		0x20			// The piece needs to be removed by the player
-#define PIECE_TYPE_REPLACE		0x30			// The piece needs to be replaced by the player
+#define PIECE_TYPE_TBC			10			// The piece needs confirmation from the player	
+#define PIECE_TYPE_REMOVE		20			// The piece needs to be removed by the player
+#define PIECE_TYPE_REPLACE		30			// The piece needs to be replaced by the player
 #define PIECE_TYPE_THIEF		 0			// The piece is a thief
 #define PIECE_TYPE_ROAD			 1			// The piece is a road
 #define PIECE_TYPE_SETTLEMENT	 2			// The piece is a settlement

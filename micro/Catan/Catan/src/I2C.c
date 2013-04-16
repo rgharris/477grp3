@@ -105,20 +105,25 @@ static void twi_slave_rx( U8 u8_value )
 				  switch (s_memory[PI_EVENT_REG])
 				  {
 					  case PI_NEW_PIECE_CONFIRM:
-						confirmNewPiece();
+						if (s_memory[PIECE_TYPE_REG]/PIECE_TYPE_TBC == 1)
+						{
+							confirmNewPiece();
+						}
+						s_memory[PI_EVENT_REG] = 0;
 						break;
 					  case PI_NEW_PIECE_REJECT:
 						rejectNewPiece();
-						break;
+						s_memory[PI_EVENT_REG] = 0;
+						break;					  					
 				  }
-				  s_memory[PI_EVENT_REG] = 0;
+				  //s_memory[PI_EVENT_REG] = 0;
 			 }
 			
 			 
 			 
 		 }
       }
-      //s_u32_addr++;  // Update to next position
+      s_u32_addr++;  // Update to next position
       break;
    }
 }
@@ -139,7 +144,7 @@ static U8 twi_slave_tx( void )
    }else{
       u8_value = 0xFF;
    }
-   //s_u32_addr++;  // Update to next position
+   s_u32_addr++;  // Update to next position
    return u8_value;
 }
 
@@ -152,7 +157,7 @@ static void twi_slave_stop( void )
 }
 
 uint8_t isDiceRolled(void){
-	if (s_memory[PI_EVENT_REG] == PI_DICE_ROLL)
+	if (s_memory[PI_EVENT_REG] == PI_DICE_ROLLED)
 	{
 		return 1;
 	}
@@ -211,5 +216,4 @@ uint8_t PiecePurchased(void){
 	{
 		return s_memory[PI_EVENT_REG] - PI_ROAD_PURCHASE;
 	}
-	
 }

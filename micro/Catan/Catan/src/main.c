@@ -16,10 +16,11 @@ void SetThiefPos(void);
 int main(void)
 {
 	ioport_port_mask_t RowReturn, TestRow;
-	int j,i;
-	int pos;
+	int8_t j,i;
+	uint8_t pos;
 	int ColPins[]= {HE_COL0,HE_COL1,HE_COL2,HE_COL3,HE_COL4,HE_COL5,HE_COL6,HE_COL7, HE_COL8,HE_COL9,HE_COL10,HE_COL11,HE_COL12,HE_COL13,HE_COL14,HE_COL15,HE_COL16,HE_COL17};
-    int player;
+    int8_t player;
+	//uint8_t initialSettlements[]={0xFF,0xFF,0xFF};
 
 	// Initialize the board
 	board_init();
@@ -27,52 +28,45 @@ int main(void)
 	rarity_clear_all();
 	// Clear all of the RGB LEDs
 	rgb_clear_all();
-
 	
-	// Wait for middle sensor to trip before advancing (safety feature)
-	while(ioport_get_pin_level(MIDDLE_SENSOR));
+	onAnimate();
 	
-	delay_ms(500);
-	
-	//while (1)
-	//{
-		//AdjHexTest();
-	//}
-	
-	//generate_board();
-	TestGameSetup();
-	assign_resources();
+	//////////////////////////////////////////////////////////////////////////
+	// Initialize the board with resources and rarities
+	//////////////////////////////////////////////////////////////////////////
+	generate_board();
 	refresh_display();
 	
-	// initial placement
-	
-	//for(player=1;player<=4;player++) {
-		//s_memory[CURRENT_PLAYER_REG] = player;
-		//buildRoad(1, buildSettlement(1));
-	//}
-	//for(player=4;player>=1;player--) {
-		//s_memory[CURRENT_PLAYER_REG] = player;
-		//buildRoad(1, buildSettlement(1));
-	//}
-	s_memory[CURRENT_PLAYER_REG] = 1;
-	moveThief();
-	s_memory[10] = 4;
-	
-	while(1);
-	/*{
-		delay_s(2);
-		//SetThiefPos();
-		refresh_display();
-		//PositionTest();
-		//delay_s(1);
-		//refresh_display();
-		checkBoardState(1,1,1,1,0,0);
-		show_remaining_piece();
-		//assign_resources();
-		
-		
+	//////////////////////////////////////////////////////////////////////////
+	// Initial Placement of Pieces
+	//////////////////////////////////////////////////////////////////////////
+	for(i=0;i<s_memory[PLAYER_COUNT_REG];i++) {
+		buildRoad(1, buildSettlement(1));
+	}
+	// Clear out the resources registers
+	for(i=0;i<20;i++) {
+		s_memory[RESOURCE_REC_REG+i]=0;
+	}
+			
+	for(i=0;i<s_memory[PLAYER_COUNT_REG];i++) {
+		pos = buildSettlement(1);
+		buildRoad(1, pos);
+		//initialSettlements[i]=pos;
+		assign_initial_resources(pos);
+	}
+	/*for (i=0;i<s_memory[PLAYER_COUNT_REG];i++)
+	{
+		assign_initial_resources(initialSettlements[i]);
 	}*/
-
+	
+	
+	//////////////////////////////////////////////////////////////////////////
+	// Play the game
+	//////////////////////////////////////////////////////////////////////////
+	mainGameLoop();
+	
+	rgb_clear_all();
+	rarity_clear_all();
 }	
 
 // Prototyping

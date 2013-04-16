@@ -14,6 +14,8 @@
 #include <RGB.h>
 #include <I2C.h>
 
+#define DISPLAY_DELAY	200
+#define DISPLAY_DELAY_LOOP	200
 #define ORE	0
 #define WHEAT	1
 #define SHEEP	2
@@ -190,9 +192,11 @@ static int8_t MiddleThiefAdjSettlements[] = {104,103,97,96,94,92};
 
 
 void generate_board(void);
+void mainGameLoop(void);
 void refresh_display(void);
 uint8_t roll_die(void);
 void assign_resources(void);
+void assign_initial_resources(int pos);
 void checkBoardState(int8_t settlement, int8_t road, int8_t city, int8_t thief, int8_t initial_placement, uint8_t last_pos);
 void confirmNewPiece(void);
 void rejectNewPiece(void);
@@ -217,6 +221,7 @@ void show_remaining_piece(void);
 //int isLegal (int pos, int owner, int settlement, int road, int city, int theif);
 
 int8_t isLegalInit (uint8_t pos, int8_t settlement, int8_t road, uint8_t last_settlement_pos);
+
 int8_t isLegal (uint8_t pos, int8_t settlement, int8_t road, int8_t city, int8_t thief, uint8_t thief_pos_last);
 
 // Translate a row and col number to a position number; returns -1 on failure
@@ -258,6 +263,9 @@ void TestGameSetup(void);
 
 int8_t chkstateTest(void);
 
+void bootLoop (void);
+
+void onAnimate (void);
 
 
 #endif /* CATAN_H_ */

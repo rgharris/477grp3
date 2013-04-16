@@ -12,7 +12,7 @@
 #include <asf.h>
 #include <Catan.h>
 
-#define TRANS_TIME	0 // A number 0-4 will define the time taken to change color
+#define TRANS_TIME	7 // A number 0-4 will define the time taken to change color
 
 // RG Color Address
 #define A0 0
@@ -30,18 +30,23 @@
 #define COLOR_GREEN 0x00FF00
 #define COLOR_LIME 0x00ff7f
 #define COLOR_BLUE 0x0000FF
-#define COLOR_BRICK 0xE07000
+#define COLOR_BRICK 0xE08000 //0xE07000
+#define COLOR_ORANGE 0xD09000
+#define COLOR_YELLOW 0xF0C000
 #define COLOR_PINK 0xff69b4
-#define COLOR_TEAL 0x008080
+#define COLOR_TEAL 0x00F0B0
+#define COLOR_SEA  0x00D080
 #define COLOR_BLACK 0x000000
 #define COLOR_WHITE 0xFFFFFF
 #define COLOR_SHEEP 0xFFFF00
 #define COLOR_WHEAT 0xFAC520
 #define COLOR_SGREEN 0x00ff5f
 #define COLOR_WOOD  0x00fF00
-#define COLOR_ERROR 0xFF0000
+#define COLOR_ERROR 0xFF0000 //0xFF
 #define COLOR_ORE	0xB09090  //0xB0B090
-#define COLOR_DESERT 0xF0F0B0
+#define COLOR_DESERT 0xF0F0A0
+#define COLOR_GREY   0xB0B070
+#define COLOR_DGREY  0x808030
 #define COLOR_CONFIRM 0x0000FF
 
 

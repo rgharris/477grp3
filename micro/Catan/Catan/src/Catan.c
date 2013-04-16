@@ -18,6 +18,7 @@ uint8_t city_map[145] = {0};
 // Hexagon Maps
 uint8_t Hex2Rarity[19];
 uint8_t Hex2Resource[19];
+uint8_t DesertHex;
 // Pieces each player has remaining of each type [player][piecetype] {roads,settlements,cities}
 uint8_t pieces_remaining[4][3] ={{15,5,4},{15,5,4},{15,5,4},		 {15,		5,		     4}};		
 uint8_t dice_roll_state = 0;		// Has the dice been rolled yet?
@@ -84,7 +85,7 @@ void generate_board(void) {
 						rgb_hex_set(pos2AdjHex(address*18+i,2),rand_red<<20|rand_blue<<12|rand_green<<4);
 					}
 					rarity_display_error(i,address,0);
-					delay_ms(200);
+					delay_ms(DISPLAY_DELAY);
 					
 					
 					// Only assign a resource to a hex that doesn't have one already and its thief is activated by magnet
@@ -108,7 +109,7 @@ void generate_board(void) {
 								ResourcesInDeck[k]--;
 								ResourceAssigned = 1;
 								ResourcesRemaining--;
-
+																
 							}
 						}
 					}
@@ -127,7 +128,7 @@ void generate_board(void) {
 			rand_green = ((Get_sys_count() & 0xF000)>>12);
 			rgb_hex_set(18,rand_red<<20|rand_blue<<12|rand_green<<4);
 			rarity_display_error(18,7,0);
-			delay_ms(200);
+			delay_ms(DISPLAY_DELAY);
 			
 			if (Hex2Resource[18] == NO_RESOURCE)
 			{
@@ -228,7 +229,8 @@ void generate_board(void) {
 	
 	while (!(s_memory[PI_EVENT_REG] == PI_NEW_GAME))
 	{
-		for (address=0;address<8;address++)
+		bootLoop();
+		/*for (address=0;address<8;address++)
 		{
 
 			// Grab the sensor data for every row
@@ -256,7 +258,7 @@ void generate_board(void) {
 						rgb_hex_set(pos2AdjHex(address*18+i,2),rand_red<<20|rand_blue<<12|rand_green<<4);
 					}
 					rarity_display_error(i,address,0);	
-					delay_ms(200);									
+					delay_ms(DISPLAY_DELAY);									
 				}
 			}
 		}
@@ -272,10 +274,74 @@ void generate_board(void) {
 			rand_green = ((Get_sys_count() & 0xF000)>>12);
 			rgb_hex_set(18,rand_red<<20|rand_blue<<12|rand_green<<4);
 			rarity_display_error(18,7,0);
-			delay_ms(200);
-		}			
+			delay_ms(DISPLAY_DELAY);
+		}		*/	
+	}
+	
+	// Put the thief on the desert
+	for (i=0;i<=18;i++)
+	{
+		if (Hex2Resource[i] == DESERT)
+		{
+			posSetOwner(7*18+i,1);	// Doesn't matter who owns the thief, so long as someone does
+			setPosLegal(7*18+i);   // We should expect to see the thief on the sensor
+			DesertHex = i;
+		}
 	}
 }
+
+void mainGameLoop(void)
+{
+	int8_t dice_rolled_flag;
+	while(1) {
+		refresh_display();
+		checkBoardState(dice_rolled_flag,dice_rolled_flag,dice_rolled_flag,0,0,0);
+		// Check if the dice has been rolled
+		if (isDiceRolled() && (dice_rolled_flag == 0)) {
+			if(s_memory[DIE_VALUE_REG] == 7) {
+				while(s_memory[PI_EVENT_REG] != PI_DEV_KNIGHT);
+				s_memory[PI_EVENT_REG] = 0;
+				// Move the thief
+				moveThief();
+				
+			} else {
+				assign_resources();
+			}
+			rarity_set(DesertHex,s_memory[DIE_VALUE_REG]);
+			dice_rolled_flag = 1;
+		}
+		// Check for knight cards played
+		if (isKnightPlayed()) {
+			moveThief();
+		}
+		// Check for road building played
+		if (isRoadBuildingPlayed()) {
+			buildRoad(0,0);
+			buildRoad(0,0);
+		}
+		// Check if a road was purchased
+		if (s_memory[PI_EVENT_REG] == PI_ROAD_PURCHASE) {
+			s_memory[PI_EVENT_REG] = 0;
+			buildRoad(0,0);
+		}
+		if (s_memory[PI_EVENT_REG] == PI_SETTLEMENT_PURCHASE) {
+			s_memory[PI_EVENT_REG] = 0;
+			buildSettlement(0);
+		}
+		if (s_memory[PI_EVENT_REG] == PI_CITY_PURCHASE) {
+			s_memory[PI_EVENT_REG] = 0;
+			buildCity();
+		}
+		if (isTurnOver()) {
+			dice_rolled_flag == 0;
+			s_memory[DIE_VALUE_REG] = roll_die();
+			rarity_set(DesertHex,-1);
+		}
+		if (s_memory[PI_EVENT_REG] == PI_END_GAME) {
+			return;
+		}
+	}
+}	
 
 void checkBoardState(int8_t settlement, int8_t road, int8_t city, int8_t thief, int8_t initial_placement, uint8_t last_pos)
 {
@@ -433,11 +499,17 @@ void checkBoardState(int8_t settlement, int8_t road, int8_t city, int8_t thief, 
 					rgb_hex_set(18,NewboardState == ERROR ? COLOR_ERROR : COLOR_CONFIRM);
 					rarity_display_error(18,7,0);
 				} else {
-					rgb_hex_set(pos_interest % 18,NewboardState == ERROR ? COLOR_ERROR : COLOR_CONFIRM );
+					// Display error to all adjacent hexes
+					for (k=0;k<3;k++) {
+						if (pos2AdjHex(pos_interest,k)!=-1) {
+							rgb_hex_set(pos2AdjHex(pos_interest,k),NewboardState == ERROR ? COLOR_ERROR : COLOR_CONFIRM);
+						}
+					}
+					//rgb_hex_set(pos_interest % 18,NewboardState == ERROR ? COLOR_ERROR : COLOR_CONFIRM );
 					switch (city_map[pos_interest])
 					{
 						case 0:
-						rarity_display_error(pos_interest % 18,pos_interest/18,0);
+						rarity_display_error(pos_interest % 18,pos_interest/18,0);			
 						break;
 						case 1:
 						if (piecetype == PIECE_TYPE_TBC)
@@ -534,15 +606,21 @@ void checkBoardState(int8_t settlement, int8_t road, int8_t city, int8_t thief, 
 					{
 						s_memory[MCU_EVENT_REG] = MCU_NEW_PIECE_TBC;
 					}
+					// Alert the Pi that something should be confirmed
+					ioport_set_pin_level(I2C_FLAG,true);
 				}
 				else
 				{				
 					s_memory[MCU_EVENT_REG] = MCU_ERROR;
 				}
-				
-				// Set the Hey Look at ME pin for the Pi
-				ioport_set_pin_level(I2C_FLAG,true);
+								
 			}
+			// If something's changed, but it's not a new or illegal piece, the whole board is all confirmed
+			else
+			{
+				s_memory[MCU_EVENT_REG] = MCU_ALL_CLEAR;
+			}
+			
 		}
 		
 		boardState = NewboardState;
@@ -578,7 +656,7 @@ uint8_t roll_die(void){
 int8_t isLegalInit (uint8_t pos, int8_t settlement, int8_t road, uint8_t last_settlement_pos){
 	int8_t i,j;
 	// Check if position is on the board
-	if ((pos > MIDDLE_THIEF_POS) || (pos < 0)) { s_memory[MCU_EVENT_REG] = 0xF;return 0; }
+	if ((pos > MIDDLE_THIEF_POS) || (pos < 0)) { return 0; }
 	// Make sure the position is not the last position that was rejected
 	if (pos == last_pos_rejected){return 0;}
 	// First determine the type of piece based on the position#
@@ -590,12 +668,12 @@ int8_t isLegalInit (uint8_t pos, int8_t settlement, int8_t road, uint8_t last_se
 			// check both adjacent cities. If either owned by player and the last settlement placed, it's a legal play
 			if ((pos2Owner(pos2AdjPos(pos,0))==s_memory[CURRENT_PLAYER_REG]) && (pos2AdjPos(pos,0) == last_settlement_pos))
 			{
-				s_memory[MCU_EVENT_REG] = 2;
+				
 				return 1;
 			}
 			if ((pos2Owner(pos2AdjPos(pos,1))==s_memory[CURRENT_PLAYER_REG]) && (pos2AdjPos(pos,1) == last_settlement_pos))
 			{
-				s_memory[MCU_EVENT_REG] = 2;
+				
 				return 1;
 			}		
 		}
@@ -603,7 +681,7 @@ int8_t isLegalInit (uint8_t pos, int8_t settlement, int8_t road, uint8_t last_se
 	// Thieves not allowed
 	else if ((pos/18) >= 7)
 	{
-		s_memory[MCU_EVENT_REG] = 7;
+		
 		return 0;
 		
 	}
@@ -620,7 +698,7 @@ int8_t isLegalInit (uint8_t pos, int8_t settlement, int8_t road, uint8_t last_se
 						if (pos2AdjPos(pos2AdjPos(pos,i),j)!=pos) {
 							if (pos2Owner(pos2AdjPos(pos2AdjPos(pos,i),j))) {
 								// If the adjacent settlement is already owned, this placement is illegal
-								s_memory[MCU_EVENT_REG] = 16;
+								
 								return 0;
 							}
 						}
@@ -628,7 +706,7 @@ int8_t isLegalInit (uint8_t pos, int8_t settlement, int8_t road, uint8_t last_se
 				}
 			}
 			// No conflicts with adjacent cities, therefore legal
-			s_memory[MCU_EVENT_REG] = 3;
+			
 			return 1;
 		}		
 	}
@@ -860,6 +938,21 @@ void assign_resources(void)
 	}
 }
 
+void assign_initial_resources(int pos)
+{
+	// Should assign the resources to the resources to receive registers so the Pi can retrieve them
+	uint8_t i;
+	
+	for (i=0;i<3;i++)
+	{
+		// Assign the resources to the proper register for each of the 3 adjacent hexes
+		if(pos2AdjHex(pos,i)!=-1) {
+			s_memory[RESOURCE_REC_REG+(pos2Owner(pos)-1)*5+Hex2Resource[pos2AdjHex(pos,i)]]++;
+		}		
+	}
+	
+}
+
 void show_remaining_piece(void)
 {
 	uint8_t i;
@@ -914,7 +1007,6 @@ uint8_t moveThief()
 	for (i=7*18;i<=MIDDLE_THIEF_POS;i++)
 	{
 		if (pos2Owner(i)) {
-			s_memory[11] = i+1;
 			last_thief_pos = i;
 		}
 	}
@@ -1006,6 +1098,7 @@ int pos2AdjHex(int pos, int adj_num) {
     
 	return (pos_map[pos][adj_num+3]);
 }
+
 int pos2Port(int pos) {
 	if ((pos > MIDDLE_THIEF_POS) || (pos < 0)) { return -1; }
     return(pos_map[pos][6]);
@@ -1258,4 +1351,59 @@ int8_t chkstateTest(void)
 	return !error;
 }
 
+void bootLoop (void) {
+	uint8_t i;
+	uint8_t rgbs[12] = {9,8,17,16,5,3,1,0,15,12,11,10};
+    uint8_t rgbn[6] = {6,4,2,14,13,7};
 	
+	rarity_clear_all();
+	rgb_hex_set(18,COLOR_BLACK);
+	
+	for (i=0; i<12; i++) {
+        rgb_hex_set(rgbn[i/2],COLOR_BLACK);
+		rgb_hex_set(rgbs[(i+4)%12],COLOR_RED);
+		rgb_hex_set(rgbs[(i+2)%12],COLOR_ORANGE);
+		rgb_hex_set(rgbs[i%12],COLOR_YELLOW);
+		delay_ms(100);
+		rgb_hex_set(rgbs[i%12],COLOR_BLACK);
+	}
+}
+
+void onAnimate (void) {
+	uint8_t i;
+	uint8_t outer[12] = {9,8,17,16,5,3,1,0,15,12,11,10};
+    uint8_t inner[6] = {6,4,2,14,13,7};
+	
+	rarity_clear_all();
+	rgb_clear_all();
+	
+    for(i=0;i<12;i++) {
+		rgb_hex_set(outer[i],COLOR_TEAL);
+	}
+	delay_ms(400);
+	
+	for(i=0;i<6;i++) {
+		rgb_hex_set(inner[i],COLOR_TEAL);
+	}
+	for(i=0;i<12;i++) {
+		rgb_hex_set(outer[i],COLOR_BLUE);
+	}
+    delay_ms(400);
+	
+	rgb_hex_set(18,COLOR_TEAL);
+	for(i=0;i<6;i++) {
+		rgb_hex_set(inner[i],COLOR_BLUE);
+	}
+	for(i=0;i<12;i++) {
+		rgb_hex_set(outer[i],COLOR_BLACK);
+	}
+	delay_ms(400);
+	
+	rgb_hex_set(18,COLOR_BLUE);
+	for(i=0;i<6;i++) {
+		rgb_hex_set(inner[i],COLOR_BLACK);
+	}
+	delay_ms(400);
+	
+	rgb_hex_set(18,COLOR_BLACK);	
+}
