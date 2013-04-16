@@ -150,6 +150,17 @@ def chkResources(playerInfo, resourceDict):
 			return False
 	return True
 
+def getResources(playerID, playerFile, playerInfo):
+   startReg = (playerID * 5) + 10
+   with i2c.I2CMaster() as bus:
+      readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, startReg), i2c.reading(MICROADDR, 5))
+   playerInfo['resources']['ore'] = playerInfo['resources']['ore'] + struct.unpack('B', readMCU[0])[0]
+   playerInfo['resources']['wheat'] = playerInfo['resources']['wheat'] + struct.unpack('B', readMCU[1])[0]
+   playerInfo['resources']['sheep'] = playerInfo['resources']['sheep'] + struct.unpack('B', readMCU[2])[0]
+   playerInfo['resources']['clay'] = playerInfo['resources']['clay'] + struct.unpack('B', readMCU[3])[0]
+   playerInfo['resources']['wood'] = playerInfo['resources']['wood'] + struct.unpack('B', readMCU[4])[0]
+   writeJson(playerFile, playerInfo)
+
 def chkDeck(deckFile, timeout):
 		if not os.path.isfile(deckFile):
 			return True
@@ -195,6 +206,7 @@ def endTurn(playerFile, playerInfo, gameState):
             nextPlayerID = numPlayers - 1
          else:
             nextPlayerID = playerID - 1
+			getResources(playerID, playerFile, playerInfo)
    nextPlayerInfo = readJson(PLAYER_FILE + str(nextPlayerID) + ".json")
    nextPlayerInfo['currentTurn'] = 1
    writeJson(PLAYER_FILE + str(nextPlayerID) + ".json", nextPlayerInfo)
@@ -539,36 +551,10 @@ elif "confirmPiecePlacement" in form:
 		if form.getvalue('piecetype') == 'road':
 			endTurn(playerFile, playerInfo, gameState)
 	setRefresh(playerID, REFRESH_VALUE['generic']) 
-elif "simpleConfirm" in pairs:
-	with i2c.I2CMaster() as bus:
-		readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, PIECETYPEREG), i2c.reading(MICROADDR, 1))
-		readMCU = struct.unpack('B', readMCU[0])[0]
-		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, RESETGPIOFLAG))
-		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, CONFIRMPIECE))
-  if readMCU >= 10 and readMCU < 20:
-		if readMCU % 10 == 0:
-			pieceConfirmed = "thief"
-		elif readMCU % 10 == 1:
-			pieceConfirmed = "road"
-		elif readMCU % 10 == 2:
-			pieceConfirmed = "settlement"
-		elif readMCU % 10 == 3:
-			pieceConfirmed = "city"
-	if gameState['setupComplete'] == 0:
-		playerInfo['initialPlacements'][pieceConfirmed] = playerInfo['initialPlacements'][pieceConfirmed] + 1	
-		writeJson(playerFile, playerInfo)
-		if pieceConfirmed == 'road':
-			endTurn(playerFile, playerInfo, gameState)
-	setRefresh(playerID, REFRESH_VALUE['generic']) 
 elif "denyPiecePlacement" in form:
 	with i2c.I2CMaster() as bus:
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, DENYPIECE))
-	setRefresh(playerID, REFRESH_VALUE['generic']) 
-elif "simpleDeny" in pairs:
-	with i2c.I2CMaster() as bus:
-		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, DENYPIECE))
 	setRefresh(playerID, REFRESH_VALUE['generic'])
-
 #Remove the next 2 lines at some point, just for debugging
 elapsedTime = time.time() - start
 debug = debug + "\nDone form processing: " + str(elapsedTime) + " seconds\n"
@@ -873,9 +859,9 @@ elif gameState['gameStart'] == 1:
 		curPoints = curPoints + playerInfo['cards']['victory']
 	if playerInfo['currentTurn'] == 1:
 		purchaseLink = "<a href=\"#modal\" class=\"button borderRight spacingLeft\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/purchase.py')\">Purchase</a>"
-		tradeLink = "<a href=\"index.py?simpleConfirm=true\" class=\"button\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/trade.py')\">Trade</a>"
-		confirmLink = "<a href=\"index.py?simpleDeny=true\" class=\"button borderTop borderRight spacingLeft\" onclick=\"\">Confirm</a>"
-		denyLink = "<a href=\"index.py?trade=deny#modal\" class=\"button borderTop\" onclick=\"\">Deny</a>"
+		tradeLink = "<a href=\"#modal\" class=\"button\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/trade.py')\">Trade</a>"
+		confirmLink = "<a href=\"trade=confirm#modal\" class=\"button borderTop borderRight spacingLeft\" onclick=\"\">Confirm</a>"
+		denyLink = "<a href=\"trade=deny#modal\" class=\"button borderTop\" onclick=\"\">Deny</a>"
 		if gameState['diceRolled'] == 0:
 			turnLink = "<a href=\"#dice\" class=\"button borderTop\" onclick=\"loadXMLDoc('dierolled', '/dialogs/roll.py')\">Roll Dice</a><div id=\"dierolled\" style=\"display:none\"></div>"
 		else:
