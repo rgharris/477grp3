@@ -159,15 +159,15 @@ def chkDeck(deckFile, timeout):
 		return False
 
 def getResources(playerID, playerFile, playerInfo):
-   startReg = (playerID * 5) + 10
-   with i2c.I2CMaster() as bus:
-      readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, startReg), i2c.reading(MICROADDR, 5))
-   playerInfo['resources']['ore'] = playerInfo['resources']['ore'] + readMCU[0][0]
-   playerInfo['resources']['wheat'] = playerInfo['resources']['wheat'] +  readMCU[0][1]
-   playerInfo['resources']['sheep'] = playerInfo['resources']['sheep'] + readMCU[0][2]
-   playerInfo['resources']['clay'] = playerInfo['resources']['clay'] + readMCU[0][3]
-   playerInfo['resources']['wood'] = playerInfo['resources']['wood'] + readMCU[0][4]
-   writeJson(playerFile, playerInfo)
+	startReg = (playerID * 5) + 10
+	with i2c.I2CMaster() as bus:
+		readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, startReg), i2c.reading(MICROADDR, 5))
+	playerInfo['resources']['ore'] = playerInfo['resources']['ore'] + readMCU[0][0]
+	playerInfo['resources']['wheat'] = playerInfo['resources']['wheat'] +  readMCU[0][1]
+	playerInfo['resources']['sheep'] = playerInfo['resources']['sheep'] + readMCU[0][2]
+	playerInfo['resources']['clay'] = playerInfo['resources']['clay'] + readMCU[0][3]
+	playerInfo['resources']['wood'] = playerInfo['resources']['wood'] + readMCU[0][4]
+	writeJson(playerFile, playerInfo)
 
 def endTurn(playerFile, playerInfo, gameState):
    for resource in playerInfo['cards']:
@@ -228,6 +228,7 @@ form = FieldStorage()
 PLAYER_FILE="players/"
 DEV_CARD_FILE="players/dev.json"
 TRADE_FILE = "players/trade.json"
+RESOURCES_FILE = "chkRefresh/resources.json"
 TIMEOUT = 3600 #one hour (3600 seconds)
 #This is a map of values that could be in the refresh file, and are checked in javascript.
 REFRESH_VALUE = {'reset':0, 'generic':1, 'tradeRequest':2, 'tradeConfirm':3, 'tradeDeny':4, 'cannotTrade':5, 'monopoly':6, 'dice':7, 'i2c':9}
@@ -578,6 +579,15 @@ elif "simpleDeny" in pairs:
 	with i2c.I2CMaster() as bus:
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, DENYPIECE))
 	print("Location: index.py")
+elif "dice" in pairs:
+	newResources = readJson(RESOURCES_FILE)
+	newResources = newResources[playerID]
+	playerInfo['resources']['ore'] = newResources['ore']
+	playerInfo['resources']['wheat'] = newResources['wheat']
+	playerInfo['resources']['clay'] = newResources['clay']
+	playerInfo['resources']['sheep'] = newResources['sheep']
+	playerInfo['resources']['wood'] = newResources['wood']
+	setRefresh(playerID, REFRESH_VALUE['generic'])
 
 #Remove the next 2 lines at some point, just for debugging
 elapsedTime = time.time() - start
@@ -887,7 +897,7 @@ elif gameState['gameStart'] == 1:
 		confirmLink = "<a href=\"index.py?simpleConfirm=true\" class=\"button borderTop borderRight spacingLeft\" onclick=\"\">Confirm</a>"
 		denyLink = "<a href=\"index.py?simpleDeny=true\" class=\"button borderTop\" onclick=\"\">Deny</a>"
 		if gameState['diceRolled'] == 0:
-			turnLink = "<a href=\"#dice\" class=\"button borderTop\" onclick=\"loadXMLDoc('dierolled', '/dialogs/roll.py')\">Roll Dice</a><div id=\"dierolled\" style=\"display:none\"></div>"
+			turnLink = "<a href=\"#dice\" class=\"button borderTop\" onclick=\"loadXMLDoc('dierolled', '/dialogs/roll.py?player=" + str(playerID) + "')\">Roll Dice</a><div id=\"dierolled\" style=\"display:none\"></div>"
 		else:
 			turnLink = "<a href=\"#modal\" class=\"button borderTop\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/endTurn.py')\">End Turn</a>"
 	else:
