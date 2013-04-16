@@ -34,6 +34,7 @@ else:
 		diceRoll = bus.transaction(i2c.writing_bytes(MICROADDR, DIEREG), i2c.reading(MICROADDR, 1))
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, DICEFLAG))
 		MCUresources = bus.transaction(i2c.writing_bytes(MICROADDR, RESOURCEREG), i2c.reading(MICROADDR, 20))
+	resources = []
 	for i in range(0,20):
 		resources.append(MCUresources[0][i])
 	with open(DICE_FILE, 'w') as f:
