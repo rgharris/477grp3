@@ -38,7 +38,7 @@ else:
 	for i in range(0,20):
 		resources.append(MCUresources[0][i])
 	with open(DICE_FILE, 'w') as f:
-		f.write(diceRoll)
+		f.write(str(diceRoll[0][0]))
 		f.close()
 	for i in range(0,3):
 		resourceDict = {str(i):{'ore': resources[(i*5)], 'wheat': resources[(i*5)+1], 'sheep': resources[(i*5)+2], 'clay': resources[(i*5)+3], 'wood':resources[(i*5)+4]}}
