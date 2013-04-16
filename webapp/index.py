@@ -206,7 +206,7 @@ def endTurn(playerFile, playerInfo, gameState):
             nextPlayerID = numPlayers - 1
          else:
             nextPlayerID = playerID - 1
-			getResources(playerID, playerFile, playerInfo)
+         getResources(playerID, playerFile, playerInfo)
    nextPlayerInfo = readJson(PLAYER_FILE + str(nextPlayerID) + ".json")
    nextPlayerInfo['currentTurn'] = 1
    writeJson(PLAYER_FILE + str(nextPlayerID) + ".json", nextPlayerInfo)
