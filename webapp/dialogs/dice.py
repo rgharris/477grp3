@@ -7,7 +7,7 @@
 from os import environ
 from cgi import parse_qs
 from json import dump
-from quick2wire.i2c import i2c
+import quick2wire.i2c as i2c
 
 PLAYER_FILE = "../players/"
 GAME_STATE_FILE = "../chkRefresh/gamestate.json"
