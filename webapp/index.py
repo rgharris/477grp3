@@ -885,9 +885,9 @@ elif gameState['gameStart'] == 1:
 		curPoints = curPoints + playerInfo['cards']['victory']
 	if playerInfo['currentTurn'] == 1:
 		purchaseLink = "<a href=\"#modal\" class=\"button borderRight spacingLeft\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/purchase.py')\">Purchase</a>"
-		tradeLink = "<a href=\"index.py?simpleConfirm=true\" class=\"button\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/trade.py')\">Trade</a>"
-		confirmLink = "<a href=\"index.py?simpleDeny=true\" class=\"button borderTop borderRight spacingLeft\" onclick=\"\">Confirm</a>"
-		denyLink = "<a href=\"index.py?trade=deny#modal\" class=\"button borderTop\" onclick=\"\">Deny</a>"
+		tradeLink = "<a href=\"#modal\" class=\"button\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/trade.py')\">Trade</a>"
+		confirmLink = "<a href=\"index.py?simpleConfirm=true\" class=\"button borderTop borderRight spacingLeft\" onclick=\"\">Confirm</a>"
+		denyLink = "<a href=\"index.py?simpleDeny=true\" class=\"button borderTop\" onclick=\"\">Deny</a>"
 		if gameState['diceRolled'] == 0:
 			turnLink = "<a href=\"#dice\" class=\"button borderTop\" onclick=\"loadXMLDoc('dierolled', '/dialogs/roll.py')\">Roll Dice</a><div id=\"dierolled\" style=\"display:none\"></div>"
 		else:
