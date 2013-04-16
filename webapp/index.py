@@ -200,10 +200,11 @@ def endTurn(playerFile, playerInfo, gameState):
          if playerID == gameState['firstPlayer']:
             gameState['setupComplete'] = 1
             writeJson(GAME_STATE_FILE, gameState)
-         if playerID == 0:
-            nextPlayerID = numPlayers - 1
-         else:
-            nextPlayerID = playerID - 1
+			else:
+         	if playerID == 0:
+           		nextPlayerID = numPlayers - 1
+         	else:
+            	nextPlayerID = playerID - 1
          getResources(playerID, playerFile, playerInfo)
    nextPlayerInfo = readJson(PLAYER_FILE + str(nextPlayerID) + ".json")
    nextPlayerInfo['currentTurn'] = 1
