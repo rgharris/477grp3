@@ -568,7 +568,7 @@ elif "simpleConfirm" in pairs:
 		writeJson(playerFile, playerInfo)
 		if pieceConfirmed == 'road':
 			endTurn(playerFile, playerInfo, gameState)
-	setRefresh(playerID, REFRESH_VALUE['generic']) 
+	print("Location: index.py")
 elif "denyPiecePlacement" in form:
 	with i2c.I2CMaster() as bus:
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, DENYPIECE))
@@ -576,7 +576,7 @@ elif "denyPiecePlacement" in form:
 elif "simpleDeny" in pairs:
 	with i2c.I2CMaster() as bus:
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, DENYPIECE))
-	setRefresh(playerID, REFRESH_VALUE['generic'])
+	print("Location: index.py")
 
 #Remove the next 2 lines at some point, just for debugging
 elapsedTime = time.time() - start
