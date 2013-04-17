@@ -114,6 +114,8 @@ def handle_ajax():
 		playerInfo = getPlayerInfo(request.get_cookie("playerID"))
 		if mid == "name":
 			return template('nameBox', name=playerInfo['playerName'])
+		if mid == "status":
+			return template('statusBox', playerInfo=getGameStatus()['playerInfo'])
 		elif mid == "devCards":
 			return "Dev card stuff!"
 		
@@ -133,7 +135,7 @@ def show_webapp():
 	response.set_cookie("playerID", "0")
 	response.set_cookie("gameTime", str(getGameInfo()['gameTime']))
 	playerInfo = getPlayerInfo(0)
-	return template('layout', name=playerInfo['playerName'], points=playerInfo['points'], devCards=str(sum(playerInfo['cards'].values())), resources=dict((key, str(val)) for key, val in playerInfo['resources'].items()))
+	return template('layout', name=playerInfo['playerName'], points=str(playerInfo['points'] + playerInfo['cards']['victory'] + playerInfo['onHold']['victory']), devCards=str(sum(playerInfo['cards'].values())), resources=dict((key, str(val)) for key, val in playerInfo['resources'].items()))
 
 #@get('/blah')
 #def show_form():

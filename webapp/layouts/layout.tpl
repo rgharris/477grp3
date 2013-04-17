@@ -61,7 +61,7 @@
 				<div id="footer">
 					<span class="button fade borderRight spacingLeft">&nbsp;</span>
 					<span class="button fade">&nbsp;</span>
-					<a href="javascript: refreshContent('points', 0)" id='statusButton' class="button borderTop borderRight spacingLeft"><!--onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')"-->Status</a>
+					<a href="javascript:openModal('status')" id='statusButton' class="button borderTop borderRight spacingLeft"><!--onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')"-->Status</a>
 					<span class="button fade borderTop">&nbsp;</span>
 					<span class="button fade borderTop borderRight spacingLeft">&nbsp;</span>
 					<span class="button fade borderTop">&nbsp;</span>
