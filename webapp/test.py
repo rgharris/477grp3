@@ -1,5 +1,5 @@
 import bottle
-from bottle import get, post, request, static_file, template, TEMPLATE_PATH
+from bottle import get, post, request, response, static_file, template, TEMPLATE_PATH
 
 ##########################USEFUL FUNCTIONS################################
 #def displayResources():
@@ -41,7 +41,7 @@ def handle_ajax():
 
 @get('/')
 def show_webapp():
-	request.set_cookie("playerID", "-1")
+	response.set_cookie("playerID", "-1")
 	return template('layout')
 
 #@get('/blah')
