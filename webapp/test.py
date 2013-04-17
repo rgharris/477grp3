@@ -22,7 +22,7 @@ def displayResources(playerID):
 	return dumps(playerInfo['resources'])
 
 def getPlayerInfo(playerID):
-	return getGameInfo()['playerInfo'][int(playerID)]
+	return getGameInfo()['playerInfo'][str(playerID)]
 
 def getGameStatus():
 	return getGameInfo()['gameStatus']
