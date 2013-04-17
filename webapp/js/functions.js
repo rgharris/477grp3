@@ -56,9 +56,19 @@ function refreshContent(id)
 	xmlhttp.onreadystatechange=function()
 	{
 		console.log(xmlhttp.responseText);
-		document.getElementById(id).innerHTML = xmlhttp.responseText;
+		if (id == "resources"){
+			resources = JSON.parse(xmlhttp.responseText);
+			document.getElementById("clayAmt").innerHTML = resources.clay;
+			document.getElementById("oreAmt").innerHTML = resources.ore;
+			document.getElementById("wheatAmt").innerHTML = resources.wheat;
+			document.getElementById("woodAmt").innerHTML = resources.wood;
+			document.getElementById("sheepAmt").innerHTML = resources.sheep;
+		}
+		else{
+			document.getElementById(id).innerHTML = xmlhttp.responseText;
+		}
 	}
-	xmlhttp.open("GET", "refreshContent?" + id, true);
+	xmlhttp.open("GET", "refreshContent?id=" + id, true);
 	xmlhttp.send();
 }
 function heartbeat(playerID)
@@ -71,7 +81,7 @@ function heartbeat(playerID)
 		{
 			if(xmlhttp.responseText == 1)
 			{
-				location.reload(true);
+				refreshContent("resources");
 			}
 			else if(xmlhttp.responseText == 2)
 			{

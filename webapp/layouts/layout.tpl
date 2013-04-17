@@ -27,33 +27,33 @@
 					<div id="clay" class="resource">
 						<img src="images/clay.png" class="resourceImg"/>
 						<p class="resourceTitle">Clay</p>
-						<p class="amount">1</p>
+						<p id="clayAmt" class="amount">0</p>
 					</div>
 					<div id="ore"  class="resource">
 						<img src="images/ore.png" class="resourceImg"/>
 						<p class="resourceTitle">Ore</p>
-						<p class="amount">0</p>
+						<p id="oreAmt" class="amount">0</p>
 					</div>
 					<div id="sheep" class="resource">
 						<img src="images/sheep.png" class="resourceImg"/>
 						<p class="resourceTitle">Sheep</p>
-						<p class="amount">0</p>
+						<p id="sheepAmt" class="amount">0</p>
 					</div>
 					<div id="wheat" class="resource">
 						<img src="images/wheat.png" class="resourceImg"/>
 						<p class="resourceTitle">Wheat</p>
-						<p class="amount">1</p>
+						<p id="wheatAmt" class="amount">0</p>
 					</div>
 					<div id="wood" class="resource">
 						<img src="images/wood.png" class="resourceImg"/>
 						<p class="resourceTitle">Wood</p>
-						<p class="amount">0</p>
+						<p id="woodAmt" class="amount">0</p>
 					</div>
 					<div id="cards" class="resource">
 						<a href="javascript:openModal()" id="cardsLink" >
 							<img src="images/sea.png" class="resourceImg"/>
 							<p class="resourceTitle">Dev. Cards</p>
-							<p class="amount">0</p>
+							<p id="devCardAmt" class="amount">0</p>
 						</a>
 					</div>
 				</div>

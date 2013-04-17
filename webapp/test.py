@@ -1,6 +1,10 @@
 import bottle
 from bottle import get, post, request, static_file, template, TEMPLATE_PATH
 
+##########################USEFUL FUNCTIONS################################
+#def displayResources():
+	
+
 if '/home/pi/477grp3/webapp/layouts/' not in TEMPLATE_PATH:
 	TEMPLATE_PATH.insert(0,'/home/pi/477grp3/webapp/layouts/')
 
@@ -27,12 +31,17 @@ def serve_image(filename):
 # This request happens every X seconds in case anything needs to be updated in the webapp
 @get('/refreshContent')
 def handle_ajax():
-  return "<p>This is a test of how long it takes to open a modal box with dynamic content!!!</p>"
+	rid = request.query.id
+	if rid == "resources":
+		#return displayResources()
+		return request.get_cookie("playerID")
+	return "<p>This is a test of how long it takes to open a modal box with dynamic content!!!</p>"
 
 # This request handles a 
 
 @get('/')
 def show_webapp():
+	request.set_cookie("playerID", "-1")
 	return template('layout')
 
 #@get('/blah')
