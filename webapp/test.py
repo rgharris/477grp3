@@ -81,7 +81,7 @@ def handle_ajax():
 	rid = request.query.id
 	if rid == "resources":
 		return displayResources(request.get_cookie("playerID"))
-	if rid = "ModalBox":
+	if rid == "ModalBox":
 		mid = request.query.modal
 		if mid == "name":
 			return "Name stuff!"
