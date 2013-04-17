@@ -668,6 +668,35 @@ elif "simpleDeny" in pairs:
 	with i2c.I2CMaster() as bus:
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, DENYPIECE))
 	print("Location: index.py")
+elif "splitHand" in form:
+	splitClay = int(form.getvalue("splitClay"))
+	splitOre = int(form.getvalue("splitOre"))
+	splitWheat = int(form.getvalue("splitWheat"))
+	splitSheep = int(form.getvalue("splitSheep"))
+	splitWood = int(form.getvalue("splitWood"))
+	if splitClay < 0:
+		splitClay = 0
+	if splitOre < 0:
+		splitOre = 0
+	if splitWheat < 0:
+		splitWheat = 0
+	if splitSheep < 0:
+		splitSheep = 0
+	if splitWood < 0:
+		splitWood = 0
+	playerInfo['resources']['ore'] = playerInfo['resources']['ore'] - splitOre
+	playerInfo['resources']['ore'] = playerInfo['resources']['clay'] - splitClay
+	playerInfo['resources']['ore'] = playerInfo['resources']['wheat'] - splitWheat
+	playerInfo['resources']['ore'] = playerInfo['resources']['sheep'] - splitSheep
+	playerInfo['resources']['ore'] = playerInfo['resources']['wood'] - splitWood
+	if (sum(playerInfo['resources'].itervalues()) > 7):
+		print("Location: index.py?splitHand=" + str(playerID) + "#modal")
+	else:
+		print("Location: index.py")
+	if(playerInfo['currentTurn'] == 1):
+		with i2c.I2CMaster() as bus:
+			bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, KNIGHTDEVFLAG))
+
 elif "dice" in pairs:
 	diceNum = int(open("chkRefresh/dice", 'r').read())
 	if diceNum != 7:

@@ -40,14 +40,22 @@ else:
 	with open(DICE_FILE, 'w') as f:
 		f.write(str(diceRoll[0][0]))
 		f.close()
-	resourceDict = {}
-	for i in range(0,3):
-		resourceDict[str(i)] = {'ore': resources[(i*5)], 'wheat': resources[(i*5)+1], 'sheep': resources[(i*5)+2], 'clay': resources[(i*5)+3], 'wood':resources[(i*5)+4]}
-	with open(RESOURCE_FILE, 'w') as f:
-		dump(resourceDict, f, ensure_ascii=False)
-		f.close()
-	for i in range(0,3):
-		if (i != playerID):
+	if diceRoll[0][0] != 7:
+		resourceDict = {}
+		for i in range(0,3):
+			resourceDict[str(i)] = {'ore': resources[(i*5)], 'wheat': resources[(i*5)+1], 'sheep': resources[(i*5)+2], 'clay': resources[(i*5)+3], 'wood':resources[(i*5)+4]}
+		with open(RESOURCE_FILE, 'w') as f:
+			dump(resourceDict, f, ensure_ascii=False)
+			f.close()
+		for i in range(0,3):
+			if (i != playerID):
+				with open("../chkRefresh/" + str(i), 'w') as f:
+					f.write('7')
+					f.close()      
+		with i2c.I2CMaster() as bus:
+			bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, KNIGHTDEVFLAG))
+	else:
+		for i in range(0,3):
 			with open("../chkRefresh/" + str(i), 'w') as f:
 				f.write('7')
 				f.close()
