@@ -92,7 +92,7 @@ def handle_ajax():
 	return "<p>Your request was invalid. Please try again.</p>"
 
 #This request happens whenever a form is submitted from the webapp.
-@post('/submitForm')
+@get('/submitForm')
 def handle_form():
 	fid = request.params.id
 	if id == "name":
