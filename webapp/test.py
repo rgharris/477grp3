@@ -34,7 +34,7 @@ def handle_ajax():
 	rid = request.query.id
 	if rid == "resources":
 		#return displayResources()
-		return "{'clay':\"" + request.get_cookie("playerID")"\"}"
+		return "{'clay':\'" + request.get_cookie("playerID") + "\'}"
 	return "<p>This is a test of how long it takes to open a modal box with dynamic content!!!</p>"
 
 # This request handles a 
