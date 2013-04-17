@@ -713,6 +713,8 @@ elif "dice" in pairs:
 		numResources = sum(playerInfo['resources'].itervalues())
 		if numResources > 7:
 			print("Location: index.py?splithand=true")
+	gameState['diceRolled'] = 1
+	writeJson(GAME_STATE_FILE, gameState)
 
 #Remove the next 2 lines at some point, just for debugging
 elapsedTime = time.time() - start
