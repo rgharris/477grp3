@@ -27,33 +27,33 @@
 					<div id="clay" class="resource">
 						<img src="images/clay.png" class="resourceImg"/>
 						<p class="resourceTitle">Clay</p>
-						<p id="clayAmt" class="amount">0</p>
+						<p id="clayAmt" class="amount">{{resources['clay']}}</p>
 					</div>
 					<div id="ore"  class="resource">
 						<img src="images/ore.png" class="resourceImg"/>
 						<p class="resourceTitle">Ore</p>
-						<p id="oreAmt" class="amount">0</p>
+						<p id="oreAmt" class="amount">{{resources['ore']}}</p>
 					</div>
 					<div id="sheep" class="resource">
 						<img src="images/sheep.png" class="resourceImg"/>
 						<p class="resourceTitle">Sheep</p>
-						<p id="sheepAmt" class="amount">0</p>
+						<p id="sheepAmt" class="amount">{{resources['sheep']}}</p>
 					</div>
 					<div id="wheat" class="resource">
 						<img src="images/wheat.png" class="resourceImg"/>
 						<p class="resourceTitle">Wheat</p>
-						<p id="wheatAmt" class="amount">0</p>
+						<p id="wheatAmt" class="amount">{{resources['wheat']}}</p>
 					</div>
 					<div id="wood" class="resource">
 						<img src="images/wood.png" class="resourceImg"/>
 						<p class="resourceTitle">Wood</p>
-						<p id="woodAmt" class="amount">0</p>
+						<p id="woodAmt" class="amount">{{resources['wood']}}</p>
 					</div>
 					<div id="cards" class="resource">
 						<a href="javascript:openModal('devCards')" id="cardsLink" >
 							<img src="images/sea.png" class="resourceImg"/>
 							<p class="resourceTitle">Dev. Cards</p>
-							<p id="devAmt" class="amount">0</p>
+							<p id="devAmt" class="amount">{{devCards}}</p>
 						</a>
 					</div>
 				</div>
