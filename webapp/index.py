@@ -256,6 +256,7 @@ def endTurn(playerFile, playerInfo, gameState):
    playerInfo['currentTurn'] = 0
    writeJson(playerFile, playerInfo)
    numPlayers = len(dict((key, val) for key, val in gameState['ready'].items() if val != 0))
+	gameState['diceRolled'] = 0
    if gameState['firstPlayer'] == numPlayers -1:
       lastPlayer = 0
    else:
@@ -294,6 +295,7 @@ def endTurn(playerFile, playerInfo, gameState):
    nextPlayerInfo = readJson(PLAYER_FILE + str(nextPlayerID) + ".json")
    nextPlayerInfo['currentTurn'] = 1
    writeJson(PLAYER_FILE + str(nextPlayerID) + ".json", nextPlayerInfo)
+	writeJson(GAME_STATE_FILE, gameState)
    with i2c.I2CMaster() as bus:
       bus.transaction(i2c.writing_bytes(MICROADDR, CURPLAYERREG, nextPlayerID + 1))
    setRefresh(nextPlayerID, 1)
