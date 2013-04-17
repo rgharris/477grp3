@@ -7,7 +7,7 @@ function submitForm()
 		console.log(xmlhttp.responseText);
 		closeModal()
 	}
-	xmlhttp.open("GET","submitForm?id=name&name=" + document.forms[0].user.value,true);
+	xmlhttp.open("GET","submitForm?id=" + document.forms[0].name + "&value=" + document.forms[0].user.value,true);
 	xmlhttp.send();
 	return false
 }

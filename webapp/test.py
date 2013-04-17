@@ -129,7 +129,9 @@ def handle_ajax():
 def handle_form():
 	fid = request.params.id
 	if fid == "name":
-		return updatePlayerName(request.get_cookie("playerID"), request.params.name)
+		return updatePlayerName(request.get_cookie("playerID"), request.params.value)
+	elif fid == "endTurn":
+		return "done"
 
 # This request handles a 
 
