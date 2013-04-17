@@ -4,7 +4,7 @@
 <!--
 %#for player in playerInfo:
 %#score = str(player['points'])
-	<li><b>{{player["playerName"]}}</b> &nbsp; &nbsp; {{score}} points\\
+	<li><b>player["playerName"]</b> &nbsp; &nbsp; score points\\
 %#if len(player['awards']) > 0:
 %#if len(playerInfo['awards']) == 1:
 %#if playerInfo['awards'][0] == "road":
