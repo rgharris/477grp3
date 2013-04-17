@@ -9,7 +9,7 @@ function submitForm()
 	}
 	xmlhttp.open("POST","submitForm",true);
 	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	xmlhttp.send("id=name&name=" document.forms[0].getElementById('user'))
+	xmlhttp.send("id=name&name=" document.forms[0].getElementById('user'));
 }
 function openModal(id)
 {
