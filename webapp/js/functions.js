@@ -5,10 +5,23 @@ function submitForm()
 	xmlhttp.onreadystatechange = function()
 	{
 		console.log(xmlhttp.responseText);
-		document.getElementById("playerName").innerHTML=xmlhttp.responseText;
 		closeModal()
 	}
 	xmlhttp.open("GET","submitForm?id=name&name=" + document.forms[0].user.value,true);
+	xmlhttp.send();
+	return false
+}
+function submitName()
+{
+	var xmlhttp;
+	xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function()
+	{
+		console.log(xmlhttp.responseText);
+		document.getElementById("playerName").innerHTML=xmlhttp.responseText;
+		closeModal()
+	}
+	xmlhttp.open("GET","submitForm?id=name&value=" + document.forms[0].user.value, true);
 	xmlhttp.send();
 	return false
 }
@@ -102,7 +115,7 @@ function heartbeat(playerID)
 			{
 				refreshContent("resources", 0);
 			}
-			else if(xmlhttp.responseText == 2)
+			/*else if(xmlhttp.responseText == 2)
 			{
 				window.location = "./index.py?trade=check#modal";
 			}
@@ -129,7 +142,7 @@ function heartbeat(playerID)
 			else if(xmlhttp.responseText == 9)
 			{
 				window.location = "./index.py?i2c=flown";
-			}
+			}*/
 		}
 	}
 	xmlhttp.open("GET", "/chkRefresh/chk.py?id=" + playerID, true);

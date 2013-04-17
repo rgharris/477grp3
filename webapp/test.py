@@ -114,9 +114,11 @@ def handle_ajax():
 		playerInfo = getPlayerInfo(request.get_cookie("playerID"))
 		if mid == "name":
 			return template('nameBox', name=playerInfo['playerName'])
-		if mid == "status":
+		elif mid == "status":
 			gameStatus = getGameStatus()
 			return template('statusBox', playerInfo=getGameInfo()['playerInfo'], longestRoad=gameStatus['longestRoad'], largestArmy=gameStatus['largestArmy'])
+		elif mid == "endTurn":
+			return template('endTurn')
 		elif mid == "devCards":
 			return "Dev card stuff!"
 		

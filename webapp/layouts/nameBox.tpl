@@ -1,4 +1,4 @@
-<form onsubmit="return submitForm()">
+<form onsubmit="return submitName()">
 	<h2>Please enter your username.</h2>
 	<div>
 		<input type="text" id="user" name="user" value="{{name}}" />
