@@ -10,7 +10,7 @@
 
 
 		<body>
-			<!--script>setInterval("ajaxRefresh()", 5000)</script-->
+			<script>setInterval("refreshContent(\"resources\", 0)", 5000)</script>
 			
          <!--Modal Boxes-->
          <a href="javascript:closeModal()" class="overlay" id="modal"></a>
@@ -20,7 +20,7 @@
 			<!--Main Body-->
 			<div id="container">
 				<div id="head">
-					<a href="javascript:openModal();" id="name_pop" ><h2><span id="playerName">{{name}}</span>: <span id="points">{{points}}</span> Points</h2></a>
+					<a href="javascript:openModal(\"name\");" id="name_pop" ><h2><span id="playerName">{{name}}</span>: <span id="points">{{points}}</span> Points</h2></a>
 					<img src="images/settings.png" class="settingsImg" />
 				</div>
 				<div id="resources">
@@ -50,7 +50,7 @@
 						<p id="woodAmt" class="amount">0</p>
 					</div>
 					<div id="cards" class="resource">
-						<a href="javascript:openModal()" id="cardsLink" >
+						<a href="javascript:openModal(\"devCards\")" id="cardsLink" >
 							<img src="images/sea.png" class="resourceImg"/>
 							<p class="resourceTitle">Dev. Cards</p>
 							<p id="devAmt" class="amount">0</p>
@@ -61,7 +61,7 @@
 				<div id="footer">
 					<span class="button fade borderRight spacingLeft">&nbsp;</span>
 					<span class="button fade">&nbsp;</span>
-					<a href="javascript: refreshContent('points')" id='statusButton' class="button borderTop borderRight spacingLeft"><!--onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')"-->Status</a>
+					<a href="javascript: refreshContent('points', 0)" id='statusButton' class="button borderTop borderRight spacingLeft"><!--onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')"-->Status</a>
 					<span class="button fade borderTop">&nbsp;</span>
 					<span class="button fade borderTop borderRight spacingLeft">&nbsp;</span>
 					<span class="button fade borderTop">&nbsp;</span>

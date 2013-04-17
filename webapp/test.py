@@ -81,6 +81,15 @@ def handle_ajax():
 	rid = request.query.id
 	if rid == "resources":
 		return displayResources(request.get_cookie("playerID"))
+	if rid = "ModalBox":
+		mid = request.query.modal
+		if mid == "name":
+			return "Name stuff!"
+		elif mid == "devCards":
+			return "Dev card stuff!"
+		else:
+			return "Nothing!"
+		
 	return "<p>This is a test of how long it takes to open a modal box with dynamic content!!!</p>"
 
 # This request handles a 

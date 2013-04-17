@@ -1,6 +1,6 @@
-function openModal()
+function openModal(id)
 {
-  refreshContent("ModalBox");
+  refreshContent("ModalBox", id);
 	console.log("refreshed content");
 	var elem = document.getElementById("ModalBox");
 	elem.style.visibility = "visible";
@@ -49,7 +49,7 @@ function ajaxRefresh()
 	xmlhttp.open("GET", "refresh", true);
 	xmlhttp.send();
 }
-function refreshContent(id) 
+function refreshContent(id, mid) 
 {
 	var xmlhttp;
 	xmlhttp = new XMLHttpRequest();
@@ -69,7 +69,11 @@ function refreshContent(id)
 			document.getElementById(id).innerHTML = xmlhttp.responseText;
 		}
 	}
-	xmlhttp.open("GET", "refreshContent?id=" + id, true);
+	if(mid != 0){
+		xmlhttp.open("GET", "refreshContent?id=" + id, true);
+	} else {
+		xmlhttp.open("GET", "refreshContent?id=" + id + "&modal=" + mid, true);
+	}
 	xmlhttp.send();
 }
 function heartbeat(playerID)
@@ -82,7 +86,7 @@ function heartbeat(playerID)
 		{
 			if(xmlhttp.responseText == 1)
 			{
-				refreshContent("resources");
+				refreshContent("resources", 0);
 			}
 			else if(xmlhttp.responseText == 2)
 			{
