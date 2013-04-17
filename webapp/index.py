@@ -282,6 +282,7 @@ def endTurn(playerFile, playerInfo, gameState):
             gameState['setupComplete'] = 1
             writeJson(GAME_STATE_FILE, gameState)
             nextPlayerID = playerID
+         	getResources(playerID, playerFile, playerInfo)
             with i2c.I2CMaster() as bus:
                bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, ENDTURNFLAG)) 
          else:
