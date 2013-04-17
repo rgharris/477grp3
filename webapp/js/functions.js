@@ -30,7 +30,7 @@ function loadXMLDoc(div,loc)
 	xmlhttp.send();
 }
 
-function ajaxRefresh() 
+/*function ajaxRefresh() 
 {
 	var xmlhttp;
 	xmlhttp = new XMLHttpRequest();
@@ -48,7 +48,7 @@ function ajaxRefresh()
 	}
 	xmlhttp.open("GET", "refresh", true);
 	xmlhttp.send();
-}
+}*/
 function refreshContent(id, mid) 
 {
 	var xmlhttp;
@@ -69,7 +69,7 @@ function refreshContent(id, mid)
 			document.getElementById(id).innerHTML = xmlhttp.responseText;
 		}
 	}
-	if(mid != 0){
+	if(mid == 0){
 		xmlhttp.open("GET", "refreshContent?id=" + id, true);
 	} else {
 		xmlhttp.open("GET", "refreshContent?id=" + id + "&modal=" + mid, true);
