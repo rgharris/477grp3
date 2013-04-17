@@ -1,20 +1,23 @@
 <h2>Game Status</h2>
 <ul class="gameStatus">
-%for player in playerInfo:
-%score = str(player["points"])
+{{playerInfo}}
+<!--
+%#for player in playerInfo:
+%#score = str(player['points'])
 	<li><b>{{player["playerName"]}}</b> &nbsp; &nbsp; {{score}} points\\
-%if len(player["awards"]) > 0:
-%if len(playerInfo["awards"]) == 1:
-%if playerInfo["awards"][0] == "road":
+%#if len(player['awards']) > 0:
+%#if len(playerInfo['awards']) == 1:
+%#if playerInfo['awards'][0] == "road":
 <br /><i>Has the longest road</i>
-%else:
+%#else:
 <br /><i>Has the largest army</i>
-%end
-%else:
+%#end
+%#else:
 <br /><i>Has the longest road and the largest army</i>
-%end
-%end
+%#end
+%#end
 </li>
-%end
+%#end
+-->
 </ul>
 <input type="submit" value="Got it!" class="bottom left" />
