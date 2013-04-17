@@ -73,6 +73,16 @@ ROADDEVFLAG = 5
 KNIGHTDEVFLAG = 6
 ENDGAME = 13
 
+#Some basic "constants"
+PLAYER_FILE="players/"
+DEV_CARD_FILE="players/dev.json"
+TRADE_FILE = "players/trade.json"
+RESOURCES_FILE = "chkRefresh/resources.json"
+TIMEOUT = 3600 #one hour (3600 seconds)
+#This is a map of values that could be in the refresh file, and are checked in javascript.
+REFRESH_VALUE = {'reset':0, 'generic':1, 'tradeRequest':2, 'tradeConfirm':3, 'tradeDeny':4, 'cannotTrade':5, 'monopoly':6, 'dice':7, 'i2c':9, 'lostRoad':'a','lostArmy':'b'}
+GAME_STATE_FILE="chkRefresh/gamestate.json"
+
 #####################USEFUL FUNCTIONS###########################
 #Weighted random number - used for picking a development card
 #Discovered at http://eli.thegreenplace.net/2010/01/22/weighted-random-generation-in-python/
@@ -153,7 +163,7 @@ def payForPurchase(playerInfo, resourceDict):
 	return playerInfo
 	
 def performTrade(playerFile, playerInfo, tradeInfo):
-	tradingPlayerInfo = readJson("players/" + str(tradeInfo['from']) + ".json")
+	tradingPlayerInfo = readJson(PLAYER_FILE + str(tradeInfo['from']) + ".json")
 	for resource in tradeInfo['give']:
 		playerInfo['resources'][resource] = playerInfo['resources'][resource] + tradeInfo['give'][resource]
 		tradingPlayerInfo['resources'][resource] = int(tradingPlayerInfo['resources'][resource]) - tradeInfo['give'][resource]
@@ -161,7 +171,7 @@ def performTrade(playerFile, playerInfo, tradeInfo):
 		playerInfo['resources'][resource] = playerInfo['resources'][resource] - tradeInfo['get'][resource]
 		tradingPlayerInfo['resources'][resource] = tradingPlayerInfo['resources'][resource] + tradeInfo['get'][resource]
 	writeJson(playerFile, playerInfo)
-	writeJson("players/" + str(tradeInfo['from']) + ".json", tradingPlayerInfo)
+	writeJson(PLAYER_FILE + str(tradeInfo['from']) + ".json", tradingPlayerInfo)
 
 def checkLongestRoad(playerID, playerInfo):
 	#Check for longest road.
@@ -172,22 +182,22 @@ def checkLongestRoad(playerID, playerInfo):
 		longestRoad = 1
 		if 'road' not in playerInfo['awards']:
 			playerInfo['awards'].append('road')
-			for fn in os.listdir("players/"):
+			for fn in os.listdir(PLAYER_FILE):
 				if fn != 'dev.json' and fn != 'trade.json' and fn != str(playerID) + ".json":
-					testPlayerInfo = readJson("players/" + fn)
+					testPlayerInfo = readJson(PLAYER_FILE + fn)
 					if 'road' in testPlayerInfo['awards']:
 						testPlayerInfo['awards'].remove('road')
-						writeJson("players/" + fn, testPlayerInfo)
-						setRefresh(fn.split('.')[0], REFRESH_VALUES['lostRoad'])
+						writeJson(PLAYER_FILE + fn, testPlayerInfo)
+						setRefresh(fn.split('.')[0], REFRESH_VALUE['lostRoad'])
 	return playerInfo, longestRoad
 
 def checkLargestArmy(playerID, playerInfo):
 	playerInfo['awards'].append('army')
 	largestArmy = 1
 	playerInfo, win = editPoints(playerInfo, 2)
-	for fn in os.listdir("players/"):
+	for fn in os.listdir(PLAYER_FILE):
 		if fn != 'dev.json' and fn != 'trade.json' and fn != str(playerID) + ".json":
-			testPlayerInfo = readJson("players/" + fn)
+			testPlayerInfo = readJson(PLAYER_FILE + fn)
 			if testPlayerInfo['knightsPlayed'] > playerInfo['knightsPlayed']:
 				playerInfo['awards'].remove('army')
 				playerInfo = editPoints(playerInfo, 2, add=False)
@@ -195,8 +205,8 @@ def checkLargestArmy(playerID, playerInfo):
 			elif 'army' in testPlayerInfo['awards']:
 				testPlayerInfo['awards'].remove('army')
 				testPlayerInfo['points'] = testPlayerInfo['points'] - 2
-				setRefresh(fn.split('.')[0], REFRESH_VALUES['lostArmy']
-				writeJson("players/" + fn, testPlayerInfo)
+				setRefresh(fn.split('.')[0], REFRESH_VALUE['lostArmy'])
+				writeJson(PLAYER_FILE + fn, testPlayerInfo)
 	return playerInfo, largestArmy, win
 
 def editPoints(playerInfo, points, add=True):
@@ -280,9 +290,9 @@ def endTurn(playerFile, playerInfo, gameState):
             else:
                nextPlayerID = playerID - 1
          getResources(playerID, playerFile, playerInfo)
-   nextPlayerInfo = readJson("players/" + str(nextPlayerID) + ".json")
+   nextPlayerInfo = readJson(PLAYER_FILE + str(nextPlayerID) + ".json")
    nextPlayerInfo['currentTurn'] = 1
-   writeJson("players/" + str(nextPlayerID) + ".json", nextPlayerInfo)
+   writeJson(PLAYER_FILE + str(nextPlayerID) + ".json", nextPlayerInfo)
    with i2c.I2CMaster() as bus:
       bus.transaction(i2c.writing_bytes(MICROADDR, CURPLAYERREG, nextPlayerID + 1))
    setRefresh(nextPlayerID, 1)
@@ -298,18 +308,6 @@ debug = debug + "\nDone importing all libraries and setting up functions: " + st
 #Store form data
 form = FieldStorage()
 
-#Some basic "constants"
-PLAYER_FILE="players/"
-DEV_CARD_FILE="players/dev.json"
-TRADE_FILE = "players/trade.json"
-RESOURCES_FILE = "chkRefresh/resources.json"
-TIMEOUT = 3600 #one hour (3600 seconds)
-#This is a map of values that could be in the refresh file, and are checked in javascript.
-REFRESH_VALUE = {'reset':0, 'generic':1, 'tradeRequest':2, 'tradeConfirm':3, 'tradeDeny':4, 'cannotTrade':5, 'monopoly':6, 'dice':7, 'i2c':9, 'lostRoad':'a','lostArmy':'b'}
-GAME_STATE_FILE="chkRefresh/gamestate.json"
-
-
-GPIOPIN = 7
 
 #Get cookies!
 cookies = os.environ.get('HTTP_COOKIE')
@@ -558,7 +556,7 @@ elif "deal" in form:
 		tradePlayer = form.getvalue('playerid')
 		#Check if remote player can trade. If so, submit proper request, if not, submit cannot trade.
 		tradeInfo = readJson(TRADE_FILE)
-		tradingPlayerInfo = readJson("players/" + str(tradePlayer) + ".json")
+		tradingPlayerInfo = readJson(PLAYER_FILE + str(tradePlayer) + ".json")
 		if(chkResources(tradingPlayerInfo, get) == False):
 			setRefresh(int(tradePlayer), REFRESH_VALUE['cannotTrade'])
 		else:
