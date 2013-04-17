@@ -1,4 +1,4 @@
-/*function submitForm()
+function submitForm()
 {
 	var xmlhttp;
 	xmlhttp = new XMLHttpRequest();
@@ -9,8 +9,8 @@
 	}
 	xmlhttp.open("POST","submitForm",true);
 	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	xmlhttp.send("id=name&name=" document.forms[0].getElementById('user'));
-}*/
+	//xmlhttp.send("id=name&name=" document.forms[0].getElementById('user'));
+}
 function openModal(id)
 {
   refreshContent("ModalBox", id);
@@ -70,7 +70,7 @@ function refreshContent(id, mid)
 	{
 		console.log(xmlhttp.responseText);
 		if (id == "resources"){
-			resources = JSON.parse(xmlhttp.responseText || "null");
+			resources = JSON.parse(xmlhttp.responseText);
 			document.getElementById("clayAmt").innerHTML = resources.clay;
 			document.getElementById("oreAmt").innerHTML = resources.ore;
 			document.getElementById("wheatAmt").innerHTML = resources.wheat;
