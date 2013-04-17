@@ -2,9 +2,53 @@ import bottle
 from bottle import get, post, request, response, static_file, template, TEMPLATE_PATH
 
 ##########################USEFUL FUNCTIONS################################
-#def displayResources():
-	
+def readJson(jfile):
+	from json import load
+	jsonInfo = open(jfile)
+	info = load(jsonInfo)
+	jsonInfo.close()
+	return info
 
+def writeJson(jfile, info):
+	from json import dump
+	info['active'] = time.time()
+	with open(jfile, 'w') as f:
+		dump(info, f, ensure_ascii=False)
+		f.close()
+	return info
+
+def displayResources(playerID):
+	playerInfo = getPlayerInfo(playerID)
+	from json import dumps
+	return dumps(playerInfo['resources'])
+
+def getPlayerInfo(playerID):
+	return getGameInfo()['playerInfo'][int(playerID)]
+
+def getGameStatus():
+	return getGameInfo()['gameStatus']
+
+def getDevDeck():
+	return getGameInfo()['dev']
+
+def getTradeStatus():
+	return getGameInfo()['trade']
+
+def getGameInfo():
+		from time import time
+		gameStatus = {'gameTime':time.time(), 'trade':{'from':-1, 'to':-1, 'give':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}, 'get':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}}, 'dev':{'knights':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}, 'gameState':{'gameStart':0, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'numPlayers':0, 'diceRolled':0, 'setupComplete':0, 'firstPlayer':-1, 'reverse':0, 'longestRoad':-1, 'largestArmy':-1, 'currentPlayer':-1, 'devCardPlayed':0}, 'playerInfo':{'0':{'playerName': "Player 1", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'initialPlacements':{'settlement':0, 'road':0}},'1':{'playerName': "Player 2", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'initialPlacements':{'settlement':0, 'road':0}},'2':{'playerName': "Player 3", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'initialPlacements':{'settlement':0, 'road':0}},'3':{'playerName': "Player 4", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'initialPlacements':{'settlement':0, 'road':0}}}
+	is not os.path.isfile(filename):
+		gameStatus = writeJson("./gameStatus.json", gameStatus)
+	else:
+		oldGameStatus = readJson("./gameStatus.json")
+		if oldGameStatus['gameTime'] < time.time() + 36000:
+			gameStatus = writeJson("./gameStatus.json", gameStatus)
+		else:
+			gameStatus = oldGameStatus.copy()
+	return gameStatus
+		
+	
+#########################BOTTLE OUTPUT###################################
 if '/home/pi/477grp3/webapp/layouts/' not in TEMPLATE_PATH:
 	TEMPLATE_PATH.insert(0,'/home/pi/477grp3/webapp/layouts/')
 
@@ -33,8 +77,7 @@ def serve_image(filename):
 def handle_ajax():
 	rid = request.query.id
 	if rid == "resources":
-		#return displayResources()
-		return "{\"clay\":\"" + request.get_cookie("playerID") + "\"}"
+		return displayResources(request.get_cookie("playerID"))
 	return "<p>This is a test of how long it takes to open a modal box with dynamic content!!!</p>"
 
 # This request handles a 
