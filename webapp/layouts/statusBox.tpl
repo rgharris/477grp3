@@ -2,7 +2,7 @@
 <ul class="gameStatus">
 %for player,info in playerInfo.items():
 %score = str(info['points'])
-	<li><b>{{player["playerName"]}}</b> &nbsp; &nbsp; {{score}} points\\
+	<li><b>{{info["playerName"]}}</b> &nbsp; &nbsp; {{score}} points\\
 %if player == longestRoad:
 <br /><i>Has the longest road\\
 %if player == largestArmy:
