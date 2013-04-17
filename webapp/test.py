@@ -104,7 +104,7 @@ def handle_form():
 @get('/')
 def show_webapp():
 	response.set_cookie("playerID", "0")
-	response.set_cookie("gameTime", getGameInfo()['gameTime'])
+	response.set_cookie("gameTime", str(getGameInfo()['gameTime']))
 	playerInfo = getPlayerInfo(0)
 	return template('layout', name=playerInfo['playerName'], points=playerInfo['points'])
 
