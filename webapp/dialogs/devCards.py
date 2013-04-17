@@ -79,7 +79,9 @@ else:
 		elif pairs['confirm'][0] == "road":
 			pass
 		elif pairs['confirm'][0] == "knights":
-			pass
+			output = """<form method="post" action="index.py">
+							<h2>Knights</h2>
+							<p>Select a player to pick a resource from.</p>"""
 
 	elif "card" in pairs:
 		playedDevCard = pairs['playedDev'][0]

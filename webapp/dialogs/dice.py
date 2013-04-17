@@ -52,13 +52,14 @@ else:
 				with open("../chkRefresh/" + str(i), 'w') as f:
 					f.write('7')
 					f.close()      
-		with i2c.I2CMaster() as bus:
-			bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, KNIGHTDEVFLAG))
 	else:
 		for i in range(0,3):
 			with open("../chkRefresh/" + str(i), 'w') as f:
 				f.write('7')
 				f.close()
+		with i2c.I2CMaster() as bus:
+			bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, 6))
+
 	output = "complete"
 
 print(output)
