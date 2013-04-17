@@ -7,7 +7,7 @@ function submitForm()
 		console.log(xmlhttp.responseText);
 		document.getElementById("playerName").innerHTML=xmlhttp.responseText;
 	}
-	xmlhttp.open("POST","submitForm/id=name&name=" + document.forms[0].user,true);
+	xmlhttp.open("GET","submitForm?id=name&name=" + document.forms[0].user,true);
 	xmlhttp.send();
 }
 function openModal(id)
