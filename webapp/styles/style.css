@@ -1,0 +1,407 @@
+/*Fonts*/
+@font-face {
+    font-family: 'Cambo';
+    src: url('https://engineering.purdue.edu/477grp3/webTest/styles/Cambo-Regular-webfont.eot');
+    src: url('Cambo-Regular-webfont.eot') format('embedded-opentype'),
+         url('Cambo-Regular-webfont.woff') format('woff'),
+         url('Cambo-Regular-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face{
+	font-family:'Arapey';
+	src: url('Arapey-Regular.ttf') format('truetype'); font-weight:normal; font-style:normal;}
+
+
+html, body{
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	background: #00aa77;
+	background-image: url("../images/zenbg1.png"), url("../images/zenbg2.png");
+	background-repeat: repeat-x, repeat;
+	font-family: 'Arapey', 'Times New Roman', serif;
+}
+
+html{
+  max-width: 600px;
+  margin: 0 auto;
+  }
+div#head, div#footer{
+	background-color: rgba(255,253,208,.5);
+	padding: 5px;
+	margin-bottom:5px;
+	overflow: auto;
+	height: auto !important;
+}
+div#footer{
+	padding: 5px 0 5px 0;
+}
+div#head h2{
+	margin: 0;
+	padding: 0;
+	color: #000000;
+	text-align:center;
+	width:87%;
+	font-size:24pt;
+	float:left;
+	vertical-align: middle;
+	font-family: 'Cambo', 'Times New Roman', serif;
+}
+.settingsImg{
+	width:10%;
+	border-left: solid 1px #000;
+	padding-left: 2%;
+	float:right;
+}
+.resourceImg{
+	width:100%;
+}
+.resource{
+	float: left;
+	width:50%;
+	position:relative;
+}
+.clear{
+	clear:both;
+}
+.resourceTitle{
+	position:absolute;
+	top:3%;
+	width:100%;
+	text-align:center;
+	font-size: 16pt;
+}
+.amount{
+	position:absolute;
+	width:100%;
+	text-align:center;
+	top:5%;
+	font-size:35pt;
+}
+#clay, #wood, #cards{
+	color: #fff;
+}
+#cardsLink{
+	text-decoration: none;
+	color: #fff;
+}
+.button{
+	float:left;
+	/*border-right:solid 1px #000;*/
+	border: none;
+	width:49%;
+	text-align:center;
+	font-size:20pt;
+	padding:5px 0 5px 0;
+	display: block;
+	text-decoration: none;
+	color: #000000;
+}
+.borderRight {
+  border-right: solid 1px #000;
+}
+.borderTop {
+  border-top: solid 1px #000;
+}
+.spacingLeft {
+  margin-left: 1%;
+}
+ul.gameStatus{
+	margin: 0 auto;
+	padding: 0;
+	list-style: none;
+}
+ul.gameStatus li{
+	list-style: none;
+	padding-bottom: 10px;
+	margin: 0 auto;
+}
+
+a.playerName{
+	text-decoration: none;
+}
+
+/*Modal Boxes*/
+.overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    visibility: hidden;
+    z-index: 1;
+    transition: opacity .5s;
+}
+.overlay:target {
+    visibility: visible;
+    opacity: 1;
+}
+.modal{
+    background-color: rgba(0,0,0,0.4);
+	 color: #FFFDD0;
+	 /*display: none;*/
+    position: absolute;
+	 left: 12.5%;
+
+    /*opacity: 0;*/
+    text-align: center;
+    visibility: hidden;
+    z-index: 10;
+    transition: opacity .5s;
+	 border-radius: 10px;
+	 width: 90%;
+	 left: 5%;
+	 /*top: 5%; */
+	 max-width: 500px;
+}
+
+.overlay:target+.modal {
+    top: 35%;
+    opacity: 1;
+    visibility: visible;
+	 width: 75%;
+	 min-height: 225px; 
+	 display: inline;
+} 
+
+/* Fix modal box for larger screens (keep it a constant width) */
+@media all and (min-width: 600px) {
+
+	.modal {
+	  left: 50%;
+	  margin-left: -250px;
+	}
+	.overlay:target+.modal {
+	    top: 35%;
+	    opacity: 1;
+	    visibility: visible;
+	  width: 500px;
+		 min-height: 30%;
+		 display: inline;
+	}
+	
+	.modal a.bottom {
+		display: inline-block;
+		position: absolute;
+		bottom: 0;
+		background-color: rgba(0,0,0,0);
+		border: none;
+		border-top: solid 1px #fffdd0;
+		width: 100%;
+		height: 20%;
+		line-height: 100%;
+		padding: 10px 0 10px 0;
+		color: #FFFDD0;
+		vertical-align: middle;
+		font-size: 16pt;
+		font-family: 'Arapey', 'Times New Roman', serif;
+		text-decoration: none;
+	}
+	
+	.modal a.left {
+	  left: 0;
+	}
+	
+	.modal input[type="submit"].bottom {
+		position:absolute;
+		bottom: 2%;
+		background-color: rgba(0,0,0,0);
+		border: none;
+		border-top: solid 1px #fffdd0;
+		width: 100%;
+		height: 50px;/*20%;*/
+		color: #FFFDD0;
+		font-size: 16pt;
+		font-family: 'Arapey', 'Times New Roman', serif;
+	}
+	
+	.modal input[type="submit"].half{
+		width: 50%;
+	}
+	.modal input[type="submit"].top{
+		bottom:22%;
+	}
+	.modal input[type="submit"].moreTop{
+		bottom:44%;
+	}
+	.modal input[type="submit"].left{
+		left:0;
+	}
+	.modal input[type="submit"].right{
+		right:0;
+		border-left: solid 1px #fffdd0;
+	}
+	
+	.modal input[type="text"] {
+		width: 90%;
+		font-size: 16pt;
+		border: none;
+		background-color: #fffdd0;
+		color: #000;
+		font-family: 'Arapey', 'Times New Roman', serif;
+	}
+	
+	.modal input[type="text"].countValue {
+		width: 10%;
+		font-size: 16pt;
+		border: none;
+		background-color: #fffdd0;
+		margin-left: 5px;
+		color: #000;
+		font-family: 'Arapey', 'Times New Roman', serif;
+	}
+	
+	.modal select {
+		width: 60%;
+		font-size: 16pt;
+		border: none;
+		border-bottom: 1px solid #fffdd0;
+		border-left: 1px solid #fffdd0;
+		border-right: 1px solid #fffdd0;
+		margin-right: 5px;
+		background: none;
+		color: #fffdd0;
+		font-family: 'Arapey', 'Times New Roman', serif;
+	}
+		
+	
+	/*-- Added by Robert -- */
+	
+	.modal form.trade, .modal form.cards{
+	  height: 415px;
+	}
+	
+	.trade .resourceName {
+	  width: 100%;
+	  margin: 10px 0px;
+	}
+	
+	.trade  h3.resourceHeader {
+	  width: 100%;
+	  margin: 0px 0px 3px 0px;
+	}
+	
+	.trade h3.countHeader {
+	  width: 100%;
+	  margin: 0px 0px 1px 0px;
+	}
+	
+	.trade input.countValue {
+	  width: 20px; 
+	  height: 1em;
+	  margin: 5px 30%;
+	  text-align: center;
+	}
+	
+	.trade .playerSelect {
+	  width: 100px;
+	  background-color: white;
+	  border: none;
+	  color: black;
+	  }
+	
+	.trade .resourceColumn {
+	  float: left;
+	  width: 40%;
+	}
+	.trade .countColumn {
+	  float: left;
+	  width: 30%;
+	}
+	
+	/*-- End Added by Robert -- */
+}
+
+body.wait div#body{
+	width:100%;
+   background-color: rgba(0, 0, 0, 0.6);
+	text-align:center;
+	color: #FFFDD0;
+	font-size: 18pt;
+	padding: 10px 0 10px 0;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+}
+
+body.wait div#body p{
+	padding: 0 5px 0 5px;
+}
+
+body.wait div#body a.readyLink{
+	display:block;
+	width:100%;
+	float: left;
+	margin-top: 10px;
+	padding: 10px 0 10px 0;
+	text-decoration: none;
+	border-top: 1px solid #FFFDD0;
+	font-size: 18pt;
+	color: #FFFDD0;
+	background-color: rgba(0,0,0,0.6);
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+body.wait div#body span.waitLink {
+	display:block;
+	width:50%;
+	float:left;
+	margin-top: 10px;
+	padding: 10px 0 10px 0;
+	text-decoration: none;
+	border-top: 1px solid #FFFDD0;
+	font-size: 18pt;
+	color: #555;
+	background-color: rgba(0,0,0,0.6);
+	border-bottom-left-radius: 10px;
+}
+
+body.wait div#body a.halfReadyLink {
+	display:block;
+	width:50%;
+	float:left;
+	margin-top: 10px;
+	padding: 10px 0 10px 0;
+	text-decoration: none;
+	border-top: 1px solid #FFFDD0;
+	font-size: 18pt;
+	color: #FFFDD0;
+	background-color: rgba(0,0,0,0.6);
+	border-bottom-left-radius: 10px;
+}
+
+body.wait div#body a.notReadyLink {
+	display:block;
+	width:50%;
+	float:right;
+	margin: 10px 0 0 -1px;
+	padding: 10px 0 10px 0px;
+	text-decoration: none;
+	border-top: 1px solid #FFFDD0;
+	border-left: 1px solid #FFFDD0;
+	font-size: 18pt;
+	color: #FFFDD0;
+	background-color: rgba(0,0,0,0.6);
+	border-bottom-right-radius: 10px;
+}
+/*Error pages. Use the same (general) layout, add an error class to the body.*/
+body.error{
+	background-image: url("../images/zenbge1.png"), url("../images/zenbge2.png");
+}
+body.error div#head {
+	background-color: rgba(0,0,0,.5);
+}
+body.error div#head h2{
+	color: #FFFDD0;
+	width: 100%;
+}
+body.error div#body {
+	width:100%;
+	text-align:center;
+	color: #FFFDD0;
+	font-size: 18pt;	
+}
