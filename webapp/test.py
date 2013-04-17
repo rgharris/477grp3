@@ -11,7 +11,6 @@ def readJson(jfile):
 
 def writeJson(jfile, info):
 	from json import dump
-	info['active'] = time.time()
 	with open(jfile, 'w') as f:
 		dump(info, f, ensure_ascii=False)
 		f.close()
