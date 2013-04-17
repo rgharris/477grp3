@@ -87,7 +87,8 @@ def handle_ajax():
 @get('/')
 def show_webapp():
 	response.set_cookie("playerID", "0")
-	return template('layout')
+	playerInfo = getPlayerInfo(0)
+	return template('layout', name=playerInfo['playerName'], points=playerInfo['points'])
 
 #@get('/blah')
 #def show_form():

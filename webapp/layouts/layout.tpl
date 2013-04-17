@@ -20,7 +20,7 @@
 			<!--Main Body-->
 			<div id="container">
 				<div id="head">
-					<a href="javascript:openModal();" id="name_pop" ><h2>Player 2: 1 Points</h2></a>
+					<a href="javascript:openModal();" id="name_pop" ><h2><span id="playerName">Player 2</span>: <span id="points">1</span> Points</h2></a>
 					<img src="images/settings.png" class="settingsImg" />
 				</div>
 				<div id="resources">
@@ -61,7 +61,7 @@
 				<div id="footer">
 					<span class="button fade borderRight spacingLeft">&nbsp;</span>
 					<span class="button fade">&nbsp;</span>
-					<a href="javascript: refreshContent('resources')" id='statusButton' class="button borderTop borderRight spacingLeft"><!--onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')"-->Status</a>
+					<a href="javascript: refreshContent('points')" id='statusButton' class="button borderTop borderRight spacingLeft"><!--onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')"-->Status</a>
 					<span class="button fade borderTop">&nbsp;</span>
 					<span class="button fade borderTop borderRight spacingLeft">&nbsp;</span>
 					<span class="button fade borderTop">&nbsp;</span>
