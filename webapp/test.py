@@ -22,6 +22,12 @@ def displayResources(playerID):
 	playerInfo['resources']['dev'] = sum(playerInfo['cards'].values())
 	return dumps(playerInfo['resources'])
 
+def updatePlayerName(playerID, newName):
+	playerInfo = getPlayerInfo(playerID)
+	playerInfo['playerName'] = newName
+	writePlayerInfo(playerID, playerInfo)
+	return newName
+
 def getPlayerInfo(playerID):
 	return getGameInfo()['playerInfo'][str(playerID)]
 
@@ -34,23 +40,43 @@ def getDevDeck():
 def getTradeStatus():
 	return getGameInfo()['trade']
 
+def writePlayerInfo(playerID, playerInfo):
+	return writeGameInfo("playerInfo", {str(playerID):playerInfo})
+
+def writeGameInfo(key, value):
+	from time import time
+	from os import path
+	filename="/var/www/gameStatus.json"
+	if not path.isfile(filename):
+		gameStatus = createGameInfo(gameStatus)
+	else
+		gameStatus = readJson(filename)
+		if float(gameStatus['gameTime']) + 36000 < time():
+			gameStatus = createGameInfo(gameStatus)
+	gameStatus[key] = value
+	gameStatus = writeJson(filename, gameStatus)
+	return gameStatus
+
 def getGameInfo():
 	from time import time
 	from os import path
 	filename="/var/www/gameStatus.json"
 	#Careful when editing this - it's a mess, but contains everything possible for the game.
-	gameStatus = {'gameTime':time(), 'trade':{'from':-1, 'to':-1, 'give':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}, 'get':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}}, 'dev':{'knights':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}, 'gameState':{'gameStart':0, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'numPlayers':0, 'diceRolled':0, 'setupComplete':0, 'firstPlayer':-1, 'reverse':0, 'longestRoad':-1, 'largestArmy':-1, 'currentPlayer':-1, 'devCardPlayed':0}, 'playerInfo':{'0':{'playerName': "Player 1", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':0, 'initialPlacements':{'settlement':0, 'road':0}},'1':{'playerName': "Player 2", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':0, 'initialPlacements':{'settlement':0, 'road':0}},'2':{'playerName': "Player 3", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':0, 'initialPlacements':{'settlement':0, 'road':0}},'3':{'playerName': "Player 4", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':0, 'initialPlacements':{'settlement':0, 'road':0}}}}
 	if not path.isfile(filename):
-		gameStatus = writeJson(filename, gameStatus)
+		gameStatus = createGameInfo(gameStatus)
 	else:
-		oldGameStatus = readJson(filename)
-		if float(oldGameStatus['gameTime']) + 36000 < time():
-			gameStatus = writeJson(filename, gameStatus)
-		else:
-			gameStatus = oldGameStatus.copy()
+		gameStatus = readJson(filename)
+		if float(gameStatus['gameTime']) + 36000 < time():
+			gameStatus = createGameInfo(gameStatus)
 	return gameStatus
-		
-	
+
+def createGameInfo(filename):	
+	from time import time
+	#Careful when editing this - it's a mess, but contains everything possible for the game.
+	gameStatus = {'gameTime':time(), 'trade':{'from':-1, 'to':-1, 'give':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}, 'get':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}}, 'dev':{'knights':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}, 'gameState':{'gameStart':0, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'numPlayers':0, 'diceRolled':0, 'setupComplete':0, 'firstPlayer':-1, 'reverse':0, 'longestRoad':-1, 'largestArmy':-1, 'currentPlayer':-1, 'devCardPlayed':0}, 'playerInfo':{'0':{'playerName': "Player 1", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':0, 'initialPlacements':{'settlement':0, 'road':0}},'1':{'playerName': "Player 2", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':0, 'initialPlacements':{'settlement':0, 'road':0}},'2':{'playerName': "Player 3", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':0, 'initialPlacements':{'settlement':0, 'road':0}},'3':{'playerName': "Player 4", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':0, 'initialPlacements':{'settlement':0, 'road':0}}}}
+	gameStatus = writeJson(filename, gameStatus)
+	return gameStatus
+
 #########################BOTTLE OUTPUT###################################
 if '/home/pi/477grp3/webapp/layouts/' not in TEMPLATE_PATH:
 	TEMPLATE_PATH.insert(0,'/home/pi/477grp3/webapp/layouts/')
@@ -96,8 +122,7 @@ def handle_ajax():
 def handle_form():
 	fid = request.params.id
 	if fid == "name":
-		return request.params.name
-#		return updateName(request.get_cookie("playerID"), request.params.name)
+		return updatePlayerName(request.get_cookie("playerID"), request.params.name)
 
 # This request handles a 
 
