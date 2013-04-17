@@ -64,7 +64,7 @@
 %if currentTurn == 0:
 					<span class="button fade borderRight spacingLeft">&nbsp;</span>
 					<span class="button fade">&nbsp;</span>
-					<a href="javascript:openModal('status')" id='statusButton' class="button borderTop borderRight spacingLeft"><!--onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')"-->Status</a>
+					<a href="javascript:openModal('status')" id='statusButton' class="button borderTop borderRight spacingLeft">Status</a>
 					<span class="button fade borderTop">&nbsp;</span>
 					<span class="button fade borderTop borderRight spacingLeft">&nbsp;</span>
 					<span class="button fade borderTop">&nbsp;</span>
