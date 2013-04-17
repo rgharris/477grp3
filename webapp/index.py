@@ -172,12 +172,12 @@ def checkLongestRoad(playerID, playerInfo):
 		longestRoad = 1
 		if 'road' not in playerInfo['awards']:
 			playerInfo['awards'].append('road')
-			for fn in os.listdir(PLAYER_FILE):
+			for fn in os.listdir("players/"):
 				if fn != 'dev.json' and fn != 'trade.json' and fn != str(playerID) + ".json":
-					testPlayerInfo = readJson(PLAYER_FILE + fn)
+					testPlayerInfo = readJson("players/" + fn)
 					if 'road' in testPlayerInfo['awards']:
 						testPlayerInfo['awards'].remove('road')
-						writeJson(PLAYER_FILE + fn, testPlayerInfo)
+						writeJson("players/" + fn, testPlayerInfo)
 						setRefresh(fn.split('.')[0], REFRESH_VALUES['lostRoad'])
 	return playerInfo, longestRoad
 
@@ -185,9 +185,9 @@ def checkLargestArmy(playerID, playerInfo):
 	playerInfo['awards'].append('army')
 	largestArmy = 1
 	playerInfo, win = editPoints(playerInfo, 2)
-	for fn in os.listdir(PLAYER_FILE):
+	for fn in os.listdir("players/"):
 		if fn != 'dev.json' and fn != 'trade.json' and fn != str(playerID) + ".json":
-			testPlayerInfo = readJson(PLAYER_FILE + fn)
+			testPlayerInfo = readJson("players/" + fn)
 			if testPlayerInfo['knightsPlayed'] > playerInfo['knightsPlayed']:
 				playerInfo['awards'].remove('army')
 				playerInfo = editPoints(playerInfo, 2, add=False)
@@ -196,7 +196,7 @@ def checkLargestArmy(playerID, playerInfo):
 				testPlayerInfo['awards'].remove('army')
 				testPlayerInfo['points'] = testPlayerInfo['points'] - 2
 				setRefresh(fn.split('.')[0], REFRESH_VALUES['lostArmy']
-				writeJson(PLAYER_FILE + fn, testPlayerInfo)
+				writeJson("players/" + fn, testPlayerInfo)
 	return playerInfo, largestArmy, win
 
 def editPoints(playerInfo, points, add=True):
@@ -280,9 +280,9 @@ def endTurn(playerFile, playerInfo, gameState):
             else:
                nextPlayerID = playerID - 1
          getResources(playerID, playerFile, playerInfo)
-   nextPlayerInfo = readJson(PLAYER_FILE + str(nextPlayerID) + ".json")
+   nextPlayerInfo = readJson("players/" + str(nextPlayerID) + ".json")
    nextPlayerInfo['currentTurn'] = 1
-   writeJson(PLAYER_FILE + str(nextPlayerID) + ".json", nextPlayerInfo)
+   writeJson("players/" + str(nextPlayerID) + ".json", nextPlayerInfo)
    with i2c.I2CMaster() as bus:
       bus.transaction(i2c.writing_bytes(MICROADDR, CURPLAYERREG, nextPlayerID + 1))
    setRefresh(nextPlayerID, 1)
@@ -671,14 +671,20 @@ elif "simpleDeny" in pairs:
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, DENYPIECE))
 	print("Location: index.py")
 elif "dice" in pairs:
-	newResources = readJson(RESOURCES_FILE)
-	newResources = newResources[str(playerID)]
-	playerInfo['resources']['ore'] = newResources['ore']
-	playerInfo['resources']['wheat'] = newResources['wheat']
-	playerInfo['resources']['clay'] = newResources['clay']
-	playerInfo['resources']['sheep'] = newResources['sheep']
-	playerInfo['resources']['wood'] = newResources['wood']
-	setRefresh(playerID, REFRESH_VALUE['generic'])
+	diceNum = int(open("chkRefresh/dice", 'r').read())
+	if diceNum != 7:
+		newResources = readJson(RESOURCES_FILE)
+		newResources = newResources[str(playerID)]
+		playerInfo['resources']['ore'] = newResources['ore']
+		playerInfo['resources']['wheat'] = newResources['wheat']
+		playerInfo['resources']['clay'] = newResources['clay']
+		playerInfo['resources']['sheep'] = newResources['sheep']
+		playerInfo['resources']['wood'] = newResources['wood']
+		setRefresh(playerID, REFRESH_VALUE['generic'])
+	else:
+		numResources = sum(playerInfo['resources'].itervalues())
+		if numResources > 7:
+			print("Location: index.py?splithand=true")
 
 #Remove the next 2 lines at some point, just for debugging
 elapsedTime = time.time() - start
@@ -910,11 +916,12 @@ elif gameState['gameStart'] == 1:
 	#Put elif in for i2c stuff
 	elif "modalConfirm" in pairs:
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/i2c.py?read=" + str(pairs['readMCU'][0]) + "&confirm=" + str(pairs['modalConfirm'][0]) + "')</script>"
+	elif "splithand" in pairs:
+			script = "<script>loadXMLDoc('ModalBox', '/dialogs/splitHand.py?player=" + str(playerID) + "')</script>"
 	elif gameState['setupComplete'] == 0:
 			script = "<script>loadXMLDoc('ModalBox', '/dialogs/initSetup.py?player=" + str(playerID) + "')</script>"
 	output = """
 		<body>
-			<!--Need to pause when modal is active...this is just testing now.-->
 			<script>setInterval("heartbeat({9})", 5000)</script>
 			{0}
          <!--Modal Boxes-->
@@ -988,7 +995,7 @@ elif gameState['gameStart'] == 1:
 		confirmLink = "<a href=\"index.py?simpleConfirm=true\" class=\"button borderTop borderRight spacingLeft\" onclick=\"\">Confirm</a>"
 		denyLink = "<a href=\"index.py?simpleDeny=true\" class=\"button borderTop\" onclick=\"\">Deny</a>"
 		if gameState['diceRolled'] == 0:
-			turnLink = "<a href=\"#dice\" class=\"button borderTop\" onclick=\"loadXMLDoc('dierolled', '/dialogs/dice.py?player=" + str(playerID) + "')\">Roll Dice</a><div id=\"dierolled\" style=\"display:none\"></div>"
+			turnLink = "<a href=\"index.py?dice=rolled#modal\" class=\"button borderTop\" onclick=\"loadXMLDoc('dierolled', '/dialogs/dice.py?player=" + str(playerID) + "')\">Roll Dice</a><div id=\"dierolled\" style=\"display:none\"></div>"
 		else:
 			turnLink = "<a href=\"#modal\" class=\"button borderTop\" onclick=\"loadXMLDoc('ModalBox', '/dialogs/endTurn.py')\">End Turn</a>"
 	else:
