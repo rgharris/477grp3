@@ -9,6 +9,7 @@ function submitForm()
 	}
 	xmlhttp.open("GET","submitForm?id=name&name=" + document.forms[0].user,true);
 	xmlhttp.send();
+	return false
 }
 function openModal(id)
 {
