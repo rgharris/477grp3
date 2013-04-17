@@ -59,12 +59,23 @@
 				</div>
 				<div class="clear"></div>
 				<div id="footer">
+%ct = str(currentTurn)
+				{{ct}}
+%if currentTurn == 0:
 					<span class="button fade borderRight spacingLeft">&nbsp;</span>
 					<span class="button fade">&nbsp;</span>
 					<a href="javascript:openModal('status')" id='statusButton' class="button borderTop borderRight spacingLeft"><!--onclick="loadXMLDoc('ModalBox', '/dialogs/gameStatus.py')"-->Status</a>
 					<span class="button fade borderTop">&nbsp;</span>
 					<span class="button fade borderTop borderRight spacingLeft">&nbsp;</span>
 					<span class="button fade borderTop">&nbsp;</span>
+%else:
+					<a href="javascript:openModal('purchase')" id='purchaseButton' class="button borderRight spacingLeft">Purchase</a>
+					<a href="javascript:openModal('trade')" id='tradeButton' class="button">Trade</a>
+					<a href="javascript:openModal('status')" id='statusButton' class="button borderTop borderRight spacingLeft">Status</a>
+					<a href="javascript:openModal('endTurn')" id='turnButton' class='button borderTop'>End Turn</a>
+					<a href="javascript:runi2c('confirm')" id='confirmButton' class='button borderTop borderRight spacingLeft'>Confirm</a>
+					<a href="javascript:runi2c('deny')" id='denyButton' class='button borderTop'>Deny</a>
+%end
 				</div>
 			</div>
 		</body>

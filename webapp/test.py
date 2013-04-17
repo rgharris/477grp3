@@ -133,10 +133,11 @@ def handle_form():
 
 @get('/')
 def show_webapp():
-	response.set_cookie("playerID", "0")
+	playerID = "0"
+	response.set_cookie("playerID", playerID)
 	response.set_cookie("gameTime", str(getGameInfo()['gameTime']))
 	playerInfo = getPlayerInfo(0)
-	return template('layout', name=playerInfo['playerName'], points=str(playerInfo['points'] + playerInfo['cards']['victory'] + playerInfo['onHold']['victory']), devCards=str(sum(playerInfo['cards'].values())), resources=dict((key, str(val)) for key, val in playerInfo['resources'].items()))
+	return template('layout', name=playerInfo['playerName'], points=str(playerInfo['points'] + playerInfo['cards']['victory'] + playerInfo['onHold']['victory']), devCards=str(sum(playerInfo['cards'].values())), resources=dict((key, str(val)) for key, val in playerInfo['resources'].items()), currentTurn=1 if playerID == getGameStatus()['currentPlayer'] else 0)
 
 #@get('/blah')
 #def show_form():
