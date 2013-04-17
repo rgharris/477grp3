@@ -48,11 +48,11 @@ def writeGameInfo(key, value):
 	from os import path
 	filename="/var/www/gameStatus.json"
 	if not path.isfile(filename):
-		gameStatus = createGameInfo(gameStatus)
+		gameStatus = createGameInfo(filename)
 	else:
 		gameStatus = readJson(filename)
 		if float(gameStatus['gameTime']) + 36000 < time():
-			gameStatus = createGameInfo(gameStatus)
+			gameStatus = createGameInfo(filename)
 	gameStatus[key] = value
 	gameStatus = writeJson(filename, gameStatus)
 	return gameStatus
@@ -63,11 +63,11 @@ def getGameInfo():
 	filename="/var/www/gameStatus.json"
 	#Careful when editing this - it's a mess, but contains everything possible for the game.
 	if not path.isfile(filename):
-		gameStatus = createGameInfo(gameStatus)
+		gameStatus = createGameInfo(filename)
 	else:
 		gameStatus = readJson(filename)
 		if float(gameStatus['gameTime']) + 36000 < time():
-			gameStatus = createGameInfo(gameStatus)
+			gameStatus = createGameInfo(filename)
 	return gameStatus
 
 def createGameInfo(filename):	
