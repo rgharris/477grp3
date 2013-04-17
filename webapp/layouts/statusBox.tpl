@@ -1,6 +1,6 @@
 <h2>Game Status</h2>
 <ul class="gameStatus">
-%for player, info in playerInfo:
+%for info in playerInfo.values():
 <li>{{player}}:{{info}}</li>
 <!--
 %#score = str(player['points'])
