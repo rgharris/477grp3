@@ -705,11 +705,11 @@ elif "dice" in pairs:
 	if diceNum != 7:
 		newResources = readJson(RESOURCES_FILE)
 		newResources = newResources[str(playerID)]
-		playerInfo['resources']['ore'] = newResources['ore']
-		playerInfo['resources']['wheat'] = newResources['wheat']
-		playerInfo['resources']['clay'] = newResources['clay']
-		playerInfo['resources']['sheep'] = newResources['sheep']
-		playerInfo['resources']['wood'] = newResources['wood']
+		playerInfo['resources']['ore'] += newResources['ore']
+		playerInfo['resources']['wheat'] += newResources['wheat']
+		playerInfo['resources']['clay'] += newResources['clay']
+		playerInfo['resources']['sheep'] += newResources['sheep']
+		playerInfo['resources']['wood'] += newResources['wood']
 		setRefresh(playerID, REFRESH_VALUE['generic'])
 	else:
 		numResources = sum(playerInfo['resources'].itervalues())
