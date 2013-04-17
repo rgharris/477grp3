@@ -16,7 +16,4 @@ and the largest army</i>\\
 </li>
 %end
 </ul>
-%lr = str(longestRoad)
-%la = str(largestArmy)
-{{longestRoad}} {{largestArmy}}
 <input type="submit" value="Got it!" class="bottom left" />
