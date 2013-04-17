@@ -20,7 +20,7 @@
 			<!--Main Body-->
 			<div id="container">
 				<div id="head">
-					<a href="javascript:openModal();" id="name_pop" ><h2><span id="playerName">Player 2</span>: <span id="points">1</span> Points</h2></a>
+					<a href="javascript:openModal();" id="name_pop" ><h2><span id="playerName">{{name}}</span>: <span id="points">{{points}}</span> Points</h2></a>
 					<img src="images/settings.png" class="settingsImg" />
 				</div>
 				<div id="resources">
