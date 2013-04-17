@@ -20,7 +20,7 @@
 			<!--Main Body-->
 			<div id="container">
 				<div id="head">
-					<a href="javascript:openModal(\"name\");" id="name_pop" ><h2><span id="playerName">{{name}}</span>: <span id="points">{{points}}</span> Points</h2></a>
+					<a href="javascript:openModal('name');" id="name_pop" ><h2><span id="playerName">{{name}}</span>: <span id="points">{{points}}</span> Points</h2></a>
 					<img src="images/settings.png" class="settingsImg" />
 				</div>
 				<div id="resources">
@@ -50,7 +50,7 @@
 						<p id="woodAmt" class="amount">0</p>
 					</div>
 					<div id="cards" class="resource">
-						<a href="javascript:openModal(\"devCards\")" id="cardsLink" >
+						<a href="javascript:openModal('devCards')" id="cardsLink" >
 							<img src="images/sea.png" class="resourceImg"/>
 							<p class="resourceTitle">Dev. Cards</p>
 							<p id="devAmt" class="amount">0</p>
