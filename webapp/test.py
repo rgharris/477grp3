@@ -12,9 +12,17 @@ def serve_image(filename):
 def serve_stylesheet():
 	return static_file("style.css", root='/home/pi/477grp3/webapp/styles/')
 
+@get('/styles/<filename>')
+def serve_image(filename):
+	return static_file(filename, root='/home/pi/477grp3/webapp/styles')
+
+#@get('/modal')
+#def display_modal():
+#  return template('layout', modal=True) 
+
 @get('/')
 def show_webapp():
-	return template('layout')
+	return template('layout', modal=False)
 
 @get('/blah')
 def show_form():
