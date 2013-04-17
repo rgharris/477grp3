@@ -115,7 +115,7 @@ def handle_ajax():
 		if mid == "name":
 			return template('nameBox', name=playerInfo['playerName'])
 		if mid == "status":
-			return template('statusBox', playerInfo=getGameStatus()['playerInfo'])
+			return template('statusBox', playerInfo=getGameInfo()['playerInfo'])
 		elif mid == "devCards":
 			return "Dev card stuff!"
 		
