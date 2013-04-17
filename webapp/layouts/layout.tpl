@@ -59,8 +59,6 @@
 				</div>
 				<div class="clear"></div>
 				<div id="footer">
-%ct = str(currentTurn)
-				{{ct}}
 %if currentTurn == 0:
 					<span class="button fade borderRight spacingLeft">&nbsp;</span>
 					<span class="button fade">&nbsp;</span>
