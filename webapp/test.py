@@ -32,7 +32,7 @@ def getPlayerInfo(playerID):
 	return getGameInfo()['playerInfo'][str(playerID)]
 
 def getGameStatus():
-	return getGameInfo()['gameStatus']
+	return getGameInfo()['gameState']
 
 def getDevDeck():
 	return getGameInfo()['dev']
