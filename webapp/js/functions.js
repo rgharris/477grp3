@@ -57,7 +57,7 @@ function refreshContent(id)
 	{
 		console.log(xmlhttp.responseText);
 		if (id == "resources"){
-			resources = JSON.parse(xmlhttp.responseText);
+			resources = JSON.parse(xmlhttp.responseText || "null");
 			document.getElementById("clayAmt").innerHTML = resources.clay;
 			document.getElementById("oreAmt").innerHTML = resources.ore;
 			document.getElementById("wheatAmt").innerHTML = resources.wheat;
