@@ -1,13 +1,17 @@
 function submitForm()
 {
-	var xmlhttp;
+	var xmlhttp, values;
 	xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function()
 	{
 		console.log(xmlhttp.responseText);
 		closeModal()
 	}
-	xmlhttp.open("GET","submitForm?id=" + document.forms[0].name + "&value=0",true);
+	if(document.forms[0].name == "endTurn")
+	{
+		values = "0"
+	}
+	xmlhttp.open("GET","submitForm?id=" + document.forms[0].name + "&value=" + values,true);
 	xmlhttp.send();
 	return false
 }
