@@ -52,6 +52,27 @@ times.append(time.time()-start)
 #and they will be output after the main HTML.
 debug = ''
 
+#i2c constants
+MICROADDR = 0x50
+PIREG = 0
+CURPLAYERREG = 1
+NUMPLAYERREG = 2
+MCUEVENTREG = 3
+PIECETYPEREG = 6
+LONGESTROADREG = 8
+
+STARTGAMEFLAG = 2
+RESETGPIOFLAG = 9
+CONFIRMPIECE = 7
+DENYPIECE = 8
+ENDTURNFLAG = 4
+ROADPURCHASEDFLAG = 10
+SETTLEMENTPURCHASEFLAG = 11
+CITYPURCHASEFLAG = 12
+ROADDEVFLAG = 5
+KNIGHTDEVFLAG = 6
+ENDGAME = 13
+
 #####################USEFUL FUNCTIONS###########################
 #Weighted random number - used for picking a development card
 #Discovered at http://eli.thegreenplace.net/2010/01/22/weighted-random-generation-in-python/
@@ -141,6 +162,54 @@ def performTrade(playerFile, playerInfo, tradeInfo):
 		tradingPlayerInfo['resources'][resource] = tradingPlayerInfo['resources'][resource] + tradeInfo['get'][resource]
 	writeJson(playerFile, playerInfo)
 	writeJson("players/" + str(tradeInfo['from']) + ".json", tradingPlayerInfo)
+
+def checkLongestRoad(playerID, playerInfo):
+	#Check for longest road.
+	longestRoad = 0
+	with i2c.I2CMaster() as bus:
+		readMCU = bus.transaction(i2c.writing_bytes(MICROADDR, LONGESTROADREG), i2c.reading(MICROADDR, 1))
+	if readMCU[0][0] - 1 == playerID:
+		longestRoad = 1
+		if 'road' not in playerInfo['awards']:
+			playerInfo['awards'].append('road')
+			for fn in os.listdir(PLAYER_FILE):
+				if fn != 'dev.json' and fn != 'trade.json' and fn != str(playerID) + ".json":
+					testPlayerInfo = readJson(PLAYER_FILE + fn)
+					if 'road' in testPlayerInfo['awards']:
+						testPlayerInfo['awards'].remove('road')
+						writeJson(PLAYER_FILE + fn, testPlayerInfo)
+						setRefresh(fn.split('.')[0], REFRESH_VALUES['lostRoad'])
+	return playerInfo, longestRoad
+
+def checkLargestArmy(playerID, playerInfo):
+	playerInfo['awards'].append('army')
+	largestArmy = 1
+	playerInfo, win = editPoints(playerInfo, 2)
+	for fn in os.listdir(PLAYER_FILE):
+		if fn != 'dev.json' and fn != 'trade.json' and fn != str(playerID) + ".json":
+			testPlayerInfo = readJson(PLAYER_FILE + fn)
+			if testPlayerInfo['knightsPlayed'] > playerInfo['knightsPlayed']:
+				playerInfo['awards'].remove('army')
+				playerInfo = editPoints(playerInfo, 2, add=False)
+				largestArmy = 0
+			elif 'army' in testPlayerInfo['awards']:
+				testPlayerInfo['awards'].remove('army')
+				testPlayerInfo['points'] = testPlayerInfo['points'] - 2
+				setRefresh(fn.split('.')[0], REFRESH_VALUES['lostArmy']
+				writeJson(PLAYER_FILE + fn, testPlayerInfo)
+	return playerInfo, largestArmy, win
+
+def editPoints(playerInfo, points, add=True):
+	win = False
+	if add == True:
+		playerInfo['points'] = playerInfo['points'] + points
+		if playerInfo['points'] >= 10:
+			win = True
+			with i2c.I2CMaster() as bus:
+				bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, ENDGAMEFLAG))
+	else:
+		playerInfo['points'] = playerInfo['points'] - points
+	return playerInfo, win
 
 def chkResources(playerInfo, resourceDict):
 	for resource in resourceDict:
@@ -236,22 +305,9 @@ TRADE_FILE = "players/trade.json"
 RESOURCES_FILE = "chkRefresh/resources.json"
 TIMEOUT = 3600 #one hour (3600 seconds)
 #This is a map of values that could be in the refresh file, and are checked in javascript.
-REFRESH_VALUE = {'reset':0, 'generic':1, 'tradeRequest':2, 'tradeConfirm':3, 'tradeDeny':4, 'cannotTrade':5, 'monopoly':6, 'dice':7, 'i2c':9}
+REFRESH_VALUE = {'reset':0, 'generic':1, 'tradeRequest':2, 'tradeConfirm':3, 'tradeDeny':4, 'cannotTrade':5, 'monopoly':6, 'dice':7, 'i2c':9, 'lostRoad':'a','lostArmy':'b'}
 GAME_STATE_FILE="chkRefresh/gamestate.json"
 
-#i2c constants
-MICROADDR = 0x50
-PIREG = 0
-CURPLAYERREG = 1
-NUMPLAYERREG = 2
-MCUEVENTREG = 3
-PIECETYPEREG = 6
-
-STARTGAMEFLAG = 2
-RESETGPIOFLAG = 9
-CONFIRMPIECE = 7
-DENYPIECE = 8
-ENDTURNFLAG = 4
 
 GPIOPIN = 7
 
@@ -382,25 +438,41 @@ elif "confirmPurchase" in form:
 
 	if(purchaseItem == "settle"):
 		playerInfo = payForPurchase(playerInfo, {'wood':1, 'clay':1, 'sheep':1, 'wheat':1})
-		playerInfo['points'] = playerInfo['points'] + 1
+		playerInfo, win = editPoints(playerInfo, 1)
+		with i2c.I2CMaster() as bus:
+			bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, SETTLEMENTPURCHASEDFLAG))
 		writeJson(playerFile, playerInfo)
 		#Notify board to place piece.
-		print("Location: index.py?place=piece#modal")
+		if win == False:
+			print("Location: index.py?place=piece#modal")
+		else:
+			print("Location: index.py?place=piece&win=true#modal")
 
 	elif(purchaseItem == "city"):
 		playerInfo = payForPurchase(playerInfo, {'wheat':2, 'ore':3})
 		#Since a city must be placed where a settlement was, it's only 1 additional point
-		playerInfo['points'] = playerInfo['points'] + 1
+		playerInfo, win = editPoints(playerInfo, 1)
+		with i2c.I2CMaster() as bus:
+			bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, CITYPURCHASEDFLAG))
+		if win == False:
+			print("Location: index.py?place=piece#modal")
+		else:
+			print("Location: index.py?place=piece&win=true#modal")
 		writeJson(playerFile, playerInfo)
 		#Notify board to place piece.
 		print("Location: index.py?place=piece#modal")
 
 	elif(purchaseItem == "road"):
 		playerInfo = payForPurchase(playerInfo, {'wood':1, 'clay':1})
-		######TODO: At this point we need to do a longest road check.
+		playerInfo, longestRoad = checkLongestRoad(playerID, playerInfo)
+		with i2c.I2CMaster() as bus:
+			bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, ROADPURCHASEDFLAG))
 		writeJson(playerFile, playerInfo)
 		#Notify board to place piece.
-		print("Location: index.py?place=piece#modal")
+		if longestRoad == 1:
+			print("Location: index.py?place=piece&longestRoad=1#modal")
+		else:
+			print("Location: index.py?place=piece#modal")
 
 	elif(purchaseItem == "dev"):
 		newDevBase = {'active':time.time(), 'knights':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}
@@ -544,9 +616,17 @@ elif "monopolySelected" in form:
 	writeJson(playerFile, playerInfo)
 	print("Location: index.py?played=monopoly&received=" + str(obtained) + "&resource=" + str(form.getvalue('resource')) + "#modal")
 elif "knightsSelected" in form:
-	pass
+	playerInfo, largestArmy, win = checkLargestArmy(playerID, playerInfo)
+	with i2c.I2CMaster() as bus:
+		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, KNIGHTDEVFLAG))
+	writeJson(playerFile, playerInfo)
+	if win == False:
+		print("Location: index.py?played=knights&largestArmy=" + largestArmy + "#modal")
+	else:
+		print("Location: index.py?played=knights&largestArmy=" + largestArmy + "&win=true#modal")
 elif "roadDevSelected" in form:
-	pass
+	with i2c.I2CMaster() as bus:
+		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, ROADDEVFLAG))
 elif "confirmPiecePlacement" in form:
 	with i2c.I2CMaster() as bus:
 		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, CONFIRMPIECE))
@@ -555,6 +635,11 @@ elif "confirmPiecePlacement" in form:
 		writeJson(playerFile, playerInfo)
 		if form.getvalue('piecetype') == 'road':
 			endTurn(playerFile, playerInfo, gameState)
+		if form.getvalue('piecetype') == 'settlement':
+			playerInfo, win = editPoints(playerInfo, 1)
+			writeJson(playerFile, playerInfo)
+			if win == True:
+				print("Location: index.py?win=true#modal")
 	setRefresh(playerID, REFRESH_VALUE['generic']) 
 elif "simpleConfirm" in pairs:
 	with i2c.I2CMaster() as bus:
