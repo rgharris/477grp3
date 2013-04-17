@@ -53,7 +53,7 @@
 						<a href="javascript:openModal()" id="cardsLink" >
 							<img src="images/sea.png" class="resourceImg"/>
 							<p class="resourceTitle">Dev. Cards</p>
-							<p id="devCardAmt" class="amount">0</p>
+							<p id="devAmt" class="amount">0</p>
 						</a>
 					</div>
 				</div>

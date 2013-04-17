@@ -63,6 +63,7 @@ function refreshContent(id)
 			document.getElementById("wheatAmt").innerHTML = resources.wheat;
 			document.getElementById("woodAmt").innerHTML = resources.wood;
 			document.getElementById("sheepAmt").innerHTML = resources.sheep;
+			document.getElementById("devAmt").innerHTML = resources.dev;
 		}
 		else{
 			document.getElementById(id).innerHTML = xmlhttp.responseText;

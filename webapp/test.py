@@ -19,6 +19,7 @@ def writeJson(jfile, info):
 def displayResources(playerID):
 	playerInfo = getPlayerInfo(playerID)
 	from json import dumps
+	playerInfo['resources']['dev'] = sum(playerInfo['cards'].itervalues())
 	return dumps(playerInfo['resources'])
 
 def getPlayerInfo(playerID):
