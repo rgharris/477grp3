@@ -95,7 +95,7 @@ def handle_ajax():
 @get('/submitForm')
 def handle_form():
 	fid = request.params.id
-	if id == "name":
+	if fid == "name":
 		return request.params.name
 #		return updateName(request.get_cookie("playerID"), request.params.name)
 
