@@ -133,7 +133,7 @@ def show_webapp():
 	response.set_cookie("playerID", "0")
 	response.set_cookie("gameTime", str(getGameInfo()['gameTime']))
 	playerInfo = getPlayerInfo(0)
-	return template('layout', name=playerInfo['playerName'], points=playerInfo['points'], resources=playerInfo['resources'], devCards=sum(playerInfo['cards'].values()))
+	return template('layout', name=playerInfo['playerName'], points=playerInfo['points'], devCards=sum(playerInfo['cards'].values()))
 
 #@get('/blah')
 #def show_form():
