@@ -41,7 +41,9 @@ def getTradeStatus():
 	return getGameInfo()['trade']
 
 def writePlayerInfo(playerID, playerInfo):
-	return writeGameInfo("playerInfo", {str(playerID):playerInfo})
+	allPlayerInfo = getGameInfo()['playerInfo']
+	allPlayerInfo[str(playerID)] = playerInfo
+	return writeGameInfo("playerInfo", allPlayerInfo)
 
 def writeGameInfo(key, value):
 	from time import time
