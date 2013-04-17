@@ -2,7 +2,7 @@ function submitForm()
 {
 	var xmlhttp;
 	xmlhttp = new XMLHttpRequest();
-	xmlhttp.onreadstatechange = function()
+	xmlhttp.onreadystatechange = function()
 	{
 		console.log(xmlhttp.responseText);
 		document.getElementById("playerName").innerHTML=xmlhttp.responseText;
