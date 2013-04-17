@@ -1,8 +1,8 @@
 <h2>Game Status</h2>
 <ul class="gameStatus">
-{{playerInfo}}
+%for player in playerInfo:
+<li>{{player}}</li>
 <!--
-%#for player in playerInfo:
 %#score = str(player['points'])
 	<li><b>player["playerName"]</b> &nbsp; &nbsp; score points\\
 %#if len(player['awards']) > 0:
@@ -17,7 +17,7 @@
 %#end
 %#end
 </li>
-%#end
 -->
+%end
 </ul>
 <input type="submit" value="Got it!" class="bottom left" />
