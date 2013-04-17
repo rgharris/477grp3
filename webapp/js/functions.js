@@ -1,4 +1,4 @@
-function submitForm()
+/*function submitForm()
 {
 	var xmlhttp;
 	xmlhttp = new XMLHttpRequest();
@@ -10,7 +10,7 @@ function submitForm()
 	xmlhttp.open("POST","submitForm",true);
 	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 	xmlhttp.send("id=name&name=" document.forms[0].getElementById('user'));
-}
+}*/
 function openModal(id)
 {
   refreshContent("ModalBox", id);
