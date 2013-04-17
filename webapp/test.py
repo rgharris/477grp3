@@ -43,7 +43,7 @@ def getGameInfo():
 		gameStatus = writeJson(filename, gameStatus)
 	else:
 		oldGameStatus = readJson(filename)
-		if oldGameStatus['gameTime'] < time() + 36000:
+		if float(oldGameStatus['gameTime']) + 36000 < time():
 			gameStatus = writeJson(filename, gameStatus)
 		else:
 			gameStatus = oldGameStatus.copy()
