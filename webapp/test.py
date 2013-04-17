@@ -81,22 +81,30 @@ def handle_ajax():
 	rid = request.query.id
 	if rid == "resources":
 		return displayResources(request.get_cookie("playerID"))
-	if rid == "ModalBox":
+	elif rid == "ModalBox":
 		mid = request.query.modal
+		playerInfo = getPlayerInfo(request.get_cookie("playerID"))
 		if mid == "name":
-			return "Name stuff!"
+			return template('nameBox', name=playerInfo['playerName'])
 		elif mid == "devCards":
 			return "Dev card stuff!"
-		else:
-			return "Nothing!"
 		
-	return "<p>This is a test of how long it takes to open a modal box with dynamic content!!!</p>"
+	return "<p>Your request was invalid. Please try again.</p>"
+
+#This request happens whenever a form is submitted from the webapp.
+@post('/submitForm')
+def handle_form():
+	fid = request.params.id
+	if id == "name":
+		return request.params.name
+#		return updateName(request.get_cookie("playerID"), request.params.name)
 
 # This request handles a 
 
 @get('/')
 def show_webapp():
 	response.set_cookie("playerID", "0")
+	response.set_cookie("gameTime", getGameInfo()['gameTime'])
 	playerInfo = getPlayerInfo(0)
 	return template('layout', name=playerInfo['playerName'], points=playerInfo['points'])
 
