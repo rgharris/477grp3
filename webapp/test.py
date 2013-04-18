@@ -209,7 +209,7 @@ def show_webapp():
 	gameStatus = getGameStatus()
 	if gameStatus['gameStart'] == 0:
 		from time import time
-		if request.get_cookie("joinTime") is not None and int(request.get_cookie("joinTime")) + 120 > time():
+		if request.get_cookie("joinTime") is not None and float(request.get_cookie("joinTime")) + 120 > time():
 			return template('preGame', joined=True, numPlayers=gameStatus['numPlayers'])
 		else:
 			if gameStatus['numPlayers'] >= 4:
