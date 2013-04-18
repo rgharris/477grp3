@@ -87,7 +87,7 @@ def addPlayer():
 	gameStatus['numPlayers'] += 1
 	gameStatus['ready'][str(playerID)] = 1
 	writeGameInfo("gameState", gameStatus)
-	return playerID, numPlayers
+	return playerID, gameStatus['numPlayers']
 
 def removePlayer(playerID):
 	gameStatus = getGameStatus()
