@@ -8,6 +8,7 @@ def readJson(jfile):
 	try:
 		info = load(jsonInfo)
 	except ValueError:
+		from time import sleep
 		sleep(.5)
 		try:
 			info = load(jsonInfo)
@@ -22,6 +23,7 @@ def writeJson(jfile, info):
 		try:
 			dump(info, f, ensure_ascii=False)
 		except ValueError:
+			from time import sleep
 			sleep(.5)
 			try:
 				dump(info, f, ensure_ascii=False)
