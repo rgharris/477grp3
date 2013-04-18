@@ -148,12 +148,14 @@ def handle_ajax():
 	elif rid == "readyState":
 		from json import dumps
 		from time import time
-		numPlayers = getGameStatus()['numPlayers']
+		gameStatus = getGameStatus()
+		numPlayers = gameStatus['numPlayers']
+		gameStart = gameStatus['gameStart']
 		if request.get_cookie("joinTime") is not None and float(request.get_cookie("joinTime")) + 120 > time():
 			joined = True
 		else:
 			joined = False
-		readyLinks = generateReadyLinks(joined, numPlayers)
+		readyLinks = generateReadyLinks(joined, numPlayers, int(gameStart))
 		return dumps({"readyLink":readyLinks, "players":numPlayers})
 	elif rid == "ModalBox":
 		mid = request.query.modal
