@@ -149,7 +149,7 @@ def handle_ajax():
 		from json import dumps
 		from time import time
 		numPlayers = getGameStatus()['numPlayers']
-		if request.get_cookie("joinTime") is not None and request.get_cookie("joinTime") + 120 > time():
+		if request.get_cookie("joinTime") is not None and float(request.get_cookie("joinTime")) + 120 > time():
 			joined = True
 		else:
 			joined = False
