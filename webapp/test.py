@@ -82,9 +82,8 @@ def createGameInfo(filename):
 
 def addPlayer():
 	gameStatus = getGameStatus()
-	numPlayers = gameStatus['numPlayers']
-	playerID = numPlayers - 1
 	gameStatus['numPlayers'] += 1
+	playerID = gameStatus['numPlayers'] - 1
 	gameStatus['ready'][str(playerID)] = 1
 	writeGameInfo("gameState", gameStatus)
 	return playerID, gameStatus['numPlayers']
