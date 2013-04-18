@@ -59,7 +59,7 @@
 				</div>
 				<div class="clear"></div>
 				<div id="footer">
-%if currentTurn == 0:
+%if currentTurn == False:
 					<span class="button fade borderRight spacingLeft">&nbsp;</span>
 					<span class="button fade">&nbsp;</span>
 					<a href="javascript:openModal('status')" id='statusButton' class="button borderTop borderRight spacingLeft">Status</a>

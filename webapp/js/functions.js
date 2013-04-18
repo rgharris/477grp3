@@ -15,6 +15,33 @@ function submitForm()
 	xmlhttp.send();
 	return false
 }
+function setReady()
+{
+	var xmlhttp;
+	xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function()
+	{
+		console.log(xmlhttp.responseText);
+		document.getElementById("readyLinks").innerHTML="<span class=\"waitingLink\">Waiting...</span><a href=\"javascript:unsetReady();\" class=\"notReadyLink\">I'm not ready!</a>"
+		closeModal()
+	}
+	xmlhttp.open("GET","ready?set=true", true);
+	xmlhttp.send();
+
+}
+function unsetReady()
+{
+	var xmlhttp;
+	xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function()
+	{
+		console.log(xmlhttp.responseText);
+		document.getElementById("readyLinks").innerHTML="<a href=\"javascript:setReady();\" class=\"readyLink\">I'm ready!</a>"
+		closeModal()
+	}
+	xmlhttp.open("GET","ready?set=false", true);
+	xmlhttp.send();
+}
 function submitName()
 {
 	var xmlhttp;
@@ -95,6 +122,11 @@ function refreshContent(id, mid)
 			document.getElementById("woodAmt").innerHTML = resources.wood;
 			document.getElementById("sheepAmt").innerHTML = resources.sheep;
 			document.getElementById("devAmt").innerHTML = resources.dev;
+		}
+		if (id == "readyState"){
+			ready = JSON.parse(xmlhttp.responseText);
+			document.getElementById("readyLinks").innerHTML = ready.readyLink;
+			document.getElementById("playersReady").innerHTML = ready.players;
 		}
 		else{
 			document.getElementById(id).innerHTML = xmlhttp.responseText;
