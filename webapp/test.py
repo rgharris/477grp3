@@ -231,6 +231,7 @@ def handle_ajax():
 		elif mid == "endTurn":
 			return template('endTurn')
 		elif mid == "trade":
+			gameStatus = getGameStatus()
 			return template('trade', players=getGameInfo()['playerInfo'], newTrade=True, numPlayers=gameStatus['numPlayers'])
 		elif mid == "purchase":
 			return "purchase"
