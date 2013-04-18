@@ -237,5 +237,7 @@ def show_webapp():
 #def show_name():
 #	return "Hello, {}!".format(request.POST.name)
 
+bottle.debug(True)
+bottle.app().catchall = False
 application=bottle.default_app()       # run in a WSGI server
 #bottle.run(host='localhost', port=8080) # run in a local test server
