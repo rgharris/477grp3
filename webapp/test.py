@@ -214,7 +214,7 @@ def show_webapp():
 			else:
 				return template('preGame', joined=False, numPlayers=gameStatus['numPlayers']) 
 	else:
-		if request.get_cookie("gameTime") is not None and request.get_cookie("gameTime") == gameTime:
+		if request.get_cookie("gameTime") is not None and request.get_cookie("gameTime") == str(gameTime):
 			playerInfo = getPlayerInfo(request.get_cookie("playerID"))
 			return template('layout', name=playerInfo['playerName'], points=str(playerInfo['points'] + playerInfo['cards']['victory'] + playerInfo['onHold']['victory']), devCards=str(sum(playerInfo['cards'].values())), resources=dict((key, str(val)) for key, val in playerInfo['resources'].items()), currentTurn=True if playerID == gameStatus['currentPlayer'] else False)
 		else:
