@@ -184,7 +184,7 @@ def chkResources(playerID, resourceDict):
 			return False
 	return True
 
-def trade(playerID, tradeInfo={}, option):
+def trade(playerID, tradeInfo, option):
 	if option == "submit":
 		tradeInfo['give'] = dict((key, int(val)) for key, val in tradeInfo['give'].items() if val != 0)
 		tradeInfo['get'] = dict((key, int(val)) for key, val in tradeInfo['get'].items() if val != 0)
