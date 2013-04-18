@@ -16,18 +16,18 @@ function submitForm()
 	{
 		var trade = {
 			give: {
-				ore = document.forms[0].giveOre.value,
-				wheat = document.forms[0].giveWheat.value,
-				sheep = document.forms[0].giveSheep.value,
-				clay = document.forms[0].giveClay.value,
-				wood = document.forms[0].giveWood.value
+				ore: document.forms[0].giveOre.value,
+				wheat: document.forms[0].giveWheat.value,
+				sheep: document.forms[0].giveSheep.value,
+				clay: document.forms[0].giveClay.value,
+				wood: document.forms[0].giveWood.value
 			},
 			get: {
-				ore = document.forms[0].getOre.value,
-				wheat = document.forms[0].getWheat.value,
-				sheep = document.forms[0].getSheep.value,
-				clay = document.forms[0].getClay.value,
-				wood = document.forms[0].getWood.value
+				ore: document.forms[0].getOre.value,
+				wheat: document.forms[0].getWheat.value,
+				sheep: document.forms[0].getSheep.value,
+				clay: document.forms[0].getClay.value,
+				wood: document.forms[0].getWood.value
 			},
 			to: document.forms[0].playerid[document.forms[0].playerid.selectedIndex].value
 		};
