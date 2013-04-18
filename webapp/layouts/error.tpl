@@ -14,9 +14,9 @@
 				</div>
 			</div>
 			<div id="body">
-%if defined(gameStarted):
+%if defined('gameStarted') and gameStarted == True:
 			<p>This game is currently in progress. Enjoy watching this game, and try to join the next one!</p>
-%elif defined(maxPlayers):
+%elif defined('maxPlayers') and maxPlayers == True:
 			<p>This game has reached the maximum number of players. Enjoy watching this game, and try to join the next one!</p>
 %else:
 			<p>An unknown error has occurred. Try refreshing, and if that doesn't work, whoops.</p>
