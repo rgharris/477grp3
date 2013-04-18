@@ -291,13 +291,13 @@ def handle_ajax():
 				giveString = ""
 				if len(tradeInfo['get']) == 1:
 					for resource in tradeInfo['get']:
-						getString = tradeInfo['get'][resource] + " " + resource
+						getString = str(tradeInfo['get'][resource]) + " " + resource
 				else:
 					for resource in tradeInfo['get']:
 						getSting = getString + " " + str(tradeInfo['get'][resource]) + " " + resource + ", "
 				if len(tradeInfo['give']) == 1:
 					for resource in tradeInfo['give']:
-						giveString = tradeInfo['give'][resource] + " " + resource
+						giveString = str(tradeInfo['give'][resource]) + " " + resource
 				else:
 					for resource in tradeInfo['give']:
 						giveString = giveString + " " + str(tradeInfo['give'][resource]) + " " + resource + ", "
