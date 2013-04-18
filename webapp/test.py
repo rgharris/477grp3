@@ -199,6 +199,10 @@ def handle_ajax():
 			return template('statusBox', playerInfo=getGameInfo()['playerInfo'], longestRoad=gameStatus['longestRoad'], largestArmy=gameStatus['largestArmy'])
 		elif mid == "endTurn":
 			return template('endTurn')
+		elif mid == "trade":
+			return template('trade')
+		elif mid == "purchase":
+			return "purchase"
 		elif mid == "devCards":
 			return "Dev card stuff!"
 		
