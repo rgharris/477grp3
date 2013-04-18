@@ -28,9 +28,10 @@
 %if not defined('success'):
 %success = False
 %end
-<form onsubmit="return submitForm()" class="trade">
+<form onsubmit="return submitForm()" class="trade" name="trade">
 %if newTrade == True:
 	<h2 style="margin-bottom: 15px">Trade</h2>
+	<span id="tradeContent">
   <div style="width: 100%; height: 155px">
   	<div class="resourceColumn">
     	<h3 class="resourceHeader">Resource</h3>  
@@ -67,6 +68,7 @@
     </select>
 <a href="javascript:closeModal();" class="bottom half left" name="noDeal">No Deal!</a>
 <input type="submit" value="Deal!" class="bottom half right" name="deal" />
+</span>
 %elif invalidTrade == True:
 	<h2>Trade Error</h2>
 		<p>You don't have enough resources to trade or you have selected an invalid option.</p>
@@ -77,7 +79,7 @@
 		<a href="javascript:denyTrade();" class="bottom left">Got it!</a>
 %elif confirm == True:
 	<h2>Confirm Trade</h2>
-		<p>Would you like to trade {{getStuff}} for {{giveStuff}}?</p>
+		<p>Would you like to trade{{getStuff}}for{{giveStuff}}?</p>
 		<a href="javascript:denyTrade();" class="bottom half left">No I don't!</a>
 		<a href="javascript:acceptTrade();" class="bottom half right">Yes I do!</a>
 %elif denied == True:

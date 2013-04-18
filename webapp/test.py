@@ -177,6 +177,51 @@ def generateReadyLinks(joined, numPlayers):
 		else:
 			return "<a href=\"/?start=true\" class=\"halfReadyLink\">Start game!</a><a href=\"javascript:unsetReady();\" class=\"notReadyLink\">I'm not ready!</a>"
 
+def chkResources(playerID, resourceDict):
+	playerInfo = getPlayerInfo(playerID)
+	for resource in playerInfo['resources']:
+		if playerInfo['resources'][resource] < resourceDict[resource]:
+			return False
+	return True
+
+def trade(playerID, tradeInfo={}, option):
+	if option == "submit":
+		tradeInfo['give'] = dict((key, int(val)) for key, val in tradeInfo['give'].items() if val != 0)
+		tradeInfo['get'] = dict((key, int(val)) for key, val in tradeInfo['get'].items() if val != 0)
+		tradeInfo['from'] = playerID
+		tradeInfo['to'] = int(tradeInfo['to'])
+		if(chkResources(playerID, tradeInfo['give']) == False or len(tradeInfo['give']) == 0 or len(tradeInfo['get']) == 0:
+			playerInfo = getPlayerInfo(playerID)
+			playerInfo['flag'] = 2
+			writePlayerInfo(playerID, playerInfo)
+		else:
+			tradePlayerInfo = getPlayerInfo(tradeInfo['to'])
+			tradePlayerInfo['flag'] = 3
+			writePlayerInfo(tradeInfo['to'], tradePlayerInfo)
+		writeGameInfo("trade", tradeInfo)
+	elif option == "accept":
+		tradePlayerInfo = getPlayerInfo(tradeInfo['from'])
+		tradePlayerInfo['flag'] = 4
+		playerInfo = getPlayerInfo(playerID)
+		for resource in tradeInfo['get']:
+			tradePlayerInfo['resources'][resource] += tradeInfo['get'][resource]
+			playerInfo['resources'][resource] -= tradeInfo['get'][resource]
+		for resource in tradeInfo['give']:
+			tradePlayerInfo['resources'][resource] -= tradeInfo['give'][resource]
+			playerInfo['resources'][resource] += tradeInfo['give'][resource]
+		writePlayerInfo(playerID, playerInfo)
+		writePlayerInfo(tradeInfo['from'], tradePlayerInfo)
+		tradeInfo['accepted'] = 1
+		writeGameInfo("trade", tradeInfo)
+	elif option == "deny":
+		tradePlayerInfo = getPlayerInfo(tradeInfo['from'])
+		tradePlayerInfo['flag'] = 4
+		writePlayerInfo(tradeInfo['from'], tradePlayerInfo)
+		tradeInfo = getTradeStatus()
+		tradeInfo['accepted'] = 0
+		writeGameInfo("trade", tradeInfo)
+		
+
 
 #########################BOTTLE OUTPUT###################################
 if '/home/pi/477grp3/webapp/layouts/' not in TEMPLATE_PATH:
@@ -198,10 +243,6 @@ def serve_javascript():
 def serve_image(filename):
 	return static_file(filename, root='/home/pi/477grp3/webapp/styles')
 
-#@get('/modal')
-#def display_modal():
-#  return template('layout', modal=True) 
-
 # This request happens every X seconds in case anything needs to be updated in the webapp
 @get('/refreshContent')
 def handle_ajax():
@@ -222,7 +263,8 @@ def handle_ajax():
 		return dumps({"readyLink":readyLinks, "players":numPlayers, "gameStart":int(gameStart)})
 	elif rid == "ModalBox":
 		mid = request.query.modal
-		playerInfo = getPlayerInfo(request.get_cookie("playerID"))
+		playerID = request.get_cookie("playerID")
+		playerInfo = getPlayerInfo(playerID)
 		if mid == "name":
 			return template('nameBox', name=playerInfo['playerName'])
 		elif mid == "status":
@@ -233,6 +275,36 @@ def handle_ajax():
 		elif mid == "trade":
 			gameStatus = getGameStatus()
 			return template('trade', players=getGameInfo()['playerInfo'], newTrade=True, numPlayers=gameStatus['numPlayers'])
+		elif mid == "invalidTrade":
+			playerInfo['flag'] = "0"
+			writePlayerInfo(playerID, playerInfo)
+			return template('trade', invalidTrade=True)
+		elif mid == "remoteTrade":
+			tradeInfo = getTradeStatus()
+			if chkResources(playerID, tradeInfo['get']) == False:
+				return template('trade', cannotTrade=True)
+			else:
+				getString = ""
+				giveString = ""
+				if len(tradeInfo['get']) == 1:
+					getString = tradeInfo['get'][resource] + " " + resource
+				else:
+					for resource in tradeInfo['get']:
+						getSting = getString + " " + tradeInfo['get'][resource] + " " + resource + ", "
+				if len(tradeInfo['give']) == 1:
+					giveString = tradeInfo['give'][resource] + " " + resource
+				else:
+					for resource in tradeInfo['give']:
+						giveString = giveString + " " + tradeInfo['give'][resource] + " " + resource + ", "
+				return template('trade', confirm=True, getStuff=getString, giveStuff=giveString)
+		elif mid == "returnTrade":
+			tradeInfo = getTradeStatus()
+			if tradeInfo['accepted'] == 1:
+				return template('trade', success=True)
+			elif tradeInfo['accepted'] == 0:
+				return template('trade', denied=True)
+			else:
+				return template('trade')
 		elif mid == "purchase":
 			return "purchase"
 		elif mid == "devCards":
@@ -249,6 +321,18 @@ def handle_form():
 	elif fid == "endTurn":
 		endTurn(int(request.get_cookie("playerID")))
 		return "done"
+	elif fid == "trade":
+		if request.params.value != "accept" and request.params.value != "deny":
+			from json import loads
+			trade(request.get_cookie("playerID"), loads(request.params.value), "submit")
+			return "done"
+		elif request.params.value == "accept":
+			trade(request.get_cookie("playerID"), None, "accept")
+			return "done"
+		elif request.params.value == "deny":
+			trade(request.get_cookie("playerID"), None, "deny")
+			return "done"
+		return "error."
 
 @get('/ready')
 def handle_players():
@@ -291,20 +375,6 @@ def show_webapp():
 			return template('layout', name=playerInfo['playerName'], points=str(playerInfo['points'] + playerInfo['cards']['victory'] + playerInfo['onHold']['victory']), devCards=str(sum(playerInfo['cards'].values())), resources=dict((key, str(val)) for key, val in playerInfo['resources'].items()), currentTurn=True if playerID == gameStatus['currentPlayer'] else False)
 		else:
 			return template('error', gameStarted=True)
-
-#@get('/blah')
-#def show_form():
-#	return '''\
-#<img src="/images/wood.png" />
-#<form action="" method="POST">
-#    <label for="name">What is your name?</label>
-#    <input type="text" name="name"/>
-#    <input type="submit"/>
-#</form>'''
-
-#@post('/')
-#def show_name():
-#	return "Hello, {}!".format(request.POST.name)
 
 bottle.debug(True)
 bottle.app().catchall = False
