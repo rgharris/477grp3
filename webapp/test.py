@@ -193,7 +193,7 @@ def handle_player_join():
 def show_webapp():
 	if "start" in request.params:
 		startGame()
-	gameTime = getGameInfo['gameTime']
+	gameTime = getGameInfo()['gameTime']
 	gameStatus = getGameStatus()
 	if gameStatus['gameStart'] == 0:
 		from time import time
