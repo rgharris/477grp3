@@ -1,28 +1,28 @@
-%if !defined(newTrade):
+%if not defined(newTrade):
 %newTrade = False
 %end
-%if !defined(invalidTrade):
+%if not defined(invalidTrade):
 %invalidTrade = False
 %end
-%if !defined(players):
+%if not defined(players):
 %players = {"-1":{"playerName":"error"}}
 %end
-%if !defined(cannotTrade):
+%if not defined(cannotTrade):
 %cannotTrade = False
 %end
-%if !defined(confirm):
+%if not defined(confirm):
 %confirm = False
 %end
-%if !defined(giveStuff):
+%if not defined(giveStuff):
 %giveStuff = "null"
 %end
-%if !defined(getStuff):
+%if not defined(getStuff):
 %getStuff = "null"
 %end
-%if !defined(denied):
+%if not defined(denied):
 %denied = False
 %end
-%if !defined(success):
+%if not defined(success):
 %success = False
 %end
 <form onsubmit="return submitForm()" class="trade">
