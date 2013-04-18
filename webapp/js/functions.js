@@ -123,7 +123,7 @@ function refreshContent(id, mid)
 			document.getElementById("sheepAmt").innerHTML = resources.sheep;
 			document.getElementById("devAmt").innerHTML = resources.dev;
 		}
-		if (id == "readyState"){
+		else if (id == "readyState"){
 			ready = JSON.parse(xmlhttp.responseText);
 			if (ready.gameStart == 1){ location.reload(true); }
 			document.getElementById("readyLinks").innerHTML = ready.readyLink;
