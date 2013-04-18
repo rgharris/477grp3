@@ -180,7 +180,7 @@ def handle_form():
 		return "done"
 
 @get('/ready')
-def handle_player_join():
+def handle_players():
 	set = request.params.set
 	if set == "true":
 		try:
