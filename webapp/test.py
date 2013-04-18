@@ -54,9 +54,6 @@ def displayResources(playerID):
 	output = playerInfo['resources'].copy()
 	output['dev'] = sum(playerInfo['cards'].values())
 	output['flag'] = playerInfo['flag']
-	if playerInfo['flag'] != "0":
-		playerInfo['flag'] = "0"
-		writePlayerInfo(playerID, playerInfo)
 	return dumps(output)
 
 def updatePlayerName(playerID, newName):
@@ -166,6 +163,7 @@ def endTurn(playerID):
 	gameState['currentPlayer'] = nextPlayerId
 	newPlayerInfo = getPlayerInfo(nextPlayerId)
 	newPlayerInfo['flag'] = "1"
+	playerInfo['flag'] = "0"
 	writeGameInfo("gameState", gameState)
 	writePlayerInfo(playerID, playerInfo)
 	writePlayerInfo(nextPlayerId, newPlayerInfo)
