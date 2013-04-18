@@ -5,7 +5,10 @@ function submitForm()
 	xmlhttp.onreadystatechange = function()
 	{
 		console.log(xmlhttp.responseText);
-		closeModal()
+		if(document.forms[0].name != "trade")
+		{
+			closeModal()
+		}
 	}
 	if(document.forms[0].name == "endTurn")
 	{

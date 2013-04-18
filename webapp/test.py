@@ -186,8 +186,8 @@ def chkResources(playerID, resourceDict):
 
 def trade(playerID, tradeInfo, option):
 	if option == "submit":
-		tradeInfo['give'] = dict((key, int(val)) for key, val in tradeInfo['give'].items() if val != 0)
-		tradeInfo['get'] = dict((key, int(val)) for key, val in tradeInfo['get'].items() if val != 0)
+		tradeInfo['give'] = dict((key, int(val)) for key, val in tradeInfo['give'].items() if int(val) != 0)
+		tradeInfo['get'] = dict((key, int(val)) for key, val in tradeInfo['get'].items() if int(val) != 0)
 		tradeInfo['from'] = playerID
 		tradeInfo['to'] = int(tradeInfo['to'])
 		if(chkResources(playerID, tradeInfo['give']) == False) or (len(tradeInfo['give']) == 0) or (len(tradeInfo['get']) == 0):
@@ -290,12 +290,12 @@ def handle_ajax():
 					getString = tradeInfo['get'][resource] + " " + resource
 				else:
 					for resource in tradeInfo['get']:
-						getSting = getString + " " + tradeInfo['get'][resource] + " " + resource + ", "
+						getSting = getString + " " + str(tradeInfo['get'][resource]) + " " + resource + ", "
 				if len(tradeInfo['give']) == 1:
 					giveString = tradeInfo['give'][resource] + " " + resource
 				else:
 					for resource in tradeInfo['give']:
-						giveString = giveString + " " + tradeInfo['give'][resource] + " " + resource + ", "
+						giveString = giveString + " " + str(tradeInfo['give'][resource]) + " " + resource + ", "
 				return template('trade', confirm=True, getStuff=getString, giveStuff=giveString)
 		elif mid == "returnTrade":
 			tradeInfo = getTradeStatus()
