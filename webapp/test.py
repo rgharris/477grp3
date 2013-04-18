@@ -176,7 +176,7 @@ def serve_image(filename):
 def handle_ajax():
 	rid = request.query.id
 	if rid == "resources":
-		return displayResources(request.get_cookie("playerID"))
+		return displayResources(int(request.get_cookie("playerID")))
 	elif rid == "readyState":
 		from json import dumps
 		from time import time
