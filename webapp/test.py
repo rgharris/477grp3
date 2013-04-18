@@ -146,7 +146,7 @@ def handle_ajax():
 	if rid == "resources":
 		return displayResources(request.get_cookie("playerID"))
 	elif rid == "readyState":
-		from json import dump
+		from json import dumps
 		from time import time
 		numPlayers = getGameStatus()['numPlayers']
 		if request.get_cookie("joinTime") is not None and request.get_cookie("joinTime") + 120 > time():
