@@ -125,6 +125,7 @@ function refreshContent(id, mid)
 		}
 		if (id == "readyState"){
 			ready = JSON.parse(xmlhttp.responseText);
+			if (ready.gameStart == 1){ location.reload(true); }
 			document.getElementById("readyLinks").innerHTML = ready.readyLink;
 			document.getElementById("playersReady").innerHTML = ready.players;
 		}
