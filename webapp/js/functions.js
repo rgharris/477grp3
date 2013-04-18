@@ -10,6 +10,7 @@ function submitForm()
 	if(document.forms[0].name == "endTurn")
 	{
 		values = "0"
+		document.getElementById('footer').innerHTML = "<span class=\"button fade borderRight spacingLeft\">&nbsp;</span>\n<span class=\"button fade\">&nbsp;</span>\n<a href=\"javascript:openModal('status')\" id='statusButton' class=\"button borderTop borderRight spacingLeft\">Status</a>\n<span class=\"button fade borderTop\">&nbsp;</span>\n<span class=\"button fade borderTop borderRight spacingLeft\">&nbsp;</span>\n<span class=\"button fade borderTop\">&nbsp;</span>";
 	}
 	xmlhttp.open("GET","submitForm?id=" + document.forms[0].name + "&value=" + values,true);
 	xmlhttp.send();
@@ -88,25 +89,6 @@ function loadXMLDoc(div,loc)
 	xmlhttp.send();
 }
 
-/*function ajaxRefresh() 
-{
-	var xmlhttp;
-	xmlhttp = new XMLHttpRequest();
-	xmlhttp.onreadystatechange=function()
-	{
-		//console.log(xmlhttp.status);
-		console.log(xmlhttp.responseText);
-		//if(xmlhttp.status == 200) {
-			if (xmlhttp.responseText == "showModal0")
-			{
-				//closeAllModals();
-				openModal(0);
-			}
-		//}
-	}
-	xmlhttp.open("GET", "refresh", true);
-	xmlhttp.send();
-}*/
 function refreshContent(id, mid) 
 {
 	var xmlhttp;
@@ -122,6 +104,10 @@ function refreshContent(id, mid)
 			document.getElementById("woodAmt").innerHTML = resources.wood;
 			document.getElementById("sheepAmt").innerHTML = resources.sheep;
 			document.getElementById("devAmt").innerHTML = resources.dev;
+			if (resources.flag == "1") //Indicates turn has started.
+			{
+				document.getElementById("footer").innerHTML = "<a href=\"javascript:openModal('purchase')\" id='purchaseButton' class=\"button borderRight spacingLeft\">Purchase</a>\n<a href=\"javascript:openModal('trade')\" id='tradeButton' class=\"button\">Trade</a>\n<a href=\"javascript:openModal('status')\" id='statusButton' class=\"button borderTop borderRight spacingLeft\">Status</a>\n<span id='endTurnButton'><a href=\"javascript:openModal('endTurn')\" id='turnButton' class='button borderTop'>End Turn</a></span>\n <a href=\"javascript:runi2c('confirm')\" id='confirmButton' class='button borderTop borderRight spacingLeft'>Confirm</a><a href=\"javascript:runi2c('deny')\" id='denyButton' class='button borderTop'>Deny</a>";
+			}
 		}
 		else if (id == "readyState"){
 			ready = JSON.parse(xmlhttp.responseText);
@@ -152,34 +138,6 @@ function heartbeat(playerID)
 			{
 				refreshContent("resources", 0);
 			}
-			/*else if(xmlhttp.responseText == 2)
-			{
-				window.location = "./index.py?trade=check#modal";
-			}
-			else if(xmlhttp.responseText == 3)
-			{
-				window.location = "./index.py?trade=confirm#modal";
-			}
-			else if(xmlhttp.responseText == 4)
-			{
-				window.location = "./index.py?trade=deny#modal";
-			}
-			else if(xmlhttp.responseText == 5)
-			{
-				window.location = "./index.py?trade=fail#modal";
-			}
-			else if(xmlhttp.responseText == 6)
-			{
-				window.location = "./index.py?against=monoCardd#modal";
-			}
-			else if(xmlhttp.responseText == 7)
-			{
-				window.location = "./index.py?dice=new";
-			}
-			else if(xmlhttp.responseText == 9)
-			{
-				window.location = "./index.py?i2c=flown";
-			}*/
 		}
 	}
 	xmlhttp.open("GET", "/chkRefresh/chk.py?id=" + playerID, true);

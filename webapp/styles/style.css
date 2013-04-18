@@ -147,7 +147,6 @@ a.playerName{
 	 /*display: none;*/
     position: absolute;
 	 left: 12.5%;
-
     /*opacity: 0;*/
     text-align: center;
     visibility: hidden;
@@ -189,14 +188,13 @@ a.playerName{
 	.modal a.bottom {
 		display: inline-block;
 		position: absolute;
-		bottom: 0;
+		bottom: 2%;
 		background-color: rgba(0,0,0,0);
 		border: none;
 		border-top: solid 1px #fffdd0;
 		width: 100%;
-		height: 20%;
-		line-height: 100%;
-		padding: 10px 0 10px 0;
+		height: 49px;/*20%;*/
+		line-height: 49px;
 		color: #FFFDD0;
 		vertical-align: middle;
 		font-size: 16pt;
@@ -204,9 +202,6 @@ a.playerName{
 		text-decoration: none;
 	}
 	
-	.modal a.left {
-	  left: 0;
-	}
 	
 	.modal input[type="submit"].bottom {
 		position:absolute;
@@ -237,7 +232,23 @@ a.playerName{
 		right:0;
 		border-left: solid 1px #fffdd0;
 	}
-	
+	.modal a.half{
+		width: 50%;
+	}
+	.modal a.top{
+		bottom:22%;
+	}
+	.modal a.moreTop{
+		bottom:44%;
+	}
+	.modal a.left{
+		left:0;
+	}
+	.modal a.right{
+		right:0;
+		border-left: solid 1px #fffdd0;
+	}
+
 	.modal input[type="text"] {
 		width: 90%;
 		font-size: 16pt;
@@ -272,7 +283,13 @@ a.playerName{
 		
 	
 	/*-- Added by Robert -- */
-	
+	.modal p.endTurn{
+		height: 70px;
+	}
+	.modal ul.gameStatus{
+		height: 185px;
+	}
+
 	.modal form.trade, .modal form.cards{
 	  height: 415px;
 	}

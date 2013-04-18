@@ -21,6 +21,9 @@ def displayResources(playerID):
 	from json import dumps
 	playerInfo['resources']['dev'] = sum(playerInfo['cards'].values())
 	playerInfo['resources']['flag'] = playerInfo['flag']
+	if playerInfo['flag'] != 0:
+		playerInfo['flag'] = 0
+	writePlayerInfo(playerID, playerInfo)
 	return dumps(playerInfo['resources'])
 
 def updatePlayerName(playerID, newName):
@@ -76,7 +79,7 @@ def getGameInfo():
 def createGameInfo(filename):	
 	from time import time
 	#Careful when editing this - it's a mess, but contains everything possible for the game.
-	gameStatus = {'gameTime':time(), 'trade':{'from':-1, 'to':-1, 'give':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}, 'get':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}}, 'dev':{'knights':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}, 'gameState':{'gameStart':0, 'gameEnd':0, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'numPlayers':0, 'diceRolled':0, 'setupComplete':0, 'firstPlayer':-1, 'reverse':0, 'longestRoad':-1, 'largestArmy':-1, 'currentPlayer':-1, 'devCardPlayed':0}, 'playerInfo':{'0':{'playerName': "Player 1", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':0, 'initialPlacements':{'settlement':0, 'road':0}},'1':{'playerName': "Player 2", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':0, 'initialPlacements':{'settlement':0, 'road':0}},'2':{'playerName': "Player 3", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':0, 'initialPlacements':{'settlement':0, 'road':0}},'3':{'playerName': "Player 4", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':0, 'initialPlacements':{'settlement':0, 'road':0}}}}
+	gameStatus = {'gameTime':time(), 'trade':{'from':-1, 'to':-1, 'give':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}, 'get':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}}, 'dev':{'knights':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}, 'gameState':{'gameStart':0, 'gameEnd':0, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'numPlayers':0, 'diceRolled':0, 'setupComplete':0, 'firstPlayer':-1, 'reverse':0, 'longestRoad':-1, 'largestArmy':-1, 'currentPlayer':-1, 'devCardPlayed':0}, 'playerInfo':{'0':{'playerName': "Player 1", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'1':{'playerName': "Player 2", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'2':{'playerName': "Player 3", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'3':{'playerName': "Player 4", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}}}}
 	gameStatus = writeJson(filename, gameStatus)
 	return gameStatus
 
@@ -99,10 +102,40 @@ def startGame():
 	import random
 	gameState = getGameStatus()
 	gameState['gameStart'] = 1
-	gameState['firstPlayer'] = random.randint(0, int(gameState['numPlayers']))
+	gameState['firstPlayer'] = random.randint(0, int(gameState['numPlayers'])-1)
 	gameState['currentPlayer'] = gameState['firstPlayer']
 	writeGameInfo("gameState", gameState)
 
+def endTurn(playerID):
+	gameState = getGameStatus()
+	playerInfo = getPlayerInfo(playerID)
+	for resource in playerInfo['cards']:
+		playerInfo['cards'][resource] += playerInfo['onHold'][resource]
+		playerInfo['onHold'][resource] = 0
+	gameState['devCardPlayed'] = 0
+	if gameState['currentPlayer'] + 1 == gameState['numPlayers']:
+		nextPlayerId = 0
+	else:
+		nextPlayerId = gameState['currentPlayer'] + 1
+	if gameState['setupComplete'] == 0:
+		if gameState['reverse'] == 0 and nextPlayerId == gameState['firstPlayer']:
+			nextPlayerId = gameState['currentPlayer']
+			gameState['reverse'] = 1
+		elif gameState['reverse'] == 1 and gameState['currentPlayer'] == gameState['firstPlayer']:
+			nextPlayerId = gameState['currentPlayer']
+			gameState['setupComplete'] = 1
+		elif gameState['reverse'] == 1:
+			if gameState['currentPlayer'] == 0:
+				nextPlayerId = gameState['numPlayers'] - 1
+			else:
+				nextPlayerId = gameState['currentPlayer'] - 1
+			#getResources(playerID)
+	gameState['currentPlayer'] = nextPlayerId
+	newPlayerInfo = getPlayerInfo(nextPlayerId)
+	newPlayerInfo['flag'] = "1"
+	writeGameInfo("gameState", gameState)
+	writePlayerInfo(playerID, playerInfo)
+	writePlayerInfo(nextPlayerId, newPlayerInfo)
 
 def generateReadyLinks(joined, numPlayers):
 	if joined == False:
@@ -178,6 +211,7 @@ def handle_form():
 	if fid == "name":
 		return updatePlayerName(request.get_cookie("playerID"), request.params.value)
 	elif fid == "endTurn":
+		endTurn(int(request.get_cookie("playerID")))
 		return "done"
 
 @get('/ready')
