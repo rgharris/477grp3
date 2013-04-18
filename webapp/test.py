@@ -13,7 +13,15 @@ def readJson(jfile):
 		try:
 			info = load(jsonInfo)
 		except:
-			raise ValueError('JSON Could not be read.')
+			sleep(.25)
+			try:
+				info = load(jsonInfo)
+			except:
+				sleep(.125)
+				try:
+					info = load(jsonInfo)
+				except:
+					raise ValueError('JSON Could not be read.')
 	jsonInfo.close()
 	return info
 
@@ -28,7 +36,15 @@ def writeJson(jfile, info):
 			try:
 				dump(info, f, ensure_ascii=False)
 			except:
-				raise ValueError("JSON Could not be written.")
+				sleep(.25)
+				try:
+					dump(info, f, ensure_ascii=False)
+				except:
+					sleep(.125)
+					try:
+						dump(info, f, ensure_ascii=False)
+					except:
+						raise ValueError("JSON Could not be written.")
 		f.close()
 	return info
 
