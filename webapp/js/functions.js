@@ -22,8 +22,8 @@ function setReady()
 	xmlhttp.onreadystatechange = function()
 	{
 		console.log(xmlhttp.responseText);
-		document.getElementById("readyLinks").innerHTML="<span class=\"waitingLink\">Waiting...</span><a href=\"javascript:unsetReady();\" class=\"notReadyLink\">I'm not ready!</a>"
-		closeModal()
+		document.getElementById("playersReady").innerHTML = xmlhttp.responseText;
+		document.getElementById("readyLinks").innerHTML="<span class=\"waitLink\">Waiting...</span><a href=\"javascript:unsetReady();\" class=\"notReadyLink\">I'm not ready!</a>";
 	}
 	xmlhttp.open("GET","ready?set=true", true);
 	xmlhttp.send();
@@ -36,8 +36,8 @@ function unsetReady()
 	xmlhttp.onreadystatechange = function()
 	{
 		console.log(xmlhttp.responseText);
-		document.getElementById("readyLinks").innerHTML="<a href=\"javascript:setReady();\" class=\"readyLink\">I'm ready!</a>"
-		closeModal()
+		document.getElementById("playersReady").innerHTML = xmlhttp.responseText;
+		document.getElementById("readyLinks").innerHTML="<a href=\"javascript:setReady();\" class=\"readyLink\">I'm ready!</a>";
 	}
 	xmlhttp.open("GET","ready?set=false", true);
 	xmlhttp.send();
@@ -50,7 +50,7 @@ function submitName()
 	{
 		console.log(xmlhttp.responseText);
 		document.getElementById("playerName").innerHTML=xmlhttp.responseText;
-		closeModal()
+		closeModal();
 	}
 	xmlhttp.open("GET","submitForm?id=name&value=" + document.forms[0].user.value, true);
 	xmlhttp.send();

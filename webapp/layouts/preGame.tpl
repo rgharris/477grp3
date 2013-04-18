@@ -15,7 +15,8 @@
 					<img src="images/settings.png" class="settingsImg" />
 				</div>
 				<div id="body">
-					Waiting for players! Currently have <span id="playersReady">{{numPlayers}}</span> players ready.<br />
+%numPlayersDisplay = str(numPlayers)
+					Waiting for players! Currently have <span id="playersReady">{{numPlayersDisplay}}</span> players ready.<br />
 					<span id="readyLinks">
 %if joined == False:
 					<a href="javascript:setReady();" class="readyLink">I'm ready!</a>

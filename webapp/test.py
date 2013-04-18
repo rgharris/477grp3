@@ -87,7 +87,14 @@ def addPlayer():
 	gameStatus['numPlayers'] += 1
 	gameStatus['ready'][str(playerID)] = 1
 	writeGameInfo("gameState", gameStatus)
-	return playerID
+	return playerID, numPlayers
+
+def removePlayer(playerID):
+	gameStatus = getGameStatus()
+	gameStatus['numPlayers'] -= 1
+	gameStatus['ready'][str(playerID)] = 0
+	writeGameInfo("gameState", gameStatus)
+	return gameStatus['numPlayers']
 
 def startGame():
 	import random
@@ -103,7 +110,7 @@ def generateReadyLinks(joined, numPlayers):
 		return "<a href=\"javascript:setReady();\" class=\"readyLink\">I'm ready!</a>"
 	else:
 		if numPlayers <= 2:
-			return "<span class=\"waitingLink\">Waiting...</span><a href=\"javascript:unsetReady();\" class=\"notReadyLink\">I'm not ready!</a>"
+			return "<span class=\"waitLink\">Waiting...</span><a href=\"javascript:unsetReady();\" class=\"notReadyLink\">I'm not ready!</a>"
 		else:
 			return "<a href=\"/?start=true\" class=\"halfReadyLink\">Start game!</a><a href=\"javascript:unsetReady();\" class=\"notReadyLink\">I'm not ready!</a>"
 
@@ -177,16 +184,18 @@ def handle_player_join():
 	set = request.params.set
 	if set == "true":
 		from time import time
-		playerID = addPlayer()
+		playerID, numPlayers = addPlayer()
 		gameTime = getGameInfo['gameTime']
 		response.set_cookie("gameTime", str(gameTime))
 		response.set_cookie("joinTime", str(time()))
 		response.set_cookie("playerID", str(playerID))
+		return numPlayers
 	elif set == "false":
-		removePlayer(request.get_cookie("playerID"))
+		numPlayers = removePlayer(request.get_cookie("playerID"))
 		response.set_cookie("gameTime", "-1")
 		response.set_cookie("joinTime", "-1")
 		response.set_cookie("playerID", "-1")
+		return numPlayers
 
 # This request handles a 
 @get('/')
@@ -197,7 +206,7 @@ def show_webapp():
 	gameStatus = getGameStatus()
 	if gameStatus['gameStart'] == 0:
 		from time import time
-		if request.get_cookie("joinTime") is not None and request.get_cookie("joinTime") + 120 > time():
+		if request.get_cookie("joinTime") is not None and int(request.get_cookie("joinTime")) + 120 > time():
 			return template('preGame', joined=True, numPlayers=gameStatus['numPlayers'])
 		else:
 			if gameStatus['numPlayers'] >= 4:
