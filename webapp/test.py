@@ -102,7 +102,7 @@ def startGame():
 	gameState['gameStart'] = 1
 	gameState['firstPlayer'] = random.randint(0, int(gameState['numPlayers']))
 	gameState['currentPlayer'] = gameState['firstPlayer']
-	writeGameInfo("gameState", gameStatus)
+	writeGameInfo("gameState", gameState)
 
 
 def generateReadyLinks(joined, numPlayers):
