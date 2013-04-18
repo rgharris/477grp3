@@ -183,13 +183,16 @@ def handle_form():
 def handle_player_join():
 	set = request.params.set
 	if set == "true":
-		from time import time
-		playerID, numPlayers = addPlayer()
-		gameTime = getGameInfo()['gameTime']
-		response.set_cookie("gameTime", str(gameTime))
-		response.set_cookie("joinTime", str(time()))
-		response.set_cookie("playerID", str(playerID))
-		return numPlayers
+		try:
+			from time import time
+			playerID, numPlayers = addPlayer()
+			gameTime = getGameInfo()['gameTime']
+			response.set_cookie("gameTime", str(gameTime))
+			response.set_cookie("joinTime", str(time()))
+			response.set_cookie("playerID", str(playerID))
+			return numPlayers
+		except:
+			return sys.exc_info()[0]
 	elif set == "false":
 		numPlayers = removePlayer(request.get_cookie("playerID"))
 		response.set_cookie("gameTime", "-1")
