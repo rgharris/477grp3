@@ -14,8 +14,7 @@ function submitForm()
 	}
 	if(document.forms[0].name == "trade")
 	{
-		var trade;
-		trade = {
+		var trade = {
 			give: {
 				ore = document.forms[0].giveOre.value,
 				wheat = document.forms[0].giveWheat.value,
