@@ -56,7 +56,7 @@ def displayResources(playerID):
 	output['flag'] = playerInfo['flag']
 	if playerInfo['flag'] != "0":
 		playerInfo['flag'] = "0"
-	writePlayerInfo(playerID, playerInfo)
+		writePlayerInfo(playerID, playerInfo)
 	return dumps(output)
 
 def updatePlayerName(playerID, newName):
