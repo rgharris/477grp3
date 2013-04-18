@@ -190,7 +190,7 @@ def trade(playerID, tradeInfo={}, option):
 		tradeInfo['get'] = dict((key, int(val)) for key, val in tradeInfo['get'].items() if val != 0)
 		tradeInfo['from'] = playerID
 		tradeInfo['to'] = int(tradeInfo['to'])
-		if(chkResources(playerID, tradeInfo['give']) == False or len(tradeInfo['give']) == 0 or len(tradeInfo['get']) == 0:
+		if(chkResources(playerID, tradeInfo['give']) == False) or (len(tradeInfo['give']) == 0) or (len(tradeInfo['get']) == 0):
 			playerInfo = getPlayerInfo(playerID)
 			playerInfo['flag'] = 2
 			writePlayerInfo(playerID, playerInfo)
