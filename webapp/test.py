@@ -155,8 +155,8 @@ def handle_ajax():
 			joined = True
 		else:
 			joined = False
-		readyLinks = generateReadyLinks(joined, numPlayers, int(gameStart))
-		return dumps({"readyLink":readyLinks, "players":numPlayers})
+		readyLinks = generateReadyLinks(joined, numPlayers)
+		return dumps({"readyLink":readyLinks, "players":numPlayers, "gameStart":int(gameStart)})
 	elif rid == "ModalBox":
 		mid = request.query.modal
 		playerInfo = getPlayerInfo(request.get_cookie("playerID"))
