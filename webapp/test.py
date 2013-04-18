@@ -185,7 +185,7 @@ def handle_player_join():
 	if set == "true":
 		from time import time
 		playerID, numPlayers = addPlayer()
-		gameTime = getGameInfo['gameTime']
+		gameTime = getGameInfo()['gameTime']
 		response.set_cookie("gameTime", str(gameTime))
 		response.set_cookie("joinTime", str(time()))
 		response.set_cookie("playerID", str(playerID))
