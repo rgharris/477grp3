@@ -21,7 +21,7 @@ function setReady()
 	xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function()
 	{
-		console.log(xmlhttp.responseText);
+		console.log("setReady: " + xmlhttp.responseText);
 		document.getElementById("playersReady").innerHTML = xmlhttp.responseText;
 		document.getElementById("readyLinks").innerHTML="<span class=\"waitLink\">Waiting...</span><a href=\"javascript:unsetReady();\" class=\"notReadyLink\">I'm not ready!</a>";
 	}
@@ -35,7 +35,7 @@ function unsetReady()
 	xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function()
 	{
-		console.log(xmlhttp.responseText);
+		console.log("unset ready: " +  xmlhttp.responseText);
 		document.getElementById("playersReady").innerHTML = xmlhttp.responseText;
 		document.getElementById("readyLinks").innerHTML="<a href=\"javascript:setReady();\" class=\"readyLink\">I'm ready!</a>";
 	}
