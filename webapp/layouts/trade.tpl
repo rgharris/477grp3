@@ -60,7 +60,7 @@
   <h3>Player to trade with: </h3>
 	  <select name="playerid" class="playerSelect">
 %for playerid in players:
-%if playerid-1 <= numPlayers:
+%if int(playerid)-1 <= numPlayers:
   	  <option value="{{playerid}}">{{players[playerid]["playerName"]}}</option>
 %end
 %end
