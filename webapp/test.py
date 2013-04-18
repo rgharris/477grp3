@@ -191,8 +191,8 @@ def handle_player_join():
 			response.set_cookie("joinTime", str(time()))
 			response.set_cookie("playerID", str(playerID))
 			return numPlayers
-		except:
-			return sys.exc_info()[0]
+		except e:
+			return str(e)
 	elif set == "false":
 		numPlayers = removePlayer(request.get_cookie("playerID"))
 		response.set_cookie("gameTime", "-1")
