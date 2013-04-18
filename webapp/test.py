@@ -54,9 +54,9 @@ def displayResources(playerID):
 	playerInfo['resources']['dev'] = sum(playerInfo['cards'].values())
 	playerInfo['resources']['flag'] = playerInfo['flag']
 	returnString = dumps(playerInfo['resources'])
-	if playerInfo['flag'] != "0":
-		playerInfo['flag'] = "0"
-	writePlayerInfo(playerID, playerInfo)
+#	if playerInfo['flag'] != "0":
+#		playerInfo['flag'] = "0"
+#	writePlayerInfo(playerID, playerInfo)
 	return returnString
 
 def updatePlayerName(playerID, newName):
