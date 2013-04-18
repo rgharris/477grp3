@@ -79,7 +79,7 @@
 		<a href="javascript:denyTrade();" class="bottom left">Got it!</a>
 %elif confirm == True:
 	<h2>Confirm Trade</h2>
-		<p>Would you like to trade{{getStuff}}for{{giveStuff}}?</p>
+		<p>Would you like to trade {{getStuff}} for {{giveStuff}}?</p>
 		<a href="javascript:denyTrade();" class="bottom half left">No I don't!</a>
 		<a href="javascript:acceptTrade();" class="bottom half right">Yes I do!</a>
 %elif denied == True:

@@ -294,13 +294,13 @@ def handle_ajax():
 						getString = str(tradeInfo['get'][resource]) + " " + resource
 				else:
 					for resource in tradeInfo['get']:
-						getSting = getString + " " + str(tradeInfo['get'][resource]) + " " + resource + ", "
+						getSting = getString + str(tradeInfo['get'][resource]) + " " + resource + ", "
 				if len(tradeInfo['give']) == 1:
 					for resource in tradeInfo['give']:
 						giveString = str(tradeInfo['give'][resource]) + " " + resource
 				else:
 					for resource in tradeInfo['give']:
-						giveString = giveString + " " + str(tradeInfo['give'][resource]) + " " + resource + ", "
+						giveString = giveString + str(tradeInfo['give'][resource]) + " " + resource + ", "
 				return template('trade', confirm=True, getStuff=getString, giveStuff=giveString)
 		elif mid == "returnTrade":
 			playerInfo['flag'] = "0"
