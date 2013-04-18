@@ -263,7 +263,6 @@ a.playerName{
 		font-size: 16pt;
 		border: none;
 		background-color: #fffdd0;
-		margin-left: 5px;
 		color: #000;
 		font-family: 'Arapey', 'Times New Roman', serif;
 	}
@@ -312,8 +311,7 @@ a.playerName{
 	.trade input.countValue {
 	  width: 20px; 
 	  height: 1em;
-	  /*margin: 5px 30%;*/
-	  margin: 5px 50%;
+	  margin: 5px 30%;
 	  text-align: center;
 	}
 	
