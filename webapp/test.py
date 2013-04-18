@@ -53,10 +53,11 @@ def displayResources(playerID):
 	from json import dumps
 	playerInfo['resources']['dev'] = sum(playerInfo['cards'].values())
 	playerInfo['resources']['flag'] = playerInfo['flag']
+	returnString = dumps(playerInfo['resources']
 	if playerInfo['flag'] != "0":
 		playerInfo['flag'] = "0"
 	writePlayerInfo(playerID, playerInfo)
-	return dumps(playerInfo['resources'])
+	return returnString
 
 def updatePlayerName(playerID, newName):
 	playerInfo = getPlayerInfo(playerID)
