@@ -290,12 +290,14 @@ def handle_ajax():
 				getString = ""
 				giveString = ""
 				if len(tradeInfo['get']) == 1:
-					getString = tradeInfo['get'][resource] + " " + resource
+					for resource in tradeInfo['get']:
+						getString = tradeInfo['get'][resource] + " " + resource
 				else:
 					for resource in tradeInfo['get']:
 						getSting = getString + " " + str(tradeInfo['get'][resource]) + " " + resource + ", "
 				if len(tradeInfo['give']) == 1:
-					giveString = tradeInfo['give'][resource] + " " + resource
+					for resource in tradeInfo['give']:
+						giveString = tradeInfo['give'][resource] + " " + resource
 				else:
 					for resource in tradeInfo['give']:
 						giveString = giveString + " " + str(tradeInfo['give'][resource]) + " " + resource + ", "
