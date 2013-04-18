@@ -179,7 +179,7 @@ def generateReadyLinks(joined, numPlayers):
 
 def chkResources(playerID, resourceDict):
 	playerInfo = getPlayerInfo(playerID)
-	for resource in playerInfo['resources']:
+	for resource in resourceDict:
 		if playerInfo['resources'][resource] < resourceDict[resource]:
 			return False
 	return True
