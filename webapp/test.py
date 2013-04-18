@@ -5,14 +5,28 @@ from bottle import get, post, request, response, static_file, template, TEMPLATE
 def readJson(jfile):
 	from json import load
 	jsonInfo = open(jfile)
-	info = load(jsonInfo)
+	try:
+		info = load(jsonInfo)
+	except ValueError:
+		sleep(.5)
+		try:
+			info = load(jsonInfo)
+		except:
+			raise ValueError('JSON Could not be read.')
 	jsonInfo.close()
 	return info
 
 def writeJson(jfile, info):
 	from json import dump
 	with open(jfile, 'w') as f:
-		dump(info, f, ensure_ascii=False)
+		try:
+			dump(info, f, ensure_ascii=False)
+		except ValueError:
+			sleep(.5)
+			try:
+				dump(info, f, ensure_ascii=False)
+			except:
+				raise ValueError("JSON Could not be written.")
 		f.close()
 	return info
 
