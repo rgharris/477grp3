@@ -214,7 +214,7 @@ def trade(playerID, tradeInfo, option):
 		tradeInfo['accepted'] = 1
 		writeGameInfo("trade", tradeInfo)
 	elif option == "deny":
-		tradeInfo = getTradeSatus()
+		tradeInfo = getTradeStatus()
 		tradePlayerInfo = getPlayerInfo(tradeInfo['from'])
 		tradePlayerInfo['flag'] = 4
 		writePlayerInfo(tradeInfo['from'], tradePlayerInfo)
