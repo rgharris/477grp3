@@ -186,9 +186,9 @@ def handle_players():
 		from time import time
 		playerID, numPlayers = addPlayer()
 		gameTime = getGameInfo()['gameTime']
-		response.set_cookie("gameTime", str(gameTime))
-		response.set_cookie("joinTime", str(time()))
-		response.set_cookie("playerID", str(playerID))
+#		response.set_cookie("gameTime", str(gameTime))
+#		response.set_cookie("joinTime", str(time()))
+#		response.set_cookie("playerID", str(playerID))
 		return numPlayers
 	elif set == "false":
 		numPlayers = removePlayer(request.get_cookie("playerID"))
