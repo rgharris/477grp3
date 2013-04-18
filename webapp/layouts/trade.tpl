@@ -7,6 +7,9 @@
 %if not defined('players'):
 %players = {"-1":{"playerName":"error"}}
 %end
+%if not defined('numPlayers'):
+%numPlayers = 0
+%end
 %if not defined('cannotTrade'):
 %cannotTrade = False
 %end
@@ -57,7 +60,9 @@
   <h3>Player to trade with: </h3>
 	  <select name="playerid" class="playerSelect">
 %for playerid in players:
+%if playerid-1 <= numPlayers:
   	  <option value="{{playerid}}">{{players[playerid]["playerName"]}}</option>
+%end
 %end
     </select>
 <a href="javascript:closeModal();" class="bottom half left" name="noDeal">No Deal!</a>
