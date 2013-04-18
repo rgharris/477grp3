@@ -281,6 +281,8 @@ def handle_ajax():
 			writePlayerInfo(playerID, playerInfo)
 			return template('trade', invalidTrade=True)
 		elif mid == "remoteTrade":
+			playerInfo['flag'] = "0"
+			writePlayerInfo(playerID, playerInfo)
 			tradeInfo = getTradeStatus()
 			if chkResources(playerID, tradeInfo['get']) == False:
 				return template('trade', cannotTrade=True)
@@ -299,6 +301,8 @@ def handle_ajax():
 						giveString = giveString + " " + str(tradeInfo['give'][resource]) + " " + resource + ", "
 				return template('trade', confirm=True, getStuff=getString, giveStuff=giveString)
 		elif mid == "returnTrade":
+			playerInfo['flag'] = "0"
+			writePlayerInfo(playerID, playerInfo)
 			tradeInfo = getTradeStatus()
 			if tradeInfo['accepted'] == 1:
 				return template('trade', success=True)
