@@ -167,6 +167,11 @@ function refreshContent(id, mid)
 				closeModal()
 				openModal('remoteTrade')
 			}
+			else if (resources.flag == "4") //Indicates trade response from remote player.
+			{
+				closeModal()
+				openModal('returnTrade')
+			}
 		}
 		else if (id == "readyState"){
 			ready = JSON.parse(xmlhttp.responseText);
