@@ -200,6 +200,7 @@ def trade(playerID, tradeInfo, option):
 			writePlayerInfo(tradeInfo['to'], tradePlayerInfo)
 		writeGameInfo("trade", tradeInfo)
 	elif option == "accept":
+		tradeInfo = getTradeStatus()
 		tradePlayerInfo = getPlayerInfo(tradeInfo['from'])
 		tradePlayerInfo['flag'] = 4
 		playerInfo = getPlayerInfo(playerID)
