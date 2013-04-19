@@ -52,8 +52,9 @@ def displayResources(playerID):
 	playerInfo = getPlayerInfo(playerID)
 	from json import dumps
 	output = playerInfo['resources'].copy()
-	output['dev'] = sum(playerInfo['cards'].values())
+	output['dev'] = sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())
 	output['flag'] = playerInfo['flag']
+	output['points'] = playerInfo['points']
 	return dumps(output)
 
 def updatePlayerName(playerID, newName):
@@ -109,7 +110,7 @@ def getGameInfo():
 def createGameInfo(filename):	
 	from time import time
 	#Careful when editing this - it's a mess, but contains everything possible for the game.
-	gameStatus = {'gameTime':time(), 'trade':{'from':-1, 'to':-1, 'give':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}, 'get':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}}, 'dev':{'knights':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}, 'gameState':{'gameStart':0, 'gameEnd':0, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'numPlayers':0, 'diceRolled':0, 'setupComplete':0, 'firstPlayer':-1, 'reverse':0, 'longestRoad':-1, 'largestArmy':-1, 'currentPlayer':-1, 'devCardPlayed':0}, 'playerInfo':{'0':{'playerName': "Player 1", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'1':{'playerName': "Player 2", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'2':{'playerName': "Player 3", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'3':{'playerName': "Player 4", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knights':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}}}}
+	gameStatus = {'gameTime':time(), 'trade':{'from':-1, 'to':-1, 'give':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}, 'get':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}}, 'dev':{'knight':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}, 'gameState':{'gameStart':0, 'gameEnd':0, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'numPlayers':0, 'diceRolled':0, 'setupComplete':0, 'firstPlayer':-1, 'reverse':0, 'longestRoad':-1, 'largestArmy':-1, 'currentPlayer':-1, 'devCardPlayed':0}, 'playerInfo':{'0':{'playerName': "Player 1", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'1':{'playerName': "Player 2", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'2':{'playerName': "Player 3", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'3':{'playerName': "Player 4", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}}}}
 	gameStatus = writeJson(filename, gameStatus)
 	return gameStatus
 
@@ -223,8 +224,73 @@ def trade(playerID, tradeInfo, option):
 		tradeInfo['accepted'] = 0
 		writeGameInfo("trade", tradeInfo)
 		
+def getCosts(purchase):
+	costs = {'development card':'1 wheat, 1 sheep, and 1 ore', 'road':'1 wood and 1 clay', 'city':'2 wheat and 3 ore', 'settlement':'1 wood, 1 wheat, 1 sheep, and 1 clay'}
+	return {purchase:costs[purchase]}
 
+def payForPurchase(playerID, resourceDict):
+	playerInfo = getPlayerInfo(playerID)
+	for resource in resourceDict:
+		playerInfo['resources'][resource] -= resourceDict[resource]
+	writePlayerInfo(playerID, playerInfo)
 
+def performPurchase(playerID, purchase):
+	playerInfo = getPlayerInfo(playerID)
+	if purchase == 'settlement':
+		if chkResources(playerID, {'wood':1, 'clay':1, 'sheep':1, 'wheat':1}) == True:
+			playerInfo['points'] += 1
+			writePlayerInfo(playerID, playerInfo)
+			payForPurchase(playerID, {'wood':1, 'clay':1, 'sheep':1, 'wheat':1})
+			return True
+		else:
+			return False
+	elif purchase == 'city':
+		if chkResources(playerID, {'wheat':2, 'ore':3}) == True:
+			playerInfo['points'] += 1
+			writePlayerInfo(playerID, playerInfo)
+			payForPurchase(playerID, {'wheat':2, 'ore':3})
+			return True
+		else:
+			return False
+	elif purchase == 'road':
+		if chkResources(playerID, {'wood':1, 'clay':1}) == True:
+			payForPurchase(playerID, {'wood':1, 'clay':1})
+			return True
+		else:
+			return False
+	elif purchase == 'development card':
+		if chkResources(playerID, {'wheat':1, 'sheep':1, 'ore':1}) == True:
+			devCards = getDevDeck()
+			if sum(devCards.values()) == 0:
+				return 'none'
+			else:
+				weights = []
+				cardList = []
+				for key, val in devCards.items():
+					weights.append(val)
+					cardList.append(key)
+				randNum = weighted_choice_sub(weights)
+				playerInfo['onHold'][cardList[randNum]] += 1
+				if cardList[randNum] == 'victory':
+					playerInfo['points'] += 1
+				writePlayerInfo(playerID, playerInfo)
+				payForPurchase(playerID, {'wheat':1, 'sheep':1, 'ore':1})
+				devCards[cardList[randNum]] -= 1
+				writeGameInfo("dev", devCards)
+				return cardList[randNum]
+		else:
+			return False
+	else:
+		return False
+
+def weighted_choice_sub(weights):
+	from random import random
+	#http://eli.thegreenplace.net/2010/01/22/weighted-random-generation-in-python/
+	rnd = random() * sum(weights)
+	for i, w in enumerate(weights):
+		rnd -= w
+		if rnd < 0:
+			return i
 #########################BOTTLE OUTPUT###################################
 if '/home/pi/477grp3/webapp/layouts/' not in TEMPLATE_PATH:
 	TEMPLATE_PATH.insert(0,'/home/pi/477grp3/webapp/layouts/')
@@ -314,7 +380,7 @@ def handle_ajax():
 			else:
 				return template('trade')
 		elif mid == "purchase":
-			return "purchase"
+			return template('purchase', newPurchase=True)
 		elif mid == "devCards":
 			return "Dev card stuff!"
 		
@@ -341,6 +407,32 @@ def handle_form():
 			trade(request.get_cookie("playerID"), None, "deny")
 			return "done"
 		return "error."
+	elif fid == "purchase":
+		from json import loads
+		value = loads(request.params.value)
+		if value['action'] == 'get':
+			return template('purchase', confirmPurchase=True, purchaseItem=getCosts(value['type']))
+		elif value['action'] == 'accept':
+			purchaseResult = performPurchase(request.get_cookie("playerID"), value['type'])
+			if purchaseResult == False:
+				return template('purchase', invalidPurchase=True, purchaseItem=getCosts(value['type']))
+			else:
+				if value['type'] != 'development card':
+					return template('purchase', placePiece=True)
+				else:
+					output = {}
+					for item in purchaseResult:
+						if item == 'plenty':
+							output['Year of Plenty'] = purchaseResult[item]
+						elif item == 'knight':
+							output['Knight'] = purchaseResult[item]
+						elif item == 'monopoly':
+							output['Monopoly'] = purchaseResult[item]
+						elif item == 'road':
+							output['Road Building'] = purchaseResult[item]
+						else:
+							output = purchaseResult.copy()
+					return template('purchase', devCard=output)
 
 @get('/ready')
 def handle_players():

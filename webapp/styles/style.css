@@ -1,7 +1,7 @@
 /*Fonts*/
 @font-face {
     font-family: 'Cambo';
-    src: url('https://engineering.purdue.edu/477grp3/webTest/styles/Cambo-Regular-webfont.eot');
+    /*src: url('https://engineering.purdue.edu/477grp3/webTest/styles/Cambo-Regular-webfont.eot');*/
     src: url('Cambo-Regular-webfont.eot') format('embedded-opentype'),
          url('Cambo-Regular-webfont.woff') format('woff'),
          url('Cambo-Regular-webfont.ttf') format('truetype');
@@ -236,7 +236,7 @@ a.playerName{
 		width: 50%;
 	}
 	.modal a.top{
-		bottom:22%;
+		bottom:32%;
 	}
 	.modal a.moreTop{
 		bottom:44%;
@@ -288,7 +288,9 @@ a.playerName{
 	.modal ul.gameStatus{
 		height: 185px;
 	}
-
+	.modal p.purchase{
+		height: 100px;
+	}
 	.modal form.trade, .modal form.cards{
 	  height: 415px;
 	}

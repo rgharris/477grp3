@@ -99,6 +99,25 @@ function closeModal()
 	elem = document.getElementById("modal");
 	elem.style.visibility = "hidden";
 }
+function purchase(action,type)
+{
+	var xmlhttp;
+	xmlhttp = new XMLHttpRequest();
+	document.getElementById("purchaseContent").innerHTML = "Please wait..."
+	xmlhttp.onreadystatechange = function()
+	{
+		console.log(xmlhttp.responseText);
+		document.getElementById("purchaseContent").innerHTML = xmlhttp.responseText;
+	}
+	var purchase = {
+			action: action,
+			type: type
+		};
+	var values = JSON.stringify(purchase);
+
+	xmlhttp.open("GET","submitForm?id=purchase&value=" + values, true);
+	xmlhttp.send();
+}
 function acceptTrade()
 {
 	var xmlhttp;
@@ -153,6 +172,7 @@ function refreshContent(id, mid)
 			document.getElementById("woodAmt").innerHTML = resources.wood;
 			document.getElementById("sheepAmt").innerHTML = resources.sheep;
 			document.getElementById("devAmt").innerHTML = resources.dev;
+			document.getElementById("points").innerHTML = resources.points;
 			if (resources.flag == "1") //Indicates turn has started.
 			{
 				document.getElementById("footer").innerHTML = "<a href=\"javascript:openModal('purchase')\" id='purchaseButton' class=\"button borderRight spacingLeft\">Purchase</a>\n<a href=\"javascript:openModal('trade')\" id='tradeButton' class=\"button\">Trade</a>\n<a href=\"javascript:openModal('status')\" id='statusButton' class=\"button borderTop borderRight spacingLeft\">Status</a>\n<span id='endTurnButton'><a href=\"javascript:openModal('endTurn')\" id='turnButton' class='button borderTop'>End Turn</a></span>\n <a href=\"javascript:runi2c('confirm')\" id='confirmButton' class='button borderTop borderRight spacingLeft'>Confirm</a><a href=\"javascript:runi2c('deny')\" id='denyButton' class='button borderTop'>Deny</a>";
