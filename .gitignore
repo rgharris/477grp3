@@ -1,3 +1,6 @@
 Release/
 Debug/
 *.atsuo
+.*.swp
+*.json
+*.bak

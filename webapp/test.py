@@ -271,8 +271,6 @@ def performPurchase(playerID, purchase):
 					cardList.append(key)
 				randNum = weighted_choice_sub(weights)
 				playerInfo['onHold'][cardList[randNum]] += 1
-				if cardList[randNum] == 'victory':
-					playerInfo['points'] += 1
 				writePlayerInfo(playerID, playerInfo)
 				payForPurchase(playerID, {'wheat':1, 'sheep':1, 'ore':1})
 				devCards[cardList[randNum]] -= 1
@@ -420,18 +418,16 @@ def handle_form():
 				if value['type'] != 'development card':
 					return template('purchase', placePiece=True)
 				else:
-					output = {}
-					for item in purchaseResult:
-						if item == 'plenty':
-							output['Year of Plenty'] = purchaseResult[item]
-						elif item == 'knight':
-							output['Knight'] = purchaseResult[item]
-						elif item == 'monopoly':
-							output['Monopoly'] = purchaseResult[item]
-						elif item == 'road':
-							output['Road Building'] = purchaseResult[item]
-						else:
-							output = purchaseResult.copy()
+					if purchaseResult == 'plenty':
+						output = 'Year of Plenty'
+					elif purchaseResult == 'knight':
+						output = 'Knight'
+					elif purchaseResult == 'monopoly':
+						output = 'Monopoly'
+					elif purchaseResult == 'road':
+						output = 'Road Building'
+					else:
+						output = purchaseResult
 					return template('purchase', devCard=output)
 
 @get('/ready')
