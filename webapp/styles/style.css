@@ -282,7 +282,7 @@ a.playerName{
 		
 	
 	/*-- Added by Robert -- */
-	.modal p.endTurn{
+	.modal p.generic{
 		height: 70px;
 	}
 	.modal ul.gameStatus{

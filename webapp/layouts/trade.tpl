@@ -72,28 +72,28 @@
 </form>
 %elif invalidTrade == True:
 	<h2>Trade Error</h2>
-		<p>You don't have enough resources to trade or you have selected an invalid option.</p>
+		<p class="generic">You don't have enough resources to trade or you have selected an invalid option.</p>
 		<a href="javascript:closeModal();" class="bottom left" name="gotit">Got it!</a>
 %elif cannotTrade == True:
 	<h2>Trade Error</h2>
-		<p>You don't have enough resources to trade.
+		<p class="generic">You don't have enough resources to trade.</p>
 		<a href="javascript:denyTrade();" class="bottom left">Got it!</a>
 %elif confirm == True:
 	<h2>Confirm Trade</h2>
-		<p>Would you like to trade {{getStuff}} for {{giveStuff}}?</p>
+		<p class="generic">Would you like to trade {{getStuff}} for {{giveStuff}}?</p>
 		<a href="javascript:denyTrade();" class="bottom half left">No I don't!</a>
 		<a href="javascript:acceptTrade();" class="bottom half right">Yes I do!</a>
 %elif denied == True:
 	<h2>Trade Denied</h2>
-		<p>Your trade has been denied from the player you were trading with.</p>
+		<p class="generic">Your trade has been denied from the player you were trading with.</p>
 		<a href="javascript:closeModal();" class="bottom left">Got it!</a>
 %elif success == True:
 	<h2>Trade Successful</h2>
-		<p>Your trade has been accepted and has taken place.</p>
+		<p class="generic">Your trade has been accepted and has taken place.</p>
 		<a href="javascript:closeModal();" class="bottom left">Got it!</a>
 %else:
 	<h2>Error</h2>
-		<p>There was an error with the trade form. Please try again.</p>
+		<p class="generic">There was an error with the trade form. Please try again.</p>
 	<a href="javascript:closeModal();" class="bottom left" name="gotit">Got it.</a>
 %end
 
