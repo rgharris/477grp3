@@ -49,14 +49,16 @@ def writeJson(jfile, info):
 	return info
 
 def writei2c(reg, val):
+	import quick2wire.i2c as i2c
 	registers = {'pi':0, 'currentPlayer':1, 'playerCount':2}
 	flags = {'turnOn':1, 'newGame':2, 'diceRolled':3, 'endTurn':4, 'roadDevCard':5, 'knightDevCard': 6, 'confirm':7, 'reject':8, 'clearFlag':9, 'purchaseRoad':10, 'purchaseSettlement':11, 'purchaseCity':12, 'endGame':13, 'shutdown':14}
-	if reg == registers['pi']:
-		val = flags['val']
+	if reg == 'pi':
+		val = flags[val]
 	with i2c.I2CMaster() as bus:
 		bus.transaction(i2c.writing_bytes(0x50, registers[reg], val))
 
 def readi2c(reg, val, playerID=-1):
+	import quick2wire.i2c as i2c
 	registers = {'micro':3, 'thieved':4, 'pieceType':6, 'port':7, 'longestRoad':8, 'dice':9, 'resources':10}
 	flags = {'newPiece':5, 'newThief':4, 'error':6, 'diceReady':9, 'newRoad':8, 'allClear':11}
 	readNum = 1
@@ -87,13 +89,13 @@ def readi2c(reg, val, playerID=-1):
 		else:
 			toDo = 'error'
 			modVal = 10
-		if readMCU % modVal = 0:
+		if readMCU % modVal == 0:
 			pieceType = 'thief'
-		elif readMCU % modVal = 1:
+		elif readMCU % modVal == 1:
 			pieceType = 'road'
-		elif readMCU % modVal = 2:
+		elif readMCU % modVal == 2:
 			pieceType = 'settlement'
-		elif readMCU % modVal = 3:
+		elif readMCU % modVal == 3:
 			pieceType = 'city'
 		else:
 			pieceType = 'error'
@@ -190,6 +192,9 @@ def startGame():
 	gameState['firstPlayer'] = random.randint(0, int(gameState['numPlayers'])-1)
 	gameState['currentPlayer'] = gameState['firstPlayer']
 	writeGameInfo("gameState", gameState)
+	writei2c('playerCount', int(gameState['numPlayers']))
+	writei2c('currentPlayer', int(gameState['currentPlayer']+1))
+	writei2c('pi','newGame')
 
 def endTurn(playerID):
 	gameState = getGameStatus()
