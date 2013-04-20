@@ -12,9 +12,9 @@ with inPin:
 		pass
 	else:
 		pass
-times.append(start - time.time())
+times.append(time.time() - start)
 start = time.time()
 with i2c.I2CMaster() as bus:
 	readMCU = bus.transaction(i2c.writing_bytes(0x50, 3), i2c.reading(0x50, 1))
-times.append(start - time.time())
+times.append(time.time() - start)
 print(times)
