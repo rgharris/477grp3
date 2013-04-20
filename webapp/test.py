@@ -48,6 +48,60 @@ def writeJson(jfile, info):
 		f.close()
 	return info
 
+def writei2c(reg, val):
+	registers = {'pi':0, 'currentPlayer':1, 'playerCount':2}
+	flags = {'turnOn':1, 'newGame':2, 'diceRolled':3, 'endTurn':4, 'roadDevCard':5, 'knightDevCard': 6, 'confirm':7, 'reject':8, 'clearFlag':9, 'purchaseRoad':10, 'purchaseSettlement':11, 'purchaseCity':12, 'endGame':13, 'shutdown':14}
+	if reg == registers['pi']:
+		val = flags['val']
+	with i2c.I2CMaster() as bus:
+		bus.transaction(i2c.writing_bytes(0x50, registers[reg], val))
+
+def readi2c(reg, val, playerID=-1):
+	registers = {'micro':3, 'thieved':4, 'pieceType':6, 'port':7, 'longestRoad':8, 'dice':9, 'resources':10}
+	flags = {'newPiece':5, 'newThief':4, 'error':6, 'diceReady':9, 'newRoad':8, 'allClear':11}
+	readNum = 1
+	startReg = registers[reg]
+	if val == registers['resources'] and playerID >= 0 and playerID <= 3:
+		startReg = (playerID * 5) + 10
+		readNum = 5
+	with i2c.I2CMaster() as bus:
+		readMCU = bus.transaction(i2c.writing_bytes(0x50, startReg), i2c.reading(0x50, readNum))
+	if val == registers['resources']:
+		response = {}
+		response['ore'] = readMCU[0][0]
+		response['wheat'] = readMCU[0][1]
+		response['sheep'] = readMCU[0][2]
+		response['clay'] = readMCU[0][3]
+		response['wood'] = readMCU[0][4]
+	elif val == registers['pieceType']:
+		readMCU = readMCU[0][0]
+		if readMCU >= 10 and readMCU < 20:
+			toDo = 'confirm'
+			modVal = 10
+		elif readMCU >= 20 and readMCU < 30:
+			toDo = 'remove'
+			modVal = 20
+		elif readMCU >= 30:
+			toDo = 'replace'
+			modVal = 30
+		else:
+			toDo = 'error'
+			modVal = 10
+		if readMCU % modVal = 0:
+			pieceType = 'thief'
+		elif readMCU % modVal = 1:
+			pieceType = 'road'
+		elif readMCU % modVal = 2:
+			pieceType = 'settlement'
+		elif readMCU % modVal = 3:
+			pieceType = 'city'
+		else:
+			pieceType = 'error'
+		response = {toDo: pieceType}
+	else:
+		response = readMCU[0][0]
+	return response
+
 def displayResources(playerID):
 	playerInfo = getPlayerInfo(playerID)
 	from json import dumps
