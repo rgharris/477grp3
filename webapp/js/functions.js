@@ -200,6 +200,7 @@ function loadXMLDoc(div,loc)
 	xmlhttp.send();
 }
 
+var lastFlag = "-1";
 function refreshContent(id, mid) 
 {
 	var xmlhttp;
@@ -216,6 +217,10 @@ function refreshContent(id, mid)
 			document.getElementById("sheepAmt").innerHTML = resources.sheep;
 			document.getElementById("devAmt").innerHTML = resources.dev;
 			document.getElementById("points").innerHTML = resources.points;
+			if (resources.flag == lastFlag) {
+				return;
+			}
+			lastFlag = resources.flag;
 			if (resources.flag == "1") //Indicates turn has started.
 			{
 				document.getElementById("footer").innerHTML = "<a href=\"javascript:openModal('purchase')\" id='purchaseButton' class='button borderRight spacingLeft'>Purchase</a>\n<a href=\"javascript:openModal('trade')\" id='tradeButton' class='button'>Trade</a>\n<a href=\"javascript:runi2c('confirm')\" id='confirmButton' class='button borderTop borderRight spacingLeft'>Confirm</a>\n<span id='endTurnButton'><a href=\"javascript:openModal('endTurn')\" id='turnButton' class='button borderTop'>End Turn</a></span>";
