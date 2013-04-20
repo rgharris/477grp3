@@ -16,7 +16,11 @@ function submitForm()
 	if(document.forms[0].name == "endTurn")
 	{
 		values = "0";
-		document.getElementById('footer').innerHTML = "<span class=\"button fade borderRight spacingLeft\">&nbsp;</span>\n<span class=\"button fade\">&nbsp;</span>\n<a href=\"javascript:openModal('status')\" id='statusButton' class=\"button borderTop borderRight spacingLeft\">Status</a>\n<span class=\"button fade borderTop\">&nbsp;</span>\n<span class=\"button fade borderTop borderRight spacingLeft\">&nbsp;</span>\n<span class=\"button fade borderTop\">&nbsp;</span>";
+		document.getElementById('footer').innerHTML = ""; //"<span class=\"button fade borderRight spacingLeft\">&nbsp;</span>\n<span class=\"button fade\">&nbsp;</span>\n<a href=\"javascript:openModal('status')\" id='statusButton' class=\"button borderTop borderRight spacingLeft\">Status</a>\n<span class=\"button fade borderTop\">&nbsp;</span>\n<span class=\"button fade borderTop borderRight spacingLeft\">&nbsp;</span>\n<span class=\"button fade borderTop\">&nbsp;</span>";
+		document.getElementById('footer').style.visibility = "hidden";
+		document.getElementById('footer').style.height = "0px";
+		document.getElementById("imageReplace").innerHTML = "<img id='leftHeadImg' src='images/menu_gray.png'/>";
+		document.getElementById('head').style.backgroundColor = "rgba(255,253,208,.5)";
 	}
 	else if(document.forms[0].name == "trade")
 	{
@@ -211,7 +215,11 @@ function refreshContent(id, mid)
 			document.getElementById("points").innerHTML = resources.points;
 			if (resources.flag == "1") //Indicates turn has started.
 			{
-				document.getElementById("footer").innerHTML = "<a href=\"javascript:openModal('purchase')\" id='purchaseButton' class=\"button borderRight spacingLeft\">Purchase</a>\n<a href=\"javascript:openModal('trade')\" id='tradeButton' class=\"button\">Trade</a>\n<a href=\"javascript:openModal('status')\" id='statusButton' class=\"button borderTop borderRight spacingLeft\">Status</a>\n<span id='endTurnButton'><a href=\"javascript:openModal('endTurn')\" id='turnButton' class='button borderTop'>End Turn</a></span>\n <a href=\"javascript:runi2c('confirm')\" id='confirmButton' class='button borderTop borderRight spacingLeft'>Confirm</a><a href=\"javascript:runi2c('deny')\" id='denyButton' class='button borderTop'>Deny</a>";
+				document.getElementById("footer").innerHTML = "<a href=\"javascript:openModal('purchase')\" id='purchaseButton' class='button borderRight spacingLeft'>Purchase</a>\n<a href=\"javascript:openModal('trade')\" id='tradeButton' class='button'>Trade</a>\n<a href=\"javascript:runi2c('confirm')\" id='confirmButton' class='button borderTop borderRight spacingLeft'>Confirm</a>\n<span id='endTurnButton'><a href=\"javascript:openModal('endTurn')\" id='turnButton' class='button borderTop'>End Turn</a></span>";
+				
+				//"<a href=\"javascript:openModal('purchase')\" id='purchaseButton' class=\"button borderRight spacingLeft\">Purchase</a>\n<a href=\"javascript:openModal('trade')\" id='tradeButton' class=\"button\">Trade</a>\n<a href=\"javascript:openModal('status')\" id='statusButton' class=\"button borderTop borderRight spacingLeft\">Status</a>\n<span id='endTurnButton'><a href=\"javascript:openModal('endTurn')\" id='turnButton' class='button borderTop'>End Turn</a></span>\n <a href=\"javascript:runi2c('confirm')\" id='confirmButton' class='button borderTop borderRight spacingLeft'>Confirm</a><a href=\"javascript:runi2c('deny')\" id='denyButton' class='button borderTop'>Deny</a>";
+				document.getElementById("imageReplace").innerHTML = "<a class='headElement' href='javascript:showHideMenu()' id='leftHead'><img src='images/menu.png'/></a>";
+				document.getElementById("head").style.backgroundColor = "rgba(207,181,59,.8)";
 			}
 			else if (resources.flag == "2") //Indicates invalid trade.
 			{

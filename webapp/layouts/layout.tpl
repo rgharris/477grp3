@@ -20,8 +20,18 @@
          </div>
 			<!--Main Body-->
 			<div id="container">
-				<div id="head">
-					<a class="headElement" href="javascript:showHideMenu()" id="leftHead"><img src="images/menu.png"/></a>
+%if currentTurn == True:
+				<div id="head" style="background-color: rgba(207,181,59,.8)">
+%else:
+				<div id="head" style="background-color: rgba(255,253,208,.5)">
+%end
+				  <span  class="headElement" id="imageReplace">
+%if currentTurn == True:
+						<a class='headElement' href='javascript:showHideMenu()' id='leftHead'><img src='images/menu.png'/></a>
+%else:
+						<img id="leftHeadImg" src="images/menu_gray.png"/>
+%end
+					</span>
 					<div id="middleHead" class="headElement">
 						<div class="centered">
 							<a href="javascript:openModal('name');" id="name_pop" class="h2"><span id="playerName">{{name}}</span>:</a> 
