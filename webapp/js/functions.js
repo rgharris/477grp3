@@ -99,6 +99,9 @@ function submitName()
 		document.getElementById("playerName").innerHTML=xmlhttp.responseText;
 		closeModal();
 	}
+	if (document.forms[0].user.value == "") {
+		document.forms[0].user.value = nameValue;
+	}
 	xmlhttp.open("GET","submitForm?id=name&value=" + document.forms[0].user.value, true);
 	xmlhttp.send();
 	return false
