@@ -47,7 +47,6 @@ div#footer{
 	overflow: hidden;
 }
 div#head .h2{
-	margin: 0;
 	padding: 0;
 	color: #000000;
 	text-align:center;
@@ -58,14 +57,28 @@ div#head .h2{
 	font-family: 'Cambo', 'Times New Roman', serif;
 	font-weight: bold;
 }
-#name_pop {
-	width: 37%;
+div#head h2 {
+	margin: 0;
+	padding: 0;
+	color: #000000;
+	text-align: center;
+	vertical-align: middle;
+	font-size:20pt;
+	font-family: 'Cambo', 'Times New Roman', serif;
+	font-weight: bold;
 }
+#word_pop {
+	margin-left: 10px;
+}
+/*#name_pop {
+	width: 37%;
+}*/
 #middleInfo{
 	width: 75%;
-	float: left;
+	/*float: left;*/
 	text-align: center;
 }
+/*
 .settingsImg{
 	width:10%;
 	border-left: solid 1px #000;
@@ -77,6 +90,31 @@ div#head .h2{
 	border-right: solid 1px #000;
 	padding-right: 2%;
 	float:left;
+}
+*/
+.headElement {
+	position: relative;
+	float: left;
+}
+#leftHead {
+	width: 8%;
+}
+#middleHead {
+	width: 84%;
+	text-align: center;
+}
+#rightHead {
+	width: 8%;
+}
+#rightHead img {
+	width: 29px;
+	float: right;
+}
+.centered {
+	display: inline-block;
+}
+.centered a {
+	text-decoration: none;
 }
 .resourceImg{
 	width:100%;

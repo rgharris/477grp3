@@ -21,11 +21,14 @@
 			<!--Main Body-->
 			<div id="container">
 				<div id="head">
-					<a href="javascript:showHideMenu()" ><img src="images/menu.png" class="menuImg" /></a>
-					<div id="middleInfo">
-	<a href="javascript:openModal('name');" id="name_pop" class="h2"><span id="playerName">{{name}}</span>:</a> <a href="javascript:openModal('status')" id="word_pop" class="h2"><span id="points">{{points}}</span> Pts</a>
+					<a class="headElement" href="javascript:showHideMenu()" id="leftHead"><img src="images/menu.png"/></a>
+					<div id="middleHead" class="headElement">
+						<div class="centered">
+							<a href="javascript:openModal('name');" id="name_pop" class="h2"><span id="playerName">{{name}}</span>:</a> 
+							<a href="javascript:openModal('status')" id="word_pop" class="h2"><span id="points">{{points}}</span> pts</a>
+						</div>
 					</div>
-					<img src="images/settings.png" class="settingsImg" />
+					<a class="headElement" href="javascript:void()" id="rightHead"><img src="images/settings.png"/></a>
 				</div>
 				<div id="footer" style="visibility: hidden">
 %if currentTurn == False:
@@ -38,10 +41,10 @@
 %else:
 					<a href="javascript:openModal('purchase')" id='purchaseButton' class="button borderRight spacingLeft">Purchase</a>
 					<a href="javascript:openModal('trade')" id='tradeButton' class="button">Trade</a>
-					<a href="javascript:openModal('status')" id='statusButton' class="button borderTop borderRight spacingLeft">Status</a>
-					<span id='endTurnButton'><a href="javascript:openModal('endTurn')" id='turnButton' class='button borderTop'>End Turn</a></span>
 					<a href="javascript:runi2c('confirm')" id='confirmButton' class='button borderTop borderRight spacingLeft'>Confirm</a>
-					<a href="javascript:runi2c('deny')" id='denyButton' class='button borderTop'>Deny</a>
+					<span id='endTurnButton'><a href="javascript:openModal('endTurn')" id='turnButton' class='button borderTop'>End Turn</a></span>
+					<!--a href="javascript:runi2c('deny')" id='denyButton' class='button borderTop'>Deny</a-->
+					<!--a href="javascript:openModal('status')" id='statusButton' class="button borderTop borderRight spacingLeft">Status</a-->
 %end
 				</div>
 

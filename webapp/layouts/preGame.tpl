@@ -12,7 +12,7 @@
 			<div id="container">
 				<div id="head">
 					<h2>Waiting for players</h2>
-					<img src="images/settings.png" class="settingsImg" />
+					<!--img src="images/settings.png" class="settingsImg" /--->
 				</div>
 				<div id="body">
 %numPlayersDisplay = str(numPlayers)

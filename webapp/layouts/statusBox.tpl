@@ -16,4 +16,4 @@ and the largest army</i>\\
 </li>
 %end
 </ul>
-<input type="submit" value="Got it!" class="bottom left" />
+<input type="submit" value="Got it!" class="bottom left" onclick="javascript:closeModal()" />

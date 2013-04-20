@@ -252,7 +252,7 @@ function showHideMenu() {
 	if (elem.style.visibility == "hidden")
 	{
 		elem.style.visibility = "visible";
-		elem.style.height = "122px";
+		elem.style.height = "80px";
 	} else {
 		elem.style.visibility = "hidden";
 		elem.style.height = "0px";
