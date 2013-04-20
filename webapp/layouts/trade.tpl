@@ -32,32 +32,75 @@
 <form onsubmit="return submitForm()" class="trade" name="trade">
 	<h2 style="margin-bottom: 15px">Trade</h2>
 	<span id="tradeContent">
-  <div style="width: 100%; height: 155px">
-  	<div class="resourceColumn">
-    	<h3 class="resourceHeader">Resource</h3>  
-      <div class="resourceName">Clay</div>
-      <div class="resourceName">Ore</div>
-      <div class="resourceName">Sheep</div>
-      <div class="resourceName">Wheat</div>
-      <div class="resourceName">Wood</div>
-   </div>
-   <div class="countColumn">
-      <h3 class="countHeader">Give</h3>
-      <input name="giveClay" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-      <input name="giveOre" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-      <input name="giveSheep" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-      <input name="giveWheat" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-      <input name="giveWood" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-    </div>
-    <div class="countColumn">
-      <h3 class="countHeader">Get</h3>
-      <input name="getClay" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-      <input name="getOre" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-      <input name="getSheep" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-      <input name="getWheat" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-      <input name="getWood" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
-    </div>
-  </div>
+  <div style="width: 100%; /*height: 155px*/">
+    <div>  
+			<div class="resourceColumn">
+				<h3 class="resourceHeader">Resource</h3>
+			</div>
+			<div class="countColumn">
+				<h3 class="countHeader">Give</h3>
+			</div>
+			<div class="countColumn">
+				<h3 class="countHeader">Get</h3>
+			</div>
+		</div>
+		<div>  
+			<div class="resourceColumn">
+				<div class="resourceName">Clay</div>
+			</div>
+			<div class="countColumn">
+				<input name="giveClay" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+			</div>
+			<div class="countColumn">
+				<input name="getClay" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+			</div>
+		</div>
+		<div>  
+			<div class="resourceColumn">
+				<div class="resourceName">Ore</div>
+			</div>
+			<div class="countColumn">
+				<input name="giveOre" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+			</div>
+			<div class="countColumn">
+				<input name="getOre" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+			</div>
+		</div>
+		<div>  
+			<div class="resourceColumn">
+				<div class="resourceName">Sheep</div>
+			</div>
+			<div class="countColumn">
+				<input name="giveSheep" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+			</div>
+			<div class="countColumn">
+				<input name="getSheep" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+			</div>
+		</div>
+		<div>  
+			<div class="resourceColumn">
+				<div class="resourceName">Wheat</div>
+			</div>
+			<div class="countColumn">
+				<input name="giveWheat" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+			</div>
+			<div class="countColumn">
+				<input name="getWheat" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+			</div>
+		</div>
+		<div>  
+			<div class="resourceColumn">
+				<div class="resourceName">Wood</div>
+			</div>
+			<div class="countColumn">
+				<input name="giveWood" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+			</div>
+			<div class="countColumn">
+				<input name="getWood" type="number" class="countValue" value="0"  onfocus="if(this.value == '0') { this.value = ''; }" onblur="if(this.value == '') {this.value = '0';}"/>
+			</div>
+		</div>
+	</div>
+	<br />
   <h3>Player to trade with: </h3>
 	  <select name="playerid" class="playerSelect">
 %for playerid in players:

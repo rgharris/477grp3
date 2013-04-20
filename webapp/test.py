@@ -54,7 +54,7 @@ def displayResources(playerID):
 	output = playerInfo['resources'].copy()
 	output['dev'] = sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())
 	output['flag'] = playerInfo['flag']
-	output['points'] = playerInfo['points']
+	output['points'] = playerInfo['points'] + playerInfo['cards']['victory']
 	return dumps(output)
 
 def updatePlayerName(playerID, newName):
@@ -281,6 +281,28 @@ def performPurchase(playerID, purchase):
 	else:
 		return False
 
+def yearOfPlenty(playerID, resources):
+	playerInfo = getPlayerInfo(playerID)
+	for item in resources:
+		playerInfo['resources'][resources[item]] += 1
+	playerInfo['cards']['plenty'] -= 1
+	writePlayerInfo(playerID, playerInfo)
+	return True
+
+def monopoly(playerID, resource):
+	playerInfo = getPlayerInfo(playerID)
+	allPlayers = getGameInfo()["playerInfo"]
+	numReceived = 0
+	for player in allPlayers:
+		if int(player) != int(playerID):
+			playerInfo['resources'][resource] += allPlayers[player]['resources'][resource]
+			numReceived += allPlayers[player]['resources'][resource]
+			allPlayers[player]['resources'][resource] = 0
+	writeGameInfo("playerInfo", allPlayers)
+	playerInfo['cards']['monopoly'] -= 1
+	writePlayerInfo(playerID, playerInfo)
+	return({resource:numReceived})
+
 def weighted_choice_sub(weights):
 	from random import random
 	#http://eli.thegreenplace.net/2010/01/22/weighted-random-generation-in-python/
@@ -380,7 +402,10 @@ def handle_ajax():
 		elif mid == "purchase":
 			return template('purchase', newPurchase=True)
 		elif mid == "devCards":
-			return "Dev card stuff!"
+			playerInfo = getPlayerInfo(playerID)
+			output = playerInfo['cards'].copy()
+			output['knightsPlayed'] = playerInfo['playedKnights']
+			return template('devCards', showCards=True, devCards=output)
 		
 	return "<p>Your request was invalid. Please try again.</p>"
 
@@ -429,6 +454,26 @@ def handle_form():
 					else:
 						output = purchaseResult
 					return template('purchase', devCard=output)
+	elif fid == "playDevCard":
+		from json import loads
+		playerInfo = getPlayerInfo(request.get_cookie("playerID"))
+		output = playerInfo['cards'].copy()
+		output['knightsPlayed'] = playerInfo['playedKnights']
+		gameStatus = getGameStatus()
+		value = loads(request.params.value)
+		if value['play'] == 'playing':
+			return template('devCards', devCards=output, playCard=value['type'])
+		else:
+			return template('devCards', devCards=output, playedDevCard=gameStatus['devCardPlayed'], showCard=value['type'])
+	elif fid == "yearofplenty":
+		from json import loads
+		value = loads(request.params.value)
+		yearOfPlenty(int(request.get_cookie("playerID")), value['resources'])
+		return template('devCards', success='plenty')
+	elif fid == "monopoly":
+		resources = monopoly(request.get_cookie("playerID"), request.params.value)
+		return template('devCards', resources=resources, success='monopoly')
+
 
 @get('/ready')
 def handle_players():
@@ -468,8 +513,10 @@ def show_webapp():
 		if request.get_cookie("gameTime") is not None and request.get_cookie("gameTime") == str(gameTime):
 			playerID = int(request.get_cookie("playerID"))
 			playerInfo = getPlayerInfo(playerID)
-			#return template('layout', name=playerInfo['playerName'], points=str(playerInfo['points'] + playerInfo['cards']['victory'] + playerInfo['onHold']['victory']), devCards=str(sum(playerInfo['cards'].values())), resources=dict((key, str(val)) for key, val in playerInfo['resources'].items()), currentTurn=True if playerID == gameStatus['currentPlayer'] else False)
-			return template('layout', name=playerInfo['playerName'], points=str(playerInfo['points'] + playerInfo['cards']['victory'] + playerInfo['onHold']['victory']), devCards=str(sum(playerInfo['cards'].values())), resources=dict((key, str(val)) for key, val in playerInfo['resources'].items()), currentTurn=True)
+			#Uncomment this for turn-based gameplay.
+			return template('layout', name=playerInfo['playerName'], points=str(playerInfo['points'] + playerInfo['cards']['victory'] + playerInfo['onHold']['victory']), devCards=str(sum(playerInfo['cards'].values())), resources=dict((key, str(val)) for key, val in playerInfo['resources'].items()), currentTurn=True if playerID == gameStatus['currentPlayer'] else False)
+			#Uncomment this for debug mode - it's everybody's turn always!
+			#return template('layout', name=playerInfo['playerName'], points=str(playerInfo['points'] + playerInfo['cards']['victory'] + playerInfo['onHold']['victory']), devCards=str(sum(playerInfo['cards'].values())), resources=dict((key, str(val)) for key, val in playerInfo['resources'].items()), currentTurn=True)
 		else:
 			return template('error', gameStarted=True)
 

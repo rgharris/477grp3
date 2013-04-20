@@ -15,14 +15,36 @@
          <!--Modal Boxes-->
          <a href="javascript:closeModal()" class="overlay" id="modal"></a>
          <div class="modal" id="ModalBox">
-				 <p>Test Junk!</p>
+				 <!--img class="loadingGif" src="images/loading.gif" alt="Loading..." /-->
+				 <p>Loading...</p>
          </div>
 			<!--Main Body-->
 			<div id="container">
 				<div id="head">
-					<a href="javascript:openModal('name');" id="name_pop" ><h2><span id="playerName">{{name}}</span>: <span id="points">{{points}}</span> Points</h2></a>
+					<a href="javascript:showHideMenu()" ><img src="images/menu.png" class="menuImg" /></a>
+					<div id="middleInfo">
+	<a href="javascript:openModal('name');" id="name_pop" class="h2"><span id="playerName">{{name}}</span>:</a> <a href="javascript:openModal('status')" id="word_pop" class="h2"><span id="points">{{points}}</span> Pts</a>
+					</div>
 					<img src="images/settings.png" class="settingsImg" />
 				</div>
+				<div id="footer" style="visibility: hidden">
+%if currentTurn == False:
+						<span class="button fade borderRight spacingLeft">&nbsp;</span>
+						<span class="button fade">&nbsp;</span>
+						<a href="javascript:openModal('status')" id='statusButton' class="button borderTop borderRight spacingLeft">Status</a>
+						<span class="button fade borderTop">&nbsp;</span>
+						<span class="button fade borderTop borderRight spacingLeft">&nbsp;</span>
+						<span class="button fade borderTop">&nbsp;</span>
+%else:
+					<a href="javascript:openModal('purchase')" id='purchaseButton' class="button borderRight spacingLeft">Purchase</a>
+					<a href="javascript:openModal('trade')" id='tradeButton' class="button">Trade</a>
+					<a href="javascript:openModal('status')" id='statusButton' class="button borderTop borderRight spacingLeft">Status</a>
+					<span id='endTurnButton'><a href="javascript:openModal('endTurn')" id='turnButton' class='button borderTop'>End Turn</a></span>
+					<a href="javascript:runi2c('confirm')" id='confirmButton' class='button borderTop borderRight spacingLeft'>Confirm</a>
+					<a href="javascript:runi2c('deny')" id='denyButton' class='button borderTop'>Deny</a>
+%end
+				</div>
+
 				<div id="resources">
 					<div id="clay" class="resource">
 						<img src="images/clay.png" class="resourceImg"/>
@@ -53,28 +75,12 @@
 						<a href="javascript:openModal('devCards')" id="cardsLink" >
 							<img src="images/sea.png" class="resourceImg"/>
 							<p class="resourceTitle">Dev. Cards</p>
-							<p id="devAmt" class="amount">{{devCards}}</p>
+							<p class="resourceCaption">Tap for details</p>
+							<p id="devAmt" class="devCardsAmount">{{devCards}}</p>
 						</a>
 					</div>
 				</div>
 				<div class="clear"></div>
-				<div id="footer">
-%if currentTurn == False:
-						<span class="button fade borderRight spacingLeft">&nbsp;</span>
-						<span class="button fade">&nbsp;</span>
-						<a href="javascript:openModal('status')" id='statusButton' class="button borderTop borderRight spacingLeft">Status</a>
-						<span class="button fade borderTop">&nbsp;</span>
-						<span class="button fade borderTop borderRight spacingLeft">&nbsp;</span>
-						<span class="button fade borderTop">&nbsp;</span>
-%else:
-					<a href="javascript:openModal('purchase')" id='purchaseButton' class="button borderRight spacingLeft">Purchase</a>
-					<a href="javascript:openModal('trade')" id='tradeButton' class="button">Trade</a>
-					<a href="javascript:openModal('status')" id='statusButton' class="button borderTop borderRight spacingLeft">Status</a>
-					<span id='endTurnButton'><a href="javascript:openModal('endTurn')" id='turnButton' class='button borderTop'>End Turn</a></span>
-					<a href="javascript:runi2c('confirm')" id='confirmButton' class='button borderTop borderRight spacingLeft'>Confirm</a>
-					<a href="javascript:runi2c('deny')" id='denyButton' class='button borderTop'>Deny</a>
-%end
-				</div>
 			</div>
 		</body>
 	

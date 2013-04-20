@@ -5,17 +5,20 @@ function submitForm()
 	xmlhttp.onreadystatechange = function()
 	{
 		console.log(xmlhttp.responseText);
-		if(document.forms[0].name != "trade")
+		if(document.forms[0].name != "trade" && document.forms[0].name != "yearofplenty" && document.forms[0].name != "monopoly")
 		{
-			closeModal()
+			closeModal();
+		}
+		else if(document.forms[0].name == "monopoly" || document.forms[0].name == "yearofplenty"){
+				document.getElementById("boxContent").innerHTML = xmlhttp.responseText;
 		}
 	}
 	if(document.forms[0].name == "endTurn")
 	{
-		values = "0"
+		values = "0";
 		document.getElementById('footer').innerHTML = "<span class=\"button fade borderRight spacingLeft\">&nbsp;</span>\n<span class=\"button fade\">&nbsp;</span>\n<a href=\"javascript:openModal('status')\" id='statusButton' class=\"button borderTop borderRight spacingLeft\">Status</a>\n<span class=\"button fade borderTop\">&nbsp;</span>\n<span class=\"button fade borderTop borderRight spacingLeft\">&nbsp;</span>\n<span class=\"button fade borderTop\">&nbsp;</span>";
 	}
-	if(document.forms[0].name == "trade")
+	else if(document.forms[0].name == "trade")
 	{
 		var trade = {
 			give: {
@@ -36,6 +39,20 @@ function submitForm()
 		};
 		values = JSON.stringify(trade);
 		document.getElementById('tradeContent').innerHTML = "<p>Please wait for a response from " + document.forms[0].playerid[document.forms[0].playerid.selectedIndex].text + ".</p>";
+	}
+	else if(document.forms[0].name == "yearofplenty")
+	{
+		var plenty = {
+			resources: {
+				resource1:document.forms[0].resource1[document.forms[0].resource1.selectedIndex].value,
+				resource2:document.forms[0].resource2[document.forms[0].resource2.selectedIndex].value,
+			}
+		};
+		values = JSON.stringify(plenty);
+	}
+	else if(document.forms[0].name == "monopoly")
+	{
+		values = document.forms[0].resource[document.forms[0].resource.selectedIndex].value;
 	}
 	xmlhttp.open("GET","submitForm?id=" + document.forms[0].name + "&value=" + values,true);
 	xmlhttp.send();
@@ -103,7 +120,7 @@ function purchase(action,type)
 {
 	var xmlhttp;
 	xmlhttp = new XMLHttpRequest();
-	document.getElementById("purchaseContent").innerHTML = "Please wait..."
+	document.getElementById("purchaseContent").innerHTML = "Please wait...";
 	xmlhttp.onreadystatechange = function()
 	{
 		console.log(xmlhttp.responseText);
@@ -117,6 +134,25 @@ function purchase(action,type)
 
 	xmlhttp.open("GET","submitForm?id=purchase&value=" + values, true);
 	xmlhttp.send();
+}
+function playCard(type,play)
+{
+	var xmlhttp;
+	xmlhttp = new XMLHttpRequest();
+	document.getElementById("cardContent").innerHTML = "Please wait...";
+	xmlhttp.onreadystatechange = function()
+	{
+		console.log(xmlhttp.responseText);
+		document.getElementById("cardContent").innerHTML = xmlhttp.responseText;
+	}
+	var devCard = {
+			type: type,
+			play: play
+	};
+	var values = JSON.stringify(devCard);
+	xmlhttp.open("GET","submitForm?id=playDevCard&value=" + values, true);
+	xmlhttp.send();
+
 }
 function acceptTrade()
 {
@@ -179,18 +215,18 @@ function refreshContent(id, mid)
 			}
 			else if (resources.flag == "2") //Indicates invalid trade.
 			{
-				closeModal()
-				openModal('invalidTrade')
+				closeModal();
+				openModal('invalidTrade');
 			}
 			else if (resources.flag == "3") //Indicates begin trade on remote player.
 			{
-				closeModal()
-				openModal('remoteTrade')
+				closeModal();
+				openModal('remoteTrade');
 			}
 			else if (resources.flag == "4") //Indicates trade response from remote player.
 			{
-				closeModal()
-				openModal('returnTrade')
+				closeModal();
+				openModal('returnTrade');
 			}
 		}
 		else if (id == "readyState"){
@@ -209,4 +245,16 @@ function refreshContent(id, mid)
 		xmlhttp.open("GET", "refreshContent?id=" + id + "&modal=" + mid, true);
 	}
 	xmlhttp.send();
+}
+
+function showHideMenu() {
+  var elem = document.getElementById("footer");
+	if (elem.style.visibility == "hidden")
+	{
+		elem.style.visibility = "visible";
+		elem.style.height = "122px";
+	} else {
+		elem.style.visibility = "hidden";
+		elem.style.height = "0px";
+	}
 }

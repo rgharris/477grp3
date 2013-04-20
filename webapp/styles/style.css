@@ -31,29 +31,52 @@ html{
 div#head, div#footer{
 	background-color: rgba(255,253,208,.5);
 	padding: 5px;
-	margin-bottom:5px;
+	margin-bottom:0px;
 	overflow: auto;
+}
+div#head {
+	border-bottom: 1px solid black;
 	height: auto !important;
 }
 div#footer{
 	padding: 5px 0 5px 0;
+	visibility: hidden;
+	height: 0px;
+	transition: height 0.2s;
+	-webkit-transition: height 0.2s; /* Safari */
+	overflow: hidden;
 }
-div#head h2{
+div#head .h2{
 	margin: 0;
 	padding: 0;
 	color: #000000;
 	text-align:center;
-	width:87%;
-	font-size:24pt;
+	/*width:75%;*/
+	font-size:20pt;
 	float:left;
 	vertical-align: middle;
 	font-family: 'Cambo', 'Times New Roman', serif;
+	font-weight: bold;
+}
+#name_pop {
+	width: 37%;
+}
+#middleInfo{
+	width: 75%;
+	float: left;
+	text-align: center;
 }
 .settingsImg{
 	width:10%;
 	border-left: solid 1px #000;
 	padding-left: 2%;
 	float:right;
+}
+.menuImg{
+	width:10%;
+	border-right: solid 1px #000;
+	padding-right: 2%;
+	float:left;
 }
 .resourceImg{
 	width:100%;
@@ -62,6 +85,9 @@ div#head h2{
 	float: left;
 	width:50%;
 	position:relative;
+}
+#resources {
+  margin-top: 5px;
 }
 .clear{
 	clear:both;
@@ -73,12 +99,22 @@ div#head h2{
 	text-align:center;
 	font-size: 16pt;
 }
-.amount{
+.resourceCaption{
+	position:absolute;
+	top:20%;
+	width:100%;
+	text-align:center;
+	font-size: 12pt;
+}
+.amount, .devCardsAmount{
 	position:absolute;
 	width:100%;
 	text-align:center;
 	top:5%;
 	font-size:35pt;
+}
+.devCardsAmount {
+	top: 15%;
 }
 #clay, #wood, #cards{
 	color: #fff;
@@ -142,7 +178,7 @@ a.playerName{
     opacity: 1;
 }
 .modal{
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0,0,0,0.6);
 	 color: #FFFDD0;
 	 /*display: none;*/
     position: absolute;
@@ -152,14 +188,17 @@ a.playerName{
     visibility: hidden;
 		opacity: 1;
     z-index: 10;
-    transition: opacity .5s;
+    /*transition: opacity .5s;*/
 	 border-radius: 10px;
 	 width: 90%;
 	 left: 5%;
 	 /*top: 5%; */
 	 max-width: 500px;
 }
-
+.loadingGif {
+/*	width: 50px;*/
+	margin-top: 50px;
+}
 .overlay:target+.modal {
     top: 35%;
     opacity: 1;
@@ -170,10 +209,10 @@ a.playerName{
 } 
 	
 	/*-- Added by Robert -- */
-	.modal p.generic{
+	/*.modal p.generic{
 		height: 70px;
 	}
-	.modal ul.gameStatus{
+	.modal ul.gameStatus, p.resourceBox{
 		height: 185px;
 	}
 	.modal p.purchase{
@@ -181,11 +220,14 @@ a.playerName{
 	}
 	.modal form.trade, .modal form.cards{
 	  height: 415px;
+	}*/
+	#ModalBox {
+		padding-bottom: 75px;
 	}
 	
 	.trade .resourceName {
-	  width: 100%;
-	  margin: 10px 0px;
+	 /* width: 100%;
+	  margin: 10px 0px;*/
 	}
 	
 	.trade  h3.resourceHeader {
@@ -195,18 +237,18 @@ a.playerName{
 	
 	.trade h3.countHeader {
 	  width: 100%;
-	  margin: 0px 0px 1px 0px;
+	  margin: 0px 0px 3px 0px;
 	}
 	
 	.trade input.countValue {
-	  width: 20px; 
+	  width: 33px; 
 	  height: 1em;
 	  margin: 5px 30%;
 	  text-align: center;
 	}
 	
 	.trade .playerSelect {
-	  width: 100px;
+	  width: 150px;
 	  background-color: white;
 	  border: none;
 	  color: black;
@@ -222,7 +264,13 @@ a.playerName{
 	}
 	
 	/*-- End Added by Robert -- */
-	
+
+  p.devCardSpacing {
+		margin-bottom: 100px;
+	}
+	p.purchase {
+		margin-bottom: 50px;
+	}	
 	.modal a.bottom {
 		display: inline-block;
 		position: absolute;
@@ -274,10 +322,10 @@ a.playerName{
 		width: 50%;
 	}
 	.modal a.top{
-		bottom:32%;
+		bottom:50px;
 	}
 	.modal a.moreTop{
-		bottom:44%;
+		bottom:100px;
 	}
 	.modal a.left{
 		left:0;
