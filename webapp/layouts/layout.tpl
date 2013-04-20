@@ -10,7 +10,7 @@
 
 
 		<body>
-			<script>setInterval("refreshContent(\"resources\", 0)", 5000)</script>
+			<script>setInterval("refreshContent(\"resources\", 0)", 1000)</script>
 			
          <!--Modal Boxes-->
          <a href="javascript:closeModal()" class="overlay" id="modal"></a>

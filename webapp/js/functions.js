@@ -89,6 +89,17 @@ function unsetReady()
 	xmlhttp.open("GET","ready?set=false", true);
 	xmlhttp.send();
 }
+function runi2c(todo)
+{
+        var xmlhttp;
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function()
+        {
+		console.log(xmlhttp.responseText);
+        }
+        xmlhttp.open("GET","i2c?todo=" + todo, true);
+        xmlhttp.send();
+}
 function submitName()
 {
 	var xmlhttp;
@@ -220,6 +231,9 @@ function refreshContent(id, mid)
 			if (resources.flag == lastFlag) {
 				return;
 			}
+			else if (lastFlag == "5") {
+				closeModal();
+			}
 			lastFlag = resources.flag;
 			if (resources.flag == "1") //Indicates turn has started.
 			{
@@ -243,6 +257,11 @@ function refreshContent(id, mid)
 			{
 				closeModal();
 				openModal('returnTrade');
+			}
+			else if (resources.flag == "5")
+			{
+				closeModal();
+				openModal('pieceInfo');
 			}
 		}
 		else if (id == "readyState"){

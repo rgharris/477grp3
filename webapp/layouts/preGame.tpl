@@ -8,7 +8,7 @@
          <script src="js/functions.js"></script> 
       </head>
 		<body class="wait">
-			<script>setInterval("refreshContent(\"readyState\", 0)", 5000)</script>
+			<script>setInterval("refreshContent(\"readyState\", 0)", 1000)</script>
 			<div id="container">
 				<div id="head">
 					<h2>Waiting for players</h2>

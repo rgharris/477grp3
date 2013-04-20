@@ -57,25 +57,26 @@ def writei2c(reg, val):
 	with i2c.I2CMaster() as bus:
 		bus.transaction(i2c.writing_bytes(0x50, registers[reg], val))
 
-def readi2c(reg, val, playerID=-1):
+def readi2c(reg, playerID=-1):
 	import quick2wire.i2c as i2c
 	registers = {'micro':3, 'thieved':4, 'pieceType':6, 'port':7, 'longestRoad':8, 'dice':9, 'resources':10}
 	flags = {'newPiece':5, 'newThief':4, 'error':6, 'diceReady':9, 'newRoad':8, 'allClear':11}
 	readNum = 1
 	startReg = registers[reg]
-	if val == registers['resources'] and playerID >= 0 and playerID <= 3:
+	if reg == 'resources' and playerID >= 0 and playerID <= 3:
 		startReg = (playerID * 5) + 10
 		readNum = 5
 	with i2c.I2CMaster() as bus:
 		readMCU = bus.transaction(i2c.writing_bytes(0x50, startReg), i2c.reading(0x50, readNum))
-	if val == registers['resources']:
+	if reg == 'resources':
 		response = {}
 		response['ore'] = readMCU[0][0]
 		response['wheat'] = readMCU[0][1]
 		response['sheep'] = readMCU[0][2]
 		response['clay'] = readMCU[0][3]
 		response['wood'] = readMCU[0][4]
-	elif val == registers['pieceType']:
+		return response
+	elif reg == 'pieceType':
 		readMCU = readMCU[0][0]
 		if readMCU >= 10 and readMCU < 20:
 			toDo = 'confirm'
@@ -99,10 +100,10 @@ def readi2c(reg, val, playerID=-1):
 			pieceType = 'city'
 		else:
 			pieceType = 'error'
-		response = {toDo: pieceType}
+		return toDo, pieceType
 	else:
 		response = readMCU[0][0]
-	return response
+		return response
 
 def displayResources(playerID):
 	playerInfo = getPlayerInfo(playerID)
@@ -110,6 +111,10 @@ def displayResources(playerID):
 	output = playerInfo['resources'].copy()
 	output['dev'] = sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())
 	output['flag'] = playerInfo['flag']
+	if(getGameStatus()['currentPlayer'] == playerID):
+		response = readi2c('micro', 0)
+		if (response == 5 or response == 6):
+			output['flag'] = "5"
 	output['points'] = playerInfo['points'] + playerInfo['cards']['victory']
 	return dumps(output)
 
@@ -465,6 +470,9 @@ def handle_ajax():
 			output = playerInfo['cards'].copy()
 			output['knightsPlayed'] = playerInfo['playedKnights']
 			return template('devCards', showCards=True, devCards=output)
+		elif mid == "pieceInfo":
+			errorType, piece = readi2c('pieceType', playerID)
+			return template('pieceStuff', errorType=errorType, piece=piece)
 		
 	return "<p>Your request was invalid. Please try again.</p>"
 
@@ -551,6 +559,12 @@ def handle_players():
 		response.set_cookie("joinTime", "-1")
 		response.set_cookie("playerID", "-1")
 		return str(numPlayers)
+
+@get('/i2c')
+def handle_i2c():
+	todo = request.params.todo
+	if todo == "confirm":
+		writei2c('pi', 'confirm')
 
 # This request handles a 
 @get('/')
