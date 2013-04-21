@@ -48,12 +48,26 @@ def writeJson(jfile, info):
 		f.close()
 	return info
 
-def writei2c(reg, val):
+def writei2c(reg, val, playerID=-1):
 	import quick2wire.i2c as i2c
+	from time import sleep
 	registers = {'pi':0, 'currentPlayer':1, 'playerCount':2}
 	flags = {'turnOn':1, 'newGame':2, 'diceRolled':3, 'endTurn':4, 'roadDevCard':5, 'knightDevCard': 6, 'confirm':7, 'reject':8, 'clearFlag':9, 'purchaseRoad':10, 'purchaseSettlement':11, 'purchaseCity':12, 'endGame':13, 'shutdown':14}
+	needToEndTurn = False
 	if reg == 'pi':
 		val = flags[val]
+		if val == 7:
+			if playerID != -1 and getGameStatus()['setupComplete'] == 0:
+				playerInfo = getPlayerInfo(playerID)
+				if playerInfo['initialPlacements']['settlement'] == playerInfo['initialPlacements']['road']:
+					playerInfo['initialPlacements']['settlement'] += 1
+					playerInfo['points'] += 1
+					writePlayerInfo(playerID, playerInfo)
+				elif playerInfo['initialPlacements']['settlement'] > playerInfo['initialPlacements']['road']:
+					playerInfo['initialPlacements']['road'] += 1
+					writePlayerInfo(playerID, playerInfo)
+					endTurn(playerID)
+	#sleep(.1) #Deal with i2c bus fighting. No, really.
 	with i2c.I2CMaster() as bus:
 		bus.transaction(i2c.writing_bytes(0x50, registers[reg], val))
 
@@ -105,6 +119,13 @@ def readi2c(reg, playerID=-1):
 		response = readMCU[0][0]
 		return response
 
+def getResources(playerID):
+	playerInfo = getPlayerInfo(playerID)
+	resources = readi2c('resources', playerID)
+	for resource in resources:
+		playerInfo['resources'][resource] += resources[resource]
+	writePlayerInfo(playerID, playerInfo)
+
 def displayResources(playerID):
 	playerInfo = getPlayerInfo(playerID)
 	from json import dumps
@@ -112,7 +133,7 @@ def displayResources(playerID):
 	output['dev'] = sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())
 	output['flag'] = playerInfo['flag']
 	if(getGameStatus()['currentPlayer'] == playerID):
-		response = readi2c('micro', 0)
+		response = readi2c('micro', playerID)
 		if (response == 5 or response == 6):
 			output['flag'] = "5"
 	output['points'] = playerInfo['points'] + playerInfo['cards']['victory']
@@ -159,7 +180,6 @@ def getGameInfo():
 	from time import time
 	from os import path
 	filename="/var/www/gameStatus.json"
-	#Careful when editing this - it's a mess, but contains everything possible for the game.
 	if not path.isfile(filename):
 		gameStatus = createGameInfo(filename)
 	else:
@@ -196,6 +216,9 @@ def startGame():
 	gameState['gameStart'] = 1
 	gameState['firstPlayer'] = random.randint(0, int(gameState['numPlayers'])-1)
 	gameState['currentPlayer'] = gameState['firstPlayer']
+	playerInfo = getPlayerInfo(gameState['firstPlayer'])
+	playerInfo['flag'] = "1"
+	writePlayerInfo(gameState['firstPlayer'], playerInfo)
 	writeGameInfo("gameState", gameState)
 	writei2c('playerCount', int(gameState['numPlayers']))
 	writei2c('currentPlayer', int(gameState['currentPlayer']+1))
@@ -224,12 +247,13 @@ def endTurn(playerID):
 				nextPlayerId = gameState['numPlayers'] - 1
 			else:
 				nextPlayerId = gameState['currentPlayer'] - 1
-			#getResources(playerID)
+			getResources(playerID)
 	gameState['currentPlayer'] = nextPlayerId
 	newPlayerInfo = getPlayerInfo(nextPlayerId)
 	newPlayerInfo['flag'] = "1"
-	playerInfo['flag'] = "0"
+	playerInfo['flag'] = "6"
 	writeGameInfo("gameState", gameState)
+	writei2c('currentPlayer', nextPlayerId)
 	writePlayerInfo(playerID, playerInfo)
 	writePlayerInfo(nextPlayerId, newPlayerInfo)
 
@@ -473,6 +497,12 @@ def handle_ajax():
 		elif mid == "pieceInfo":
 			errorType, piece = readi2c('pieceType', playerID)
 			return template('pieceStuff', errorType=errorType, piece=piece)
+		elif mid == "initSetup":
+			initPlace = getPlayerInfo(playerID)['initialPlacements']
+			if(initPlace['settlement'] == initPlace['road']):
+				return template('initSetup', piece='settlement')
+			elif(initPlace['settlement'] > initPlace['road']):
+				return template('initSetup', piece='road')
 		
 	return "<p>Your request was invalid. Please try again.</p>"
 
@@ -564,7 +594,7 @@ def handle_players():
 def handle_i2c():
 	todo = request.params.todo
 	if todo == "confirm":
-		writei2c('pi', 'confirm')
+		writei2c('pi', 'confirm', int(request.get_cookie("playerID")))
 
 # This request handles a 
 @get('/')
