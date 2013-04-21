@@ -50,26 +50,26 @@ def writeJson(jfile, info):
 
 def writei2c(reg, val, playerID=-1):
 	import quick2wire.i2c as i2c
-	from time import sleep
-	registers = {'pi':0, 'currentPlayer':1, 'playerCount':2}
+	registers = {'pi':0, 'currentPlayer':1, 'playerCount':2, 'debug1':30, 'debug2':31, 'debug3':32, 'debug4':33, 'debug5':34}
 	flags = {'turnOn':1, 'newGame':2, 'diceRolled':3, 'endTurn':4, 'roadDevCard':5, 'knightDevCard': 6, 'confirm':7, 'reject':8, 'clearFlag':9, 'purchaseRoad':10, 'purchaseSettlement':11, 'purchaseCity':12, 'endGame':13, 'shutdown':14}
-	needToEndTurn = False
 	if reg == 'pi':
 		val = flags[val]
-		if val == 7:
-			if playerID != -1 and getGameStatus()['setupComplete'] == 0:
-				playerInfo = getPlayerInfo(playerID)
-				if playerInfo['initialPlacements']['settlement'] == playerInfo['initialPlacements']['road']:
-					playerInfo['initialPlacements']['settlement'] += 1
-					playerInfo['points'] += 1
-					writePlayerInfo(playerID, playerInfo)
-				elif playerInfo['initialPlacements']['settlement'] > playerInfo['initialPlacements']['road']:
-					playerInfo['initialPlacements']['road'] += 1
-					writePlayerInfo(playerID, playerInfo)
-					endTurn(playerID)
-	#sleep(.1) #Deal with i2c bus fighting. No, really.
 	with i2c.I2CMaster() as bus:
 		bus.transaction(i2c.writing_bytes(0x50, registers[reg], val))
+
+def checkIfNextPlayer(playerID):
+	if getGameStatus()['setupComplete'] == 1:
+		return False
+	playerInfo = getPlayerInfo(playerID)
+	initPlacements = playerInfo['initialPlacements']
+	if initPlacements['settlement'] == initPlacements['road'] and initPlacements['settlement'] < 2:
+		playerInfo['initialPlacements']['settlement'] += 1
+		playerInfo['points'] += 1
+		writePlayerInfo(playerID, playerInfo)
+	elif initPlacements['settlement'] > initPlacements['road'] and initPlacements['road'] < 2:
+		playerInfo['initialPlacements']['road'] += 1
+		writePlayerInfo(playerID, playerInfo)
+		endTurn(playerID)
 
 def readi2c(reg, playerID=-1):
 	import quick2wire.i2c as i2c
@@ -78,65 +78,64 @@ def readi2c(reg, playerID=-1):
 	readNum = 1
 	startReg = registers[reg]
 	if reg == 'resources' and playerID >= 0 and playerID <= 3:
-		startReg = (playerID * 5) + 10
+		startReg = (playerID * 5) + registers['resources']
 		readNum = 5
 	with i2c.I2CMaster() as bus:
-		readMCU = bus.transaction(i2c.writing_bytes(0x50, startReg), i2c.reading(0x50, readNum))
+		microResponse = bus.transaction(i2c.writing_bytes(0x50, startReg), i2c.reading(0x50, readNum))
 	if reg == 'resources':
-		response = {}
-		response['ore'] = readMCU[0][0]
-		response['wheat'] = readMCU[0][1]
-		response['sheep'] = readMCU[0][2]
-		response['clay'] = readMCU[0][3]
-		response['wood'] = readMCU[0][4]
+		response = {'ore':microResponse[0][0], 'wheat':microResponse[0][1], 'sheep':microResponse[0][2], 'clay':microResponse[0][3], 'wood':microResponse[0][4]}
 		return response
 	elif reg == 'pieceType':
-		readMCU = readMCU[0][0]
-		if readMCU >= 10 and readMCU < 20:
+		microResponse = microResponse[0][0]
+		if microResponse >= 10 and microResponse < 20:
 			toDo = 'confirm'
 			modVal = 10
-		elif readMCU >= 20 and readMCU < 30:
+		elif microResponse >= 20 and microResponse < 30:
 			toDo = 'remove'
 			modVal = 20
-		elif readMCU >= 30:
+		elif microResponse >= 30:
 			toDo = 'replace'
 			modVal = 30
 		else:
 			toDo = 'error'
 			modVal = 10
-		if readMCU % modVal == 0:
+		if microResponse % modVal == 0:
 			pieceType = 'thief'
-		elif readMCU % modVal == 1:
+		elif microResponse % modVal == 1:
 			pieceType = 'road'
-		elif readMCU % modVal == 2:
+		elif microResponse % modVal == 2:
 			pieceType = 'settlement'
-		elif readMCU % modVal == 3:
+		elif microResponse % modVal == 3:
 			pieceType = 'city'
 		else:
 			pieceType = 'error'
 		return toDo, pieceType
 	else:
-		response = readMCU[0][0]
+		response = microResponse[0][0]
 		return response
 
 def getResources(playerID):
-	playerInfo = getPlayerInfo(playerID)
 	resources = readi2c('resources', playerID)
+	playerInfo = getPlayerInfo(playerID)
 	for resource in resources:
-		playerInfo['resources'][resource] += resources[resource]
+		playerInfo['resources'][resource] += int(resources[resource])
 	writePlayerInfo(playerID, playerInfo)
 
 def displayResources(playerID):
 	playerInfo = getPlayerInfo(playerID)
+	gameStatus = getGameStatus()
 	from json import dumps
 	output = playerInfo['resources'].copy()
 	output['dev'] = sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())
 	output['flag'] = playerInfo['flag']
-	if(getGameStatus()['currentPlayer'] == playerID):
+	if(gameStatus['currentPlayer'] == playerID):
 		response = readi2c('micro', playerID)
 		if (response == 5 or response == 6):
 			output['flag'] = "5"
 	output['points'] = playerInfo['points'] + playerInfo['cards']['victory']
+	output['initSetup'] = 0
+	if gameStatus['setupComplete'] == 0:
+		output['initSetup'] = 1
 	return dumps(output)
 
 def updatePlayerName(playerID, newName):
@@ -242,18 +241,23 @@ def endTurn(playerID):
 		elif gameState['reverse'] == 1 and gameState['currentPlayer'] == gameState['firstPlayer']:
 			nextPlayerId = gameState['currentPlayer']
 			gameState['setupComplete'] = 1
+			getResources(playerID)
+			#Need to retreive player info again, it's been updated.
+			playerInfo  = getPlayerInfo(playerID)
 		elif gameState['reverse'] == 1:
 			if gameState['currentPlayer'] == 0:
 				nextPlayerId = gameState['numPlayers'] - 1
 			else:
 				nextPlayerId = gameState['currentPlayer'] - 1
 			getResources(playerID)
+			#Need to retreive player info again, it's been updated.
+			playerInfo  = getPlayerInfo(playerID)
 	gameState['currentPlayer'] = nextPlayerId
 	newPlayerInfo = getPlayerInfo(nextPlayerId)
 	newPlayerInfo['flag'] = "1"
 	playerInfo['flag'] = "6"
 	writeGameInfo("gameState", gameState)
-	writei2c('currentPlayer', nextPlayerId)
+	writei2c('currentPlayer', nextPlayerId+1)
 	writePlayerInfo(playerID, playerInfo)
 	writePlayerInfo(nextPlayerId, newPlayerInfo)
 
@@ -499,10 +503,13 @@ def handle_ajax():
 			return template('pieceStuff', errorType=errorType, piece=piece)
 		elif mid == "initSetup":
 			initPlace = getPlayerInfo(playerID)['initialPlacements']
-			if(initPlace['settlement'] == initPlace['road']):
+			if(initPlace['settlement'] == initPlace['road'] and initPlace['settlement'] < 2):
 				return template('initSetup', piece='settlement')
-			elif(initPlace['settlement'] > initPlace['road']):
+			elif(initPlace['settlement'] > initPlace['road'] and initPlace['road'] < 2):
 				return template('initSetup', piece='road')
+			else:
+				endTurn(int(playerID))
+				return
 		
 	return "<p>Your request was invalid. Please try again.</p>"
 
@@ -595,6 +602,8 @@ def handle_i2c():
 	todo = request.params.todo
 	if todo == "confirm":
 		writei2c('pi', 'confirm', int(request.get_cookie("playerID")))
+		checkIfNextPlayer(int(request.get_cookie("playerID")))
+
 
 # This request handles a 
 @get('/')

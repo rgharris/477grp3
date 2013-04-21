@@ -114,7 +114,7 @@ function submitName()
 }
 function openModal(id)
 {
-  refreshContent("ModalBox", id);
+  	refreshContent("ModalBox", id);
 	console.log("refreshed content");
 	var elem = document.getElementById("ModalBox");
 	elem.style.visibility = "visible";
@@ -226,7 +226,7 @@ function refreshContent(id, mid)
 			if (resources.flag == lastFlag) {
 				return;
 			}
-			else if (lastFlag == "5") {
+			else{
 				closeModal();
 			}
 			lastFlag = resources.flag;
@@ -235,29 +235,28 @@ function refreshContent(id, mid)
 				document.getElementById("footer").innerHTML = "<a href=\"javascript:openModal('purchase')\" id='purchaseButton' class='button borderRight spacingLeft'>Purchase</a>\n<a href=\"javascript:openModal('trade')\" id='tradeButton' class='button'>Trade</a>\n<a href=\"javascript:runi2c('confirm')\" id='confirmButton' class='button borderTop borderRight spacingLeft'>Confirm</a>\n<span id='endTurnButton'><a href=\"javascript:openModal('endTurn')\" id='turnButton' class='button borderTop'>End Turn</a></span>";
 				document.getElementById("imageReplace").innerHTML = "<a class='headElement' href='javascript:showHideMenu()' id='leftHead'><img src='images/menu.png'/></a>";
 				document.getElementById("head").style.backgroundColor = "rgba(207,181,59,.8)";
-				if (resources.points <= 2){
-					closeModal();
+				if (resources.initSetup == "1"){
 					openModal('initSetup')
 				}
 			}
 			else if (resources.flag == "2") //Indicates invalid trade.
 			{
-				closeModal();
+				//closeModal();
 				openModal('invalidTrade');
 			}
 			else if (resources.flag == "3") //Indicates begin trade on remote player.
 			{
-				closeModal();
+				//closeModal();
 				openModal('remoteTrade');
 			}
 			else if (resources.flag == "4") //Indicates trade response from remote player.
 			{
-				closeModal();
+				//closeModal();
 				openModal('returnTrade');
 			}
 			else if (resources.flag == "5") //Indicates piece change on board.
 			{
-				closeModal();
+				//closeModal();
 				openModal('pieceInfo');
 			}
 			else if (resources.flag == "6") //Indicates end of turn.
