@@ -226,10 +226,10 @@ def removePlayer(playerID):
 	return gameStatus['numPlayers']
 
 def startGame():
-	import random
+	from random import randint
 	gameState = getGameStatus()
 	gameState['gameStart'] = 1
-	gameState['firstPlayer'] = random.randint(0, int(gameState['numPlayers'])-1)
+	gameState['firstPlayer'] = randint(0, int(gameState['numPlayers'])-1)
 	gameState['currentPlayer'] = gameState['firstPlayer']
 	playerInfo = getPlayerInfo(gameState['firstPlayer'])
 	playerInfo['flag'] = "1"
@@ -359,6 +359,9 @@ def checkLongestRoad():
 			playerInfo['points'] += 2
 			writePlayerInfo(longestRoadPlayer, playerInfo)
 		writeGameInfo("gameState", gameState)
+
+def checkLargestArmy():
+	pass
 		
 def getCosts(purchase):
 	costs = {'development card':'1 wheat, 1 sheep, and 1 ore', 'road':'1 wood and 1 clay', 'city':'2 wheat and 3 ore', 'settlement':'1 wood, 1 wheat, 1 sheep, and 1 clay'}
@@ -442,7 +445,6 @@ def yearOfPlenty(playerID, resources):
 	playerInfo['cards']['plenty'] -= 1
 	writePlayerInfo(playerID, playerInfo)
 	gameStatus = getGameStatus()
-	#gameStatus['devCardPlayed'] = 1
 	writeGameInfo("gameState", gameStatus)
 	return True
 
@@ -459,14 +461,31 @@ def monopoly(playerID, resource):
 	playerInfo['cards']['monopoly'] -= 1
 	writePlayerInfo(playerID, playerInfo)
 	gameStatus = getGameStatus()
-	#gameStatus['devCardPlayed'] = 1
 	writeGameInfo("gameState", gameStatus)
 	return({resource:numReceived})
+
+def knight(playerID, playerSteal):
+	playerInfo = getPlayerInfo(playerID)
+	playerStealInfo = getPlayerInfo(playerSteal)
+	from random import randint
+	availableResources = dict((key, int(val)) for key, val in playerStealInfo['resources'].items() if int(val) != 0)
+	if len(availableResources) > 0:
+		stolenResource = list(availableResources)[randint(0, len(availableResources)-1)]
+		playerInfo['resources'][stolenResource] += 1
+		playerStealInfo['resources'][stolenResource] -= 1
+		writePlayerInfo(playerID, playerInfo)
+		writePlayerInfo(playerSteal, playerStealInfo)
+		return {stolenResource:'1'}
+	else:
+		return {'none':'0'}
+
+def getStealPlayers():
+	playerBits = readi2c('thieved')
+	
 
 def roadBuilding(playerID):
 	writei2c('pi', 'roadDevCard')
 	gameStatus = getGameStatus()
-	#gameStatus['devCardPlayed'] = 1
 	gameStatus['buildingRoads'] = 0
 	writeGameInfo("gameState", gameStatus)
 
@@ -598,9 +617,14 @@ def handle_ajax():
 			if gameState['buildingRoads'] >= 2:
 				gameState['buildingRoads'] = -1
 				writeGameInfo("gameState", gameState)
+				checkLongestRoad()
 				return template('devCards', success='road')
 			else:
 				return template('devCards', playCard='road')
+		elif mid == "knight":
+			playerInfo = getPlayerInfo(int(playerID))
+			checkLargestArmy()
+			return template('devCards', devCards=output, playCard='knight' steal=getStealPlayers())
 		elif mid == "endGame":
 			return template('gameOver', winner=getPlayerInfo(getGameStatus()['gameEnd'])['playerName'])
 		
@@ -684,6 +708,11 @@ def handle_form():
 		if value['play'] == 'playing':
 			if value['type'] == 'road':
 				roadBuilding(int(request.get_cookie("playerID")))
+			elif value['type'] == 'knight':
+				writei2c('pi', 'knightDevCard')
+				playerInfo['playedKnights'] += 1
+			gameStatus['devCardPlayed'] = 1
+			playerInfo['cards'][value['type']] -= 1
 			return template('devCards', devCards=output, playCard=value['type'])
 		else:
 			return template('devCards', devCards=output, playedDevCard=gameStatus['devCardPlayed'], showCard=value['type'])
@@ -695,7 +724,9 @@ def handle_form():
 	elif fid == "monopoly":
 		resources = monopoly(request.get_cookie("playerID"), request.params.value)
 		return template('devCards', resources=resources, success='monopoly')
-
+	elif fid == "knight":
+		resources = knight(request.get_cookie("playerID"), request.params.value)
+		return template('devCards', resources=resources, success='knight')
 
 @get('/ready')
 def handle_players():

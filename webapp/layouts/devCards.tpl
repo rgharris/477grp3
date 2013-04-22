@@ -19,6 +19,9 @@
 %if not defined('resources'):
 %resources = None
 %end
+%if not defined('steal'):
+%steal = {'-1':'Nobody'}
+%end
 %if showCards == True:
 <span id="cardContent">
 	<h2>Development Cards</h2>
@@ -126,9 +129,21 @@
 	</span>
 	</form>
 %elif playCard == 'knight':
+	<form name="knight" onsubmit="return submitForm()" id="knight">
 	<h2>Knight</h2>
-	<p>The web interface is not yet communicating with the board. Your knight has been played, but not placed.</p>
-	<a href="javascript:closeModal();" class="bottom left" name="gotit">Got it!</a>
+	<p>Once the thief has been moved, select a player to steal from.</p>
+%if len(steal) == 0:
+	<p>There are no players to steal from here!</p>
+	<a href="javascript:closeModal();" class="bottom left">Got it!</a>
+%else:
+	<select name="stealFrom" class="stealSelect">
+%for playerID in steal:
+	<option value="{{playerID}}">{{steal[playerID]}}</option>
+%end
+	</select>
+	<input type="submit" value="This person!" class="bottom left" name="stealSelected" />
+%end
+	</form>
 %elif playCard == 'monopoly':
 	<form name='monopoly' onsubmit='return submitForm()' id='monopoly'>
 	<span id="boxContent">
@@ -163,7 +178,11 @@
 	<a href="javascript:closeModal();" class="bottom left" name="gotit">Got it!</a>
 %elif success == 'knight':
 	<h2>Knight</h2>
+%if list(resources)[0] != 'none':
 	<p>You have received a {{list(resources)[0]}}!</p>
+%else:
+	<p>This player has no resources to steal! Too bad.</p>
+%end
 	<a href="javascript:closeModal();" class="bottom left" name="gotit">Got it!</a>
 %elif success == 'road':
 	<h2>Road Building</h2>

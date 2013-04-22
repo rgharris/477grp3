@@ -9,7 +9,7 @@ function submitForm()
 		{
 			closeModal();
 		}
-		else if(document.forms[0].name == "monopoly" || document.forms[0].name == "yearofplenty"){
+		else if(document.forms[0].name == "monopoly" || document.forms[0].name == "yearofplenty" || document.forms[0].name == "knight"){
 				document.getElementById("boxContent").innerHTML = xmlhttp.responseText;
 		}
 	}
@@ -52,6 +52,10 @@ function submitForm()
 	else if(document.forms[0].name == "monopoly")
 	{
 		values = document.forms[0].resource[document.forms[0].resource.selectedIndex].value;
+	}
+	else if(document.forms[0].name == "knight")
+	{
+		values = document.forms[0].stealFrom[document.forms[0].stealFrom.selectedIndex].value;
 	}
 	xmlhttp.open("GET","submitForm?id=" + document.forms[0].name + "&value=" + values,true);
 	xmlhttp.send();
