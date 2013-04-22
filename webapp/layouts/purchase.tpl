@@ -16,8 +16,8 @@
 %if not defined('devCard'):
 %devCard = False
 %end
-%if newPurchase == True:
 <span id="purchaseContent">
+%if newPurchase == True:
 	<h2>Purchase</h2>
 	<p class="purchase">
 	<a href="javascript:purchase('get','settlement')" class="bottom half top left">Settlement</a>
@@ -25,7 +25,6 @@
 	<a href="javascript:purchase('get','road')" class="bottom half bot left">Road</a>
 	<a href="javascript:purchase('get','development card')" class="bottom half bot right">Dev. Card</a>
 	</p>
-</span>
 %elif invalidPurchase == True:
 	<h2>Purchase Error</h2>
 		<p class="generic">You don't have enough resources to purchase a {{list(purchaseItem)[0]}}.</p>
@@ -33,7 +32,7 @@
 %elif confirmPurchase == True:
 	<h2>Confirm Purchase</h2>
 		<p class="generic">Do you wish to purchase a {{list(purchaseItem)[0]}} for {{list(purchaseItem.values())[0]}}?</p>
-		<a href="javascript:closeModal();" class="bottom half left">No I don't!</a>
+		<a href="javascript:purchase('deny', '{{list(purchaseItem)[0]}}');" class="bottom half left">No I don't!</a>
 		<a href="javascript:purchase('accept','{{list(purchaseItem)[0]}}');" class="bottom half right">Yes I do!</a>
 %elif placePiece == True:
 	<h2>Place Piece</h2>
@@ -55,4 +54,4 @@
 		<p class="generic">There was an error with the purchase form. Please try again.</p>
 	<a href="javascript:closeModal();" class="bottom left" name="gotit">Got it.</a>
 %end
-
+</span>

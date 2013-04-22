@@ -132,11 +132,26 @@ def displayResources(playerID):
 		response = readi2c('micro', playerID)
 		if (response == 5 or response == 6):
 			output['flag'] = "5"
-	output['points'] = playerInfo['points'] + playerInfo['cards']['victory']
+		elif (gameStatus['buildingRoads'] > -1 and gameStatus['buildingRoads'] <= 2):
+			output['flag'] = "7"
+	output['points'] = playerInfo['points'] + playerInfo['cards']['victory'] + playerInfo['onHold']['victory']
+	if output['points'] >= 10:
+		endGame(playerID)
 	output['initSetup'] = 0
 	if gameStatus['setupComplete'] == 0:
 		output['initSetup'] = 1
+	output['dice'] = gameStatus['diceRolled']
 	return dumps(output)
+
+def endGame(playerID):
+	gameState = getGameStatus()
+	gameState['gameEnd'] == playerID
+	for i in range(0, gameState['numPlayers']):
+		playerInfo = getPlayerInfo(i)
+		playerInfo['flag'] = "9"
+		writePlayerInfo(i, playerInfo)
+	writei2c('pi', 'endGame')
+	
 
 def updatePlayerName(playerID, newName):
 	playerInfo = getPlayerInfo(playerID)
@@ -172,7 +187,8 @@ def writeGameInfo(key, value):
 		if float(gameStatus['gameTime']) + 36000 < time():
 			gameStatus = createGameInfo(filename)
 	gameStatus[key] = value
-	gameStatus = writeJson(filename, gameStatus)
+	if gameStatus['gameState']['gameEnd'] == -1:
+		gameStatus = writeJson(filename, gameStatus)
 	return gameStatus
 
 def getGameInfo():
@@ -190,7 +206,7 @@ def getGameInfo():
 def createGameInfo(filename):	
 	from time import time
 	#Careful when editing this - it's a mess, but contains everything possible for the game.
-	gameStatus = {'gameTime':time(), 'trade':{'from':-1, 'to':-1, 'give':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}, 'get':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}}, 'dev':{'knight':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}, 'gameState':{'gameStart':0, 'gameEnd':0, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'numPlayers':0, 'diceRolled':0, 'setupComplete':0, 'firstPlayer':-1, 'reverse':0, 'longestRoad':-1, 'largestArmy':-1, 'currentPlayer':-1, 'devCardPlayed':0}, 'playerInfo':{'0':{'playerName': "Player 1", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'1':{'playerName': "Player 2", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'2':{'playerName': "Player 3", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'3':{'playerName': "Player 4", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}}}}
+	gameStatus = {'gameTime':time(), 'trade':{'from':-1, 'to':-1, 'give':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}, 'get':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}}, 'dev':{'knight':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}, 'gameState':{'gameStart':0, 'gameEnd':-1, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'numPlayers':0, 'diceRolled':0, 'setupComplete':0, 'firstPlayer':-1, 'reverse':0, 'longestRoad':-1, 'largestArmy':-1, 'currentPlayer':-1, 'devCardPlayed':0, 'runningPurchase':0, 'buildingRoads':-1}, 'playerInfo':{'0':{'playerName': "Player 1", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'1':{'playerName': "Player 2", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'2':{'playerName': "Player 3", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'3':{'playerName': "Player 4", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}}}}
 	gameStatus = writeJson(filename, gameStatus)
 	return gameStatus
 
@@ -223,6 +239,18 @@ def startGame():
 	writei2c('currentPlayer', int(gameState['currentPlayer']+1))
 	writei2c('pi','newGame')
 
+def rollDice(playerID):
+	diceRoll = readi2c('dice')
+	writei2c('pi', 'diceRolled')
+	gameState = getGameStatus()
+	gameState['diceRolled'] = diceRoll
+	if diceRoll != 7:
+		for i in range(0, gameState['numPlayers']):
+			getResources(i)
+	else:
+		writei2c('pi', 'knightDevCard')
+	writeGameInfo("gameState", gameState)
+
 def endTurn(playerID):
 	gameState = getGameStatus()
 	playerInfo = getPlayerInfo(playerID)
@@ -230,6 +258,7 @@ def endTurn(playerID):
 		playerInfo['cards'][resource] += playerInfo['onHold'][resource]
 		playerInfo['onHold'][resource] = 0
 	gameState['devCardPlayed'] = 0
+	gameState['diceRolled'] = 0
 	if gameState['currentPlayer'] + 1 == gameState['numPlayers']:
 		nextPlayerId = 0
 	else:
@@ -258,6 +287,7 @@ def endTurn(playerID):
 	playerInfo['flag'] = "6"
 	writeGameInfo("gameState", gameState)
 	writei2c('currentPlayer', nextPlayerId+1)
+	writei2c('pi', 'endTurn')
 	writePlayerInfo(playerID, playerInfo)
 	writePlayerInfo(nextPlayerId, newPlayerInfo)
 
@@ -315,6 +345,20 @@ def trade(playerID, tradeInfo, option):
 		tradeInfo = getTradeStatus()
 		tradeInfo['accepted'] = 0
 		writeGameInfo("trade", tradeInfo)
+
+def checkLongestRoad():
+	longestRoadPlayer = readi2c('longestRoad') - 1
+	gameState = getGameStatus()
+	if gameState['longestRoad'] != longestRoadPlayer:
+		playerInfo = getPlayerInfo(gameState['longestRoad'])
+		playerInfo['points'] -= 2
+		writePlayerInfo(gameState['longestRoad'], playerInfo)
+		gameState['longestRoad'] = longestRoadPlayer
+		if longestRoadPlayer != -1:
+			playerInfo = getPlayerInfo(longestRoadPlayer)
+			playerInfo['points'] += 2
+			writePlayerInfo(longestRoadPlayer, playerInfo)
+		writeGameInfo("gameState", gameState)
 		
 def getCosts(purchase):
 	costs = {'development card':'1 wheat, 1 sheep, and 1 ore', 'road':'1 wood and 1 clay', 'city':'2 wheat and 3 ore', 'settlement':'1 wood, 1 wheat, 1 sheep, and 1 clay'}
@@ -328,33 +372,51 @@ def payForPurchase(playerID, resourceDict):
 
 def performPurchase(playerID, purchase):
 	playerInfo = getPlayerInfo(playerID)
+	todo, pieceType = readi2c('pieceType')
+	if todo == 'confirm':
+		placePiece = False
+	else:
+		placePiece = True
 	if purchase == 'settlement':
 		if chkResources(playerID, {'wood':1, 'clay':1, 'sheep':1, 'wheat':1}) == True:
 			playerInfo['points'] += 1
 			writePlayerInfo(playerID, playerInfo)
 			payForPurchase(playerID, {'wood':1, 'clay':1, 'sheep':1, 'wheat':1})
-			return True
+			if placePiece == False:
+				writei2c('pi', 'confirm')
+			return True, placePiece
 		else:
-			return False
+			if placePiece == False:
+				writei2c('pi', 'reject')
+			return False, placePiece
 	elif purchase == 'city':
 		if chkResources(playerID, {'wheat':2, 'ore':3}) == True:
 			playerInfo['points'] += 1
 			writePlayerInfo(playerID, playerInfo)
 			payForPurchase(playerID, {'wheat':2, 'ore':3})
-			return True
+			if placePiece == False:
+				writei2c('pi', 'confirm')
+			return True, placePiece
 		else:
-			return False
+			if placePiece == False:
+				writei2c('pi', 'reject')
+			return False, placePiece
 	elif purchase == 'road':
 		if chkResources(playerID, {'wood':1, 'clay':1}) == True:
 			payForPurchase(playerID, {'wood':1, 'clay':1})
-			return True
+			if placePiece == False:
+				writei2c('pi', 'confirm')
+			checkLongestRoad()
+			return True, placePiece
 		else:
-			return False
+			if placePiece == False:
+				writei2c('pi', 'reject')
+			return False, placePiece
 	elif purchase == 'development card':
 		if chkResources(playerID, {'wheat':1, 'sheep':1, 'ore':1}) == True:
 			devCards = getDevDeck()
 			if sum(devCards.values()) == 0:
-				return 'none'
+				return 'none', False
 			else:
 				weights = []
 				cardList = []
@@ -367,11 +429,11 @@ def performPurchase(playerID, purchase):
 				payForPurchase(playerID, {'wheat':1, 'sheep':1, 'ore':1})
 				devCards[cardList[randNum]] -= 1
 				writeGameInfo("dev", devCards)
-				return cardList[randNum]
+				return cardList[randNum], False
 		else:
-			return False
+			return False, False
 	else:
-		return False
+		return False, False
 
 def yearOfPlenty(playerID, resources):
 	playerInfo = getPlayerInfo(playerID)
@@ -379,6 +441,9 @@ def yearOfPlenty(playerID, resources):
 		playerInfo['resources'][resources[item]] += 1
 	playerInfo['cards']['plenty'] -= 1
 	writePlayerInfo(playerID, playerInfo)
+	gameStatus = getGameStatus()
+	#gameStatus['devCardPlayed'] = 1
+	writeGameInfo("gameState", gameStatus)
 	return True
 
 def monopoly(playerID, resource):
@@ -393,7 +458,17 @@ def monopoly(playerID, resource):
 	writeGameInfo("playerInfo", allPlayers)
 	playerInfo['cards']['monopoly'] -= 1
 	writePlayerInfo(playerID, playerInfo)
+	gameStatus = getGameStatus()
+	#gameStatus['devCardPlayed'] = 1
+	writeGameInfo("gameState", gameStatus)
 	return({resource:numReceived})
+
+def roadBuilding(playerID):
+	writei2c('pi', 'roadDevCard')
+	gameStatus = getGameStatus()
+	#gameStatus['devCardPlayed'] = 1
+	gameStatus['buildingRoads'] = 0
+	writeGameInfo("gameState", gameStatus)
 
 def weighted_choice_sub(weights):
 	from random import random
@@ -499,8 +574,16 @@ def handle_ajax():
 			output['knightsPlayed'] = playerInfo['playedKnights']
 			return template('devCards', showCards=True, devCards=output)
 		elif mid == "pieceInfo":
+			gameStatus = getGameStatus()
 			errorType, piece = readi2c('pieceType', playerID)
-			return template('pieceStuff', errorType=errorType, piece=piece)
+			if errorType == 'confirm' and gameStatus['setupComplete'] == 1 and gameStatus['runningPurchase'] == 0 and gameStatus['buildingRoads'] == -1:
+				if piece != 'city':
+					gameState = getGameStatus();
+					gameState['runningPurchase'] = 1
+					writeGameInfo("gameState", gameState)
+				return template('purchase', confirmPurchase=True, purchaseItem=getCosts(piece))
+			else:
+				return template('pieceStuff', errorType=errorType, piece=piece)
 		elif mid == "initSetup":
 			initPlace = getPlayerInfo(playerID)['initialPlacements']
 			if(initPlace['settlement'] == initPlace['road'] and initPlace['settlement'] < 2):
@@ -510,6 +593,16 @@ def handle_ajax():
 			else:
 				endTurn(int(playerID))
 				return
+		elif mid == "buildRoads":
+			gameState = getGameStatus()
+			if gameState['buildingRoads'] >= 2:
+				gameState['buildingRoads'] = -1
+				writeGameInfo("gameState", gameState)
+				return template('devCards', success='road')
+			else:
+				return template('devCards', playCard='road')
+		elif mid == "endGame":
+			return template('gameOver', winner=getPlayerInfo(getGameStatus()['gameEnd'])['playerName'])
 		
 	return "<p>Your request was invalid. Please try again.</p>"
 
@@ -538,15 +631,26 @@ def handle_form():
 		from json import loads
 		value = loads(request.params.value)
 		if value['action'] == 'get':
+			gameState = getGameStatus();
+			gameState['runningPurchase'] = 1
+			writeGameInfo("gameState", gameState)
 			return template('purchase', confirmPurchase=True, purchaseItem=getCosts(value['type']))
+		elif value['action'] == 'deny':
+			gameState = getGameStatus();
+			gameState['runningPurchase'] = 0
+			writeGameInfo("gameState", gameState)
 		elif value['action'] == 'accept':
-			purchaseResult = performPurchase(request.get_cookie("playerID"), value['type'])
+			purchaseResult, placePiece = performPurchase(request.get_cookie("playerID"), value['type'])
 			if purchaseResult == False:
+				gameState = getGameStatus();
+				if gameState['runningPurchase'] == 1:
+					gameState['runningPurchase'] = 0
+					writeGameInfo("gameState", gameState)
 				return template('purchase', invalidPurchase=True, purchaseItem=getCosts(value['type']))
 			else:
-				if value['type'] != 'development card':
+				if value['type'] != 'development card' and placePiece == True:
 					return template('purchase', placePiece=True)
-				else:
+				elif value['type'] == 'development card':
 					if purchaseResult == 'plenty':
 						output = 'Year of Plenty'
 					elif purchaseResult == 'knight':
@@ -558,6 +662,18 @@ def handle_form():
 					else:
 						output = purchaseResult
 					return template('purchase', devCard=output)
+				elif value['type'] == 'city':
+					gameState = getGameStatus();
+					gameState['runningPurchase'] = 0
+					writeGameInfo("gameState", gameState)
+					return template('purchase', placePiece=True)
+				elif placePiece != True:
+					gameState = getGameStatus();
+					gameState['runningPurchase'] = 0
+					writeGameInfo("gameState", gameState)
+					return
+				else:
+					return
 	elif fid == "playDevCard":
 		from json import loads
 		playerInfo = getPlayerInfo(request.get_cookie("playerID"))
@@ -566,6 +682,8 @@ def handle_form():
 		gameStatus = getGameStatus()
 		value = loads(request.params.value)
 		if value['play'] == 'playing':
+			if value['type'] == 'road':
+				roadBuilding(int(request.get_cookie("playerID")))
 			return template('devCards', devCards=output, playCard=value['type'])
 		else:
 			return template('devCards', devCards=output, playedDevCard=gameStatus['devCardPlayed'], showCard=value['type'])
@@ -603,7 +721,16 @@ def handle_i2c():
 	if todo == "confirm":
 		writei2c('pi', 'confirm', int(request.get_cookie("playerID")))
 		checkIfNextPlayer(int(request.get_cookie("playerID")))
-
+		gameState = getGameStatus();
+		if gameState['runningPurchase'] == 1:
+			gameState['runningPurchase'] = 0
+			writeGameInfo("gameState", gameState)
+		if gameState['buildingRoads'] > -1 and gameState['buildingRoads'] < 2:
+			gameState['buildingRoads'] += 1
+			writeGameInfo("gameState", gameState)
+@get('/rollDice')
+def handle_dice_roll():
+	rollDice(int(request.get_cookie("playerID")))
 
 # This request handles a 
 @get('/')
@@ -626,9 +753,9 @@ def show_webapp():
 			playerID = int(request.get_cookie("playerID"))
 			playerInfo = getPlayerInfo(playerID)
 			#Uncomment this for turn-based gameplay.
-			return template('layout', name=playerInfo['playerName'], points=str(playerInfo['points'] + playerInfo['cards']['victory'] + playerInfo['onHold']['victory']), devCards=str(sum(playerInfo['cards'].values())), resources=dict((key, str(val)) for key, val in playerInfo['resources'].items()), currentTurn=True if playerID == gameStatus['currentPlayer'] else False)
+			return template('layout', name=playerInfo['playerName'], points=str(playerInfo['points'] + playerInfo['cards']['victory'] + playerInfo['onHold']['victory']), devCards=str(sum(playerInfo['cards'].values())), resources=dict((key, str(val)) for key, val in playerInfo['resources'].items()), currentTurn=True if playerID == gameStatus['currentPlayer'] else False, diceRolled=False if gameStatus['diceRolled'] == 0 else True)
 			#Uncomment this for debug mode - it's everybody's turn always!
-			#return template('layout', name=playerInfo['playerName'], points=str(playerInfo['points'] + playerInfo['cards']['victory'] + playerInfo['onHold']['victory']), devCards=str(sum(playerInfo['cards'].values())), resources=dict((key, str(val)) for key, val in playerInfo['resources'].items()), currentTurn=True)
+			#return template('layout', name=playerInfo['playerName'], points=str(playerInfo['points'] + playerInfo['cards']['victory'] + playerInfo['onHold']['victory']), devCards=str(sum(playerInfo['cards'].values())), resources=dict((key, str(val)) for key, val in playerInfo['resources'].items()), currentTurn=True, diceRolled=False is gameStatus['diceRolled'] == 0 else True)
 		else:
 			return template('error', gameStarted=True)
 

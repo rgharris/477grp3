@@ -47,7 +47,7 @@
 
 %elif showCard == 'monopoly':
 	<h2>Monopoly card</h2>
-	<p class="generic">This card allows you to takea  monopoly on a single resource, forcing all players currently holding that resource to hand it over to you.
+	<p class="generic">This card allows you to take a monopoly on a single resource, forcing all players currently holding that resource to hand it over to you.
 %if devCards['monopoly'] != 0 and playedDevCard == 0:
 		You currently have {{devCards['monopoly']}} Monopoly cards available. Would you like to play one?</p>            
 		<a href="javascript:playCard('monopoly','playing')" class="bottom half left">Yes I would!</a>
@@ -146,8 +146,7 @@
 	</span>
 %elif playCard == 'road':
 	<h2>Road Building</h2>
-	<p>The web interface is not yet communicating with the board. Your roads have been played, but not placed.</p>
-	<a href="javascript:closeModal();" class="bottom left" name="gotit">Got it!</a>
+	<p>Place your two free roads now!</p>
 %else:
 	<h2>Error</h2>
 	<p class="generic">That is not a valid card to play.</p>

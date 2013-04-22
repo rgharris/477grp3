@@ -52,7 +52,11 @@
 					<a href="javascript:openModal('purchase')" id='purchaseButton' class="button borderRight spacingLeft">Purchase</a>
 					<a href="javascript:openModal('trade')" id='tradeButton' class="button">Trade</a>
 					<a href="javascript:runi2c('confirm')" id='confirmButton' class='button borderTop borderRight spacingLeft'>Confirm</a>
+%if diceRolled == True:
 					<span id='endTurnButton'><a href="javascript:openModal('endTurn')" id='turnButton' class='button borderTop'>End Turn</a></span>
+%else:
+					<span id='endTurnButton'><a href="javascript:rollDice()" id='turnButton' class='button borderTop'>Roll Dice</a></span>
+%end
 					<!--a href="javascript:runi2c('deny')" id='denyButton' class='button borderTop'>Deny</a-->
 					<!--a href="javascript:openModal('status')" id='statusButton' class="button borderTop borderRight spacingLeft">Status</a-->
 %end

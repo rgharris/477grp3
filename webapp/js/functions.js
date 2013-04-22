@@ -137,7 +137,11 @@ function purchase(action,type)
 	xmlhttp.onreadystatechange = function()
 	{
 		console.log(xmlhttp.responseText);
-		document.getElementById("purchaseContent").innerHTML = xmlhttp.responseText;
+		if(action != "deny"){
+			document.getElementById("purchaseContent").innerHTML = xmlhttp.responseText;
+		}else{
+			closeModal();
+		}
 	}
 	var purchase = {
 			action: action,
@@ -191,6 +195,18 @@ function denyTrade()
 	xmlhttp.open("GET","submitForm?id=trade&value=deny", true);
 	xmlhttp.send();
 }
+function rollDice()
+{        
+	var xmlhttp;
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function()
+        {
+                console.log(xmlhttp.responseText);
+                closeModal();
+        }
+        xmlhttp.open("GET","rollDice", true);
+        xmlhttp.send();
+}
 function loadXMLDoc(div,loc)
 {
 	var xmlhttp;
@@ -224,6 +240,12 @@ function refreshContent(id, mid)
 			document.getElementById("devAmt").innerHTML = resources.dev;
 			document.getElementById("points").innerHTML = resources.points;
 			if (resources.flag == lastFlag) {
+				 if (resources.dice != 0){
+                                        document.getElementById('endTurnButton').innerHTML = "<a href=\"javascript:openModal('endTurn')\" id='turnButton' class='button borderTop'>End Turn</a>";
+                                }
+                                else {
+                                        document.getElementById('endTurnButton').innerHTML = "<a href=\"javascript:rollDice()\" id='turnButton' class='button borderTop'>Roll Dice</a>";
+                                }
 				return;
 			}
 			else{
@@ -237,6 +259,12 @@ function refreshContent(id, mid)
 				document.getElementById("head").style.backgroundColor = "rgba(207,181,59,.8)";
 				if (resources.initSetup == "1"){
 					openModal('initSetup')
+				}
+				if (resources.dice != 0){
+					document.getElementById('endTurnButton').innerHTML = "<a href=\"javascript:openModal('endTurn')\" id='turnButton' class='button borderTop'>End Turn</a>";
+				}
+				else {
+					document.getElementById('endTurnButton').innerHTML = "<a href=\"javascript:rollDice()\" id='turnButton' class='button borderTop'>Roll Dice</a>";
 				}
 			}
 			else if (resources.flag == "2") //Indicates invalid trade.
@@ -266,6 +294,14 @@ function refreshContent(id, mid)
 				document.getElementById('footer').style.height = "0px";
 				document.getElementById("imageReplace").innerHTML = "<img id='leftHeadImg' src='images/menu_gray.png'/>";
 				document.getElementById('head').style.backgroundColor = "rgba(255,253,208,.5)";
+			}
+			else if (resources.flag == "7")
+			{
+				openModal('buildRoads');
+			}
+			else if (resources.flag == "9")
+			{
+				openModal('endGame');
 			}
 	
 		}
