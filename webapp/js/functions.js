@@ -303,6 +303,10 @@ function refreshContent(id, mid)
 			{
 				openModal('buildRoads');
 			}
+			else if (resources.flag == "8")
+			{
+				openModal('knight');
+			}
 			else if (resources.flag == "9")
 			{
 				openModal('endGame');

@@ -130,10 +130,12 @@ def displayResources(playerID):
 	output['flag'] = playerInfo['flag']
 	if(gameStatus['currentPlayer'] == playerID):
 		response = readi2c('micro', playerID)
-		if (response == 5 or response == 6):
+		if (response == 5 or response == 6 or response == 4):
 			output['flag'] = "5"
 		elif (gameStatus['buildingRoads'] > -1 and gameStatus['buildingRoads'] <= 2):
 			output['flag'] = "7"
+		elif (gameStatus['playingKnight'] == 1):
+			output['flag'] = "8"
 	output['points'] = playerInfo['points'] + playerInfo['cards']['victory'] + playerInfo['onHold']['victory']
 	if output['points'] >= 10:
 		endGame(playerID)
@@ -206,7 +208,7 @@ def getGameInfo():
 def createGameInfo(filename):	
 	from time import time
 	#Careful when editing this - it's a mess, but contains everything possible for the game.
-	gameStatus = {'gameTime':time(), 'trade':{'from':-1, 'to':-1, 'give':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}, 'get':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}}, 'dev':{'knight':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}, 'gameState':{'gameStart':0, 'gameEnd':-1, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'numPlayers':0, 'diceRolled':0, 'setupComplete':0, 'firstPlayer':-1, 'reverse':0, 'longestRoad':-1, 'largestArmy':-1, 'currentPlayer':-1, 'devCardPlayed':0, 'runningPurchase':0, 'buildingRoads':-1}, 'playerInfo':{'0':{'playerName': "Player 1", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'1':{'playerName': "Player 2", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'2':{'playerName': "Player 3", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'3':{'playerName': "Player 4", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}}}}
+	gameStatus = {'gameTime':time(), 'trade':{'from':-1, 'to':-1, 'give':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}, 'get':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}}, 'dev':{'knight':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}, 'gameState':{'gameStart':0, 'gameEnd':-1, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'numPlayers':0, 'diceRolled':0, 'setupComplete':0, 'firstPlayer':-1, 'reverse':0, 'longestRoad':-1, 'largestArmy':-1, 'currentPlayer':-1, 'devCardPlayed':0, 'runningPurchase':0, 'buildingRoads':-1, 'playingKnight':0}, 'playerInfo':{'0':{'playerName': "Player 1", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'1':{'playerName': "Player 2", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'2':{'playerName': "Player 3", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'3':{'playerName': "Player 4", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}}}}
 	gameStatus = writeJson(filename, gameStatus)
 	return gameStatus
 
@@ -361,7 +363,24 @@ def checkLongestRoad():
 		writeGameInfo("gameState", gameState)
 
 def checkLargestArmy():
-	pass
+	gameState = getGameStatus()
+	largestArmyPlayer = gameState['largestArmy']
+	if largestArmyPlayer != -1:
+		largestArmyInfo = getPlayerInfo(largestArmyPlayer)
+		largestArmy = largestArmyInfo['playedKnights']
+	else:
+		largestArmy = 0
+	for player in range(0, gameState['numPlayers']):
+		playerInfo = getPlayerInfo(player)
+		if playerInfo['playedKnights'] > largestArmy:
+			if largestArmyPlayer != -1:
+				largestArmyInfo['points'] -= 2
+				writePlayerInfo(largestArmyPlayer, largestArmyInfo)
+			playerInfo['points'] += 2
+			gameState['largestArmy'] = player
+			writePlayerInfo(player, playerInfo)
+			writeGameInfo("gameState", gameState)
+				
 		
 def getCosts(purchase):
 	costs = {'development card':'1 wheat, 1 sheep, and 1 ore', 'road':'1 wood and 1 clay', 'city':'2 wheat and 3 ore', 'settlement':'1 wood, 1 wheat, 1 sheep, and 1 clay'}
@@ -481,7 +500,16 @@ def knight(playerID, playerSteal):
 
 def getStealPlayers():
 	playerBits = readi2c('thieved')
-	
+	thieved = {}
+	if playerBits & 0x01 == 0x01:
+		thieved.append('0', getPlayerInfo('0')['playerName'])
+	if playerBits & 0x02 == 0x02:
+		thieved.append('1', getPlayerInfo('0')['playerName'])
+	if playerBits & 0x04 == 0x04:
+		thieved.append('2', getPlayerInfo('0')['playerName'])
+	if playerBits & 0x08 == 0x08:
+		thieved.append('3', getPlayerInfo('0')['playerName'])
+	return thieved
 
 def roadBuilding(playerID):
 	writei2c('pi', 'roadDevCard')
@@ -595,7 +623,7 @@ def handle_ajax():
 		elif mid == "pieceInfo":
 			gameStatus = getGameStatus()
 			errorType, piece = readi2c('pieceType', playerID)
-			if errorType == 'confirm' and gameStatus['setupComplete'] == 1 and gameStatus['runningPurchase'] == 0 and gameStatus['buildingRoads'] == -1:
+			if errorType == 'confirm' and gameStatus['setupComplete'] == 1 and gameStatus['runningPurchase'] == 0 and gameStatus['buildingRoads'] == -1 and piece != 'thief':
 				if piece != 'city':
 					gameState = getGameStatus();
 					gameState['runningPurchase'] = 1
@@ -624,7 +652,7 @@ def handle_ajax():
 		elif mid == "knight":
 			playerInfo = getPlayerInfo(int(playerID))
 			checkLargestArmy()
-			return template('devCards', devCards=output, playCard='knight' steal=getStealPlayers())
+			return template('devCards', playCard='knight', steal=getStealPlayers())
 		elif mid == "endGame":
 			return template('gameOver', winner=getPlayerInfo(getGameStatus()['gameEnd'])['playerName'])
 		
@@ -711,8 +739,11 @@ def handle_form():
 			elif value['type'] == 'knight':
 				writei2c('pi', 'knightDevCard')
 				playerInfo['playedKnights'] += 1
+				gameStatus['playingKnight'] = 1
 			gameStatus['devCardPlayed'] = 1
 			playerInfo['cards'][value['type']] -= 1
+			writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
+			writeGameInfo("gameState", gameStatus)
 			return template('devCards', devCards=output, playCard=value['type'])
 		else:
 			return template('devCards', devCards=output, playedDevCard=gameStatus['devCardPlayed'], showCard=value['type'])
@@ -726,6 +757,9 @@ def handle_form():
 		return template('devCards', resources=resources, success='monopoly')
 	elif fid == "knight":
 		resources = knight(request.get_cookie("playerID"), request.params.value)
+		gameState = getGameStatus()
+		gameState['playingKnight'] = 0
+		writeGameInfo("gameState", gameState)
 		return template('devCards', resources=resources, success='knight')
 
 @get('/ready')
