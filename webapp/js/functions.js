@@ -1,3 +1,4 @@
+/*this function runs whenever a form is submitted.*/
 function submitForm()
 {
 	var xmlhttp, values;
@@ -5,14 +6,18 @@ function submitForm()
 	xmlhttp.onreadystatechange = function()
 	{
 		console.log(xmlhttp.responseText);
+		/*If the form is not one of these, then close the modal box it was in.*/
 		if(document.forms[0].name != "trade" && document.forms[0].name != "yearofplenty" && document.forms[0].name != "monopoly")
 		{
 			closeModal();
 		}
+		//Otherwise if the form was one of these, then replace it's content with the response from
+		//the server.
 		else if(document.forms[0].name == "monopoly" || document.forms[0].name == "yearofplenty" || document.forms[0].name == "knight"){
 				document.getElementById("boxContent").innerHTML = xmlhttp.responseText;
 		}
 	}
+	//Package the values to be sent to the server appropriately.
 	if(document.forms[0].name == "endTurn")
 	{
 		values = "0";
@@ -61,6 +66,7 @@ function submitForm()
 	xmlhttp.send();
 	return false
 }
+//Let the server know that we're ready.
 function setReady()
 {
 	var xmlhttp;
@@ -75,6 +81,7 @@ function setReady()
 	xmlhttp.send();
 
 }
+//Tell the server we lied and we aren't actually ready.
 function unsetReady()
 {
 	var xmlhttp;
@@ -88,6 +95,7 @@ function unsetReady()
 	xmlhttp.open("GET","ready?set=false", true);
 	xmlhttp.send();
 }
+//Run an i2c command on the server to the board.
 function runi2c(todo)
 {
         var xmlhttp;
@@ -99,6 +107,7 @@ function runi2c(todo)
         xmlhttp.open("GET","i2c?todo=" + todo, true);
         xmlhttp.send();
 }
+//Submit a new username to the server. I don't know why this is seperate from submitForm.
 function submitName()
 {
 	var xmlhttp;
@@ -116,6 +125,7 @@ function submitName()
 	xmlhttp.send();
 	return false
 }
+//Open the modalBox with a specific input.
 function openModal(id)
 {
   	refreshContent("ModalBox", id);
@@ -126,6 +136,7 @@ function openModal(id)
 	elem = document.getElementById("modal");
 	elem.style.visibility = "visible";
 }
+//Close the modalBox.
 function closeModal()
 {
 	var elem = document.getElementById("ModalBox");
@@ -133,6 +144,7 @@ function closeModal()
 	elem = document.getElementById("modal");
 	elem.style.visibility = "hidden";
 }
+//Purchase an item, accept it or deny it.
 function purchase(action,type)
 {
 	var xmlhttp;
@@ -156,6 +168,7 @@ function purchase(action,type)
 	xmlhttp.open("GET","submitForm?id=purchase&value=" + values, true);
 	xmlhttp.send();
 }
+//Play a development card.
 function playCard(type,play)
 {
 	var xmlhttp;
@@ -175,6 +188,7 @@ function playCard(type,play)
 	xmlhttp.send();
 
 }
+//Accept the trade offered by a player.
 function acceptTrade()
 {
 	var xmlhttp;
@@ -187,6 +201,7 @@ function acceptTrade()
 	xmlhttp.open("GET","submitForm?id=trade&value=accept", true);
 	xmlhttp.send();
 }
+//Deny the trade offered by a player.
 function denyTrade()
 {
 	var xmlhttp;
@@ -199,6 +214,7 @@ function denyTrade()
 	xmlhttp.open("GET","submitForm?id=trade&value=deny", true);
 	xmlhttp.send();
 }
+//Tell the server to roll the dice.
 function rollDice()
 {        
 	var xmlhttp;
@@ -211,6 +227,7 @@ function rollDice()
         xmlhttp.open("GET","rollDice", true);
         xmlhttp.send();
 }
+//Generic AJAX Loading
 function loadXMLDoc(div,loc)
 {
 	var xmlhttp;
@@ -226,7 +243,9 @@ function loadXMLDoc(div,loc)
 	xmlhttp.send();
 }
 
+//This is global so it stays persistent even after the function has finished.
 var lastFlag = "-1";
+//Refresh the content on the page based on flags and other information sent by the server.
 function refreshContent(id, mid) 
 {
 	var xmlhttp;
@@ -273,22 +292,18 @@ function refreshContent(id, mid)
 			}
 			else if (resources.flag == "2") //Indicates invalid trade.
 			{
-				//closeModal();
 				openModal('invalidTrade');
 			}
 			else if (resources.flag == "3") //Indicates begin trade on remote player.
 			{
-				//closeModal();
 				openModal('remoteTrade');
 			}
 			else if (resources.flag == "4") //Indicates trade response from remote player.
 			{
-				//closeModal();
 				openModal('returnTrade');
 			}
 			else if (resources.flag == "5") //Indicates piece change on board.
 			{
-				//closeModal();
 				openModal('pieceInfo');
 			}
 			else if (resources.flag == "6") //Indicates end of turn.
@@ -299,15 +314,15 @@ function refreshContent(id, mid)
 				document.getElementById("imageReplace").innerHTML = "<img id='leftHeadImg' src='images/menu_gray.png'/>";
 				document.getElementById('head').style.backgroundColor = "rgba(255,253,208,.5)";
 			}
-			else if (resources.flag == "7")
+			else if (resources.flag == "7") //Indicates Road Building.
 			{
 				openModal('buildRoads');
 			}
-			else if (resources.flag == "8")
+			else if (resources.flag == "8") //Indicates playing a Knight (or a 7 roll)
 			{
 				openModal('knight');
 			}
-			else if (resources.flag == "9")
+			else if (resources.flag == "9") //Indicates the END IS UPON US!
 			{
 				openModal('endGame');
 			}
@@ -330,7 +345,7 @@ function refreshContent(id, mid)
 	}
 	xmlhttp.send();
 }
-
+//Shows or hides the fancy menu with the fancy buttons that do fancy things.
 function showHideMenu() {
   var elem = document.getElementById("footer");
 	if (elem.style.visibility == "hidden")
