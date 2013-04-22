@@ -130,6 +130,7 @@
 	</form>
 %elif playCard == 'knight':
 	<form name="knight" onsubmit="return submitForm()" id="knight">
+	<span id="boxContent">
 	<h2>Knight</h2>
 	<p>Once the thief has been moved, select a player to steal from.</p>
 %if len(steal) == 0:
@@ -143,6 +144,7 @@
 	</select>
 	<input type="submit" value="This person!" class="bottom left" name="stealSelected" />
 %end
+	</span>
 	</form>
 %elif playCard == 'monopoly':
 	<form name='monopoly' onsubmit='return submitForm()' id='monopoly'>
@@ -183,7 +185,7 @@
 %else:
 	<p>This player has no resources to steal! Too bad.</p>
 %end
-	<a href="javascript:closeModal();" class="bottom left" name="gotit">Got it!</a>
+	<a href="javascript:closeModal();refreshContent('clearFlag', 0);" class="bottom left" name="gotit">Got it!</a>
 %elif success == 'road':
 	<h2>Road Building</h2>
 	<p>Your roads have been built!</p>

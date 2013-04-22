@@ -7,13 +7,13 @@ function submitForm()
 	{
 		console.log(xmlhttp.responseText);
 		/*If the form is not one of these, then close the modal box it was in.*/
-		if(document.forms[0].name != "trade" && document.forms[0].name != "yearofplenty" && document.forms[0].name != "monopoly")
+		if(document.forms[0].name != "trade" && document.forms[0].name != "yearofplenty" && document.forms[0].name != "monopoly" && document.forms[0].name != "knight" && document.forms[0].name != "discard")
 		{
 			closeModal();
 		}
 		//Otherwise if the form was one of these, then replace it's content with the response from
 		//the server.
-		else if(document.forms[0].name == "monopoly" || document.forms[0].name == "yearofplenty" || document.forms[0].name == "knight"){
+		else if(document.forms[0].name == "monopoly" || document.forms[0].name == "yearofplenty" || document.forms[0].name == "knight" || document.forms[0].name == "discard"){
 				document.getElementById("boxContent").innerHTML = xmlhttp.responseText;
 		}
 	}
@@ -43,6 +43,17 @@ function submitForm()
 		};
 		values = JSON.stringify(trade);
 		document.getElementById('tradeContent').innerHTML = "<p>Please wait for a response from " + document.forms[0].playerid[document.forms[0].playerid.selectedIndex].text + ".</p>";
+	}
+	else if(document.forms[0].name == "discard")
+	{
+		var discard = { 
+				ore: document.forms[0].giveOre.value,
+				wheat: document.forms[0].giveWheat.value,
+				sheep: document.forms[0].giveSheep.value,
+				clay: document.forms[0].giveClay.value,
+				wood: document.forms[0].giveWood.value
+			};
+		values = JSON.stringify(discard)
 	}
 	else if(document.forms[0].name == "yearofplenty")
 	{
@@ -325,6 +336,10 @@ function refreshContent(id, mid)
 			else if (resources.flag == "9") //Indicates the END IS UPON US!
 			{
 				openModal('endGame');
+			}
+			else if (resources.flag == "10")
+			{
+				openModal('discardHand');
 			}
 	
 		}

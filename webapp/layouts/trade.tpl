@@ -129,11 +129,11 @@
 %elif denied == True:
 	<h2>Trade Denied</h2>
 		<p class="generic">Your trade has been denied from the player you were trading with.</p>
-		<a href="javascript:closeModal();" class="bottom left">Got it!</a>
+		<a href="javascript:closeModal();refreshContent('clearFlag', 0);" class="bottom left">Got it!</a>
 %elif success == True:
 	<h2>Trade Successful</h2>
 		<p class="generic">Your trade has been accepted and has taken place.</p>
-		<a href="javascript:closeModal();" class="bottom left">Got it!</a>
+		<a href="javascript:closeModal();refreshContent('clearFlag', 0);" class="bottom left">Got it!</a>
 %else:
 	<h2>Error</h2>
 		<p class="generic">There was an error with the trade form. Please try again.</p>

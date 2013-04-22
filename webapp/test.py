@@ -189,6 +189,10 @@ def displayResources(playerID):
 		#And finally we need to see if we're in the middle of a knight card, and if so set the flag.
 		elif (gameStatus['playingKnight'] == 1):
 			output['flag'] = "8"
+		else:
+			if(gameStatus['runningPurchase'] == 1):
+				gameStatus['runningPurchase'] = 0
+				writeGameInfo("gameState", gameStatus)
 	#We also need to send the player's current points - all of them, not just the public ones.
 	output['points'] = playerInfo['points'] + playerInfo['cards']['victory'] + playerInfo['onHold']['victory']
 	#But if they're at or above 10 points, they've won the game, so skip to that function to do things.
@@ -335,8 +339,39 @@ def rollDice(playerID):
 		for i in range(0, gameState['numPlayers']):
 			getResources(i)
 	else:
+		doASevenRoll(int(playerID))
 		writei2c('pi', 'knightDevCard')
 	writeGameInfo("gameState", gameState)
+
+def doASevenRoll(playerID):
+	#Does a barrel roll! Also sets flag to discard half your resources where necessary.
+	numPlayers = getGameStatus()['numPlayers']
+	for i in range(0, numPlayers):
+		playerInfo = getPlayerInfo(i)
+		if i == playerID:
+			playerInfo['flag'] = "8"
+		if sum(playerInfo['resources'].values()) > 7:
+			writei2c('debug' + str(i+1), i)
+			playerInfo['flag'] = "10"
+		writePlayerInfo(i, playerInfo)
+
+def discardResources(playerID, resourceDict):
+	playerInfo = getPlayerInfo(playerID)
+	from math import floor
+	for item in resourceDict:
+		resourceDict[item] = int(resourceDict[item])
+	if sum(resourceDict.values()) != floor(sum(playerInfo['resources'].values())/2):
+		return False
+	for resource in resourceDict:
+		if playerInfo['resources'][resource] <= 0:
+			return False
+	for resource in resourceDict:
+		playerInfo['resources'][resource] -= resourceDict[resource]
+	if int(playerID) != int(getGameStatus()['currentPlayer']):
+		playerInfo['flag'] = "0"
+	else:
+		playerInfo['flag'] = "8"
+	writePlayerInfo(playerID, playerInfo)
 
 def endTurn(playerID):
 	#This function ends the player's turn. It also cycles the turn on initial setup.
@@ -434,6 +469,7 @@ def trade(playerID, tradeInfo, option):
 		tradePlayerInfo = getPlayerInfo(tradeInfo['from'])
 		tradePlayerInfo['flag'] = 4
 		playerInfo = getPlayerInfo(playerID)
+		playerInfo['flag'] = 0
 		for resource in tradeInfo['get']:
 			tradePlayerInfo['resources'][resource] += tradeInfo['get'][resource]
 			playerInfo['resources'][resource] -= tradeInfo['get'][resource]
@@ -453,6 +489,9 @@ def trade(playerID, tradeInfo, option):
 		tradeInfo = getTradeStatus()
 		tradeInfo['accepted'] = 0
 		writeGameInfo("trade", tradeInfo)
+		playerInfo = getPlayerInfo(playerID)
+		playerInfo['flag'] = 0
+		writePlayerInfo(playerID, playerInfo)
 
 def checkLongestRoad():
 	#This function gets the owner of the longest road from the microcontroller and
@@ -521,6 +560,7 @@ def performPurchase(playerID, purchase):
 			payForPurchase(playerID, {'wood':1, 'clay':1, 'sheep':1, 'wheat':1})
 			if placePiece == False:
 				writei2c('pi', 'confirm')
+				getPorts()
 			return True, placePiece
 		else:
 			if placePiece == False:
@@ -578,7 +618,6 @@ def yearOfPlenty(playerID, resources):
 	playerInfo = getPlayerInfo(playerID)
 	for item in resources:
 		playerInfo['resources'][resources[item]] += 1
-	playerInfo['cards']['plenty'] -= 1
 	writePlayerInfo(playerID, playerInfo)
 	gameStatus = getGameStatus()
 	writeGameInfo("gameState", gameStatus)
@@ -595,7 +634,6 @@ def monopoly(playerID, resource):
 			numReceived += allPlayers[player]['resources'][resource]
 			allPlayers[player]['resources'][resource] = 0
 	writeGameInfo("playerInfo", allPlayers)
-	playerInfo['cards']['monopoly'] -= 1
 	writePlayerInfo(playerID, playerInfo)
 	gameStatus = getGameStatus()
 	writeGameInfo("gameState", gameStatus)
@@ -606,6 +644,7 @@ def knight(playerID, playerSteal):
 	#player and gives it to the given player.
 	playerInfo = getPlayerInfo(playerID)
 	playerStealInfo = getPlayerInfo(playerSteal)
+	playerInfo['flag'] = "8"
 	from random import randint
 	availableResources = dict((key, int(val)) for key, val in playerStealInfo['resources'].items() if int(val) != 0)
 	if len(availableResources) > 0:
@@ -616,6 +655,7 @@ def knight(playerID, playerSteal):
 		writePlayerInfo(playerSteal, playerStealInfo)
 		return {stolenResource:'1'}
 	else:
+		writePlayerInfo(playerID, playerInfo)
 		return {'none':'0'}
 
 def getStealPlayers(playerID):
@@ -626,16 +666,16 @@ def getStealPlayers(playerID):
 	thieved = {}
 	if playerBits & 0x01 == 0x01:
 		if playerID != 0:
-			thieved.append('0', getPlayerInfo('0')['playerName'])
+			thieved['0'] = getPlayerInfo('0')['playerName']
 	if playerBits & 0x02 == 0x02:
 		if playerID != 1:
-			thieved.append('1', getPlayerInfo('0')['playerName'])
+			thieved['1'] = getPlayerInfo('1')['playerName']
 	if playerBits & 0x04 == 0x04:
 		if playerID != 2:
-			thieved.append('2', getPlayerInfo('0')['playerName'])
+			thieved['2'] = getPlayerInfo('2')['playerName']
 	if playerBits & 0x08 == 0x08:
 		if playerID != 3:
-			thieved.append('3', getPlayerInfo('0')['playerName'])
+			thieved['3'] = getPlayerInfo('3')['playerName']
 	return thieved
 
 def roadBuilding(playerID):
@@ -700,6 +740,12 @@ def handle_ajax():
 			joined = False
 		readyLinks = generateReadyLinks(joined, numPlayers)
 		return dumps({"readyLink":readyLinks, "players":numPlayers, "gameStart":int(gameStart)})
+	elif rid == "clearFlag":
+		playerID = request.get_cookie("playerID")
+		playerInfo = getPlayerInfo(str(playerID))
+		playerInfo['flag'] = "0"
+		writePlayerInfo(playerID, playerInfo)
+		return "done"
 	elif rid == "ModalBox":
 		#If we need to update the ModalBox, then we need to see what we need to update in the Modal box.
 		mid = request.query.modal
@@ -718,12 +764,10 @@ def handle_ajax():
 			return template('trade', players=getGameInfo()['playerInfo'], newTrade=True, numPlayers=gameStatus['numPlayers'])
 		elif mid == "invalidTrade":
 			#Current player cannot trade with given values
-			playerInfo['flag'] = "0"
 			writePlayerInfo(playerID, playerInfo)
 			return template('trade', invalidTrade=True)
 		elif mid == "remoteTrade":
 			#Remote player needs to confirm or deny trade
-			playerInfo['flag'] = "0"
 			writePlayerInfo(playerID, playerInfo)
 			tradeInfo = getTradeStatus()
 			if chkResources(playerID, tradeInfo['get']) == False:
@@ -749,7 +793,6 @@ def handle_ajax():
 				return template('trade', confirm=True, getStuff=getString, giveStuff=giveString)
 		elif mid == "returnTrade":
 			#Current player sees remote player's response
-			playerInfo['flag'] = "0"
 			writePlayerInfo(playerID, playerInfo)
 			tradeInfo = getTradeStatus()
 			if tradeInfo['accepted'] == 1:
@@ -806,6 +849,11 @@ def handle_ajax():
 		elif mid == "endGame":
 			#Show the "Game is over! Whoo! Congrats player X!" screen.
 			return template('gameOver', winner=getPlayerInfo(getGameStatus()['gameEnd'])['playerName'])
+		elif mid == "discardHand":
+			#Force the player to discard half of their hand. A 7 was rolled and they have more then 7 resources.
+			from math import floor
+			numDiscard = floor(sum(getPlayerInfo(int(request.get_cookie("playerID")))['resources'].values())/2)
+			return template('sevenRoll', error=False, complete=False, numDiscard=numDiscard)
 		
 	return "<p>Your request was invalid. Please try again.</p>"
 
@@ -830,6 +878,14 @@ def handle_form():
 			trade(request.get_cookie("playerID"), None, "deny")
 			return "done"
 		return "error."
+	elif fid == "discard":
+		from json import loads
+		if discardResources(request.get_cookie("playerID"), loads(request.params.value)) != False:
+			return template('sevenRoll', error=False, complete=True, numDiscard=0)
+		else:
+			from math import floor
+			numDiscard = floor(sum(getPlayerInfo(int(request.get_cookie("playerID")))['resources'].values())/2)
+			return template('sevenRoll', error=True, complete=False, numDiscard=numDiscard)
 	elif fid == "purchase":
 		from json import loads
 		value = loads(request.params.value)
@@ -917,7 +973,7 @@ def handle_form():
 		return template('devCards', resources=resources, success='monopoly')
 	elif fid == "knight":
 		#If a knight form was submitted
-		resources = knight(request.get_cookie("playerID"), request.params.value)
+		resources = knight(int(request.get_cookie("playerID")), int(request.params.value))
 		gameState = getGameStatus()
 		gameState['playingKnight'] = 0
 		writeGameInfo("gameState", gameState)
