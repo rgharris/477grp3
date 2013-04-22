@@ -1,6 +1,7 @@
 <h2>Game Status</h2>
 <ul class="gameStatus">
 %for player,info in playerInfo.items():
+%if int(player) <= numPlayers-1:
 %score = str(info['points'])
 	<li><b>{{info["playerName"]}}</b> &nbsp; &nbsp; {{score}} points\\
 %if int(player) == longestRoad:
@@ -14,6 +15,7 @@ and the largest army</i>\\
 <br /><i>Has the largest army</i>\\
 %end
 </li>
+%end
 %end
 </ul>
 <input type="submit" value="Got it!" class="bottom left" onclick="javascript:closeModal()" />
