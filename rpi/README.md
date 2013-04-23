@@ -27,6 +27,4 @@ Files in this Directory
 This folder contains the following relevant files and folders:
 * quick2wire-python-api/ is the quick2wire libraries, the version that we are using.
 * catronBootup.py should run when the pi has booted (add it to /etc/rc.local). It generates a random board.
-* testInterface.py and testInterface.py.bak are a test terminal to play with i2c reading, writing, and GPIO flags. It no longer works, and is mostly just a playground.
-* timeTest.py can be ignored. It tests the difference in read time between i2c and gpio. i2c is faster.
 * writeBytes.py writes a value to a register on a specific i2c device. It was used for debugging. It can be run like: `writeBytes.py [hex address] [register] [value]`.

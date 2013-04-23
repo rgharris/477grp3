@@ -338,10 +338,14 @@ def rollDice(playerID):
 	if diceRoll != 7:
 		for i in range(0, gameState['numPlayers']):
 			getResources(i)
+			playerInfo = getPlayerInfo(i)
+			playerInfo['flag'] = "11"
+			writePlayerInfo(i, playerInfo)
 	else:
 		doASevenRoll(int(playerID))
 		writei2c('pi', 'knightDevCard')
 	writeGameInfo("gameState", gameState)
+	return diceRoll
 
 def doASevenRoll(playerID):
 	#Does a barrel roll! Also sets flag to discard half your resources where necessary.
@@ -925,6 +929,8 @@ def handle_ajax():
 			from math import floor
 			numDiscard = floor(sum(getPlayerInfo(int(request.get_cookie("playerID")))['resources'].values())/2)
 			return template('sevenRoll', error=False, complete=False, numDiscard=numDiscard)
+		elif mid == "rollBox":
+			return template('diceBox', diceRoll=getGameStatus()['diceRolled'])
 		
 	return "<p>Your request was invalid. Please try again.</p>"
 
@@ -982,6 +988,10 @@ def handle_form():
 					writeGameInfo("gameState", gameState)
 				return template('purchase', invalidPurchase=True, purchaseItem=getCosts(value['type']))
 			else:
+				gameState = getGameStatus()
+				if gameState['runningPurchase'] = 1:
+					gameState['runningPurchase'] = 0
+					writeGameInfo('gameState', gameState)
 				if value['type'] != 'development card' and placePiece == True:
 					#If they didn't purchase a development card, have them place their piece, if they need to.
 					return template('purchase', placePiece=True)
@@ -999,15 +1009,7 @@ def handle_form():
 					return template('purchase', devCard=output)
 				elif value['type'] == 'city':
 					#Cities are weird, because they can be purchased by removing a settlement.
-					gameState = getGameStatus();
-					gameState['runningPurchase'] = 0
-					writeGameInfo("gameState", gameState)
 					return template('purchase', placePiece=True)
-				elif placePiece != True:
-					gameState = getGameStatus();
-					gameState['runningPurchase'] = 0
-					writeGameInfo("gameState", gameState)
-					return
 				else:
 					return
 	elif fid == "playDevCard":
@@ -1094,7 +1096,7 @@ def handle_i2c():
 @get('/rollDice')
 def handle_dice_roll():
 	#Handle a dice roll.
-	rollDice(int(request.get_cookie("playerID")))
+	diceNumber = rollDice(int(request.get_cookie("playerID")))
 
 # This request handles initial loading of the page.
 @get('/')

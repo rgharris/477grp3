@@ -139,7 +139,7 @@ function submitName()
 //Open the modalBox with a specific input.
 function openModal(id)
 {
-  	refreshContent("ModalBox", id);
+  refreshContent("ModalBox", id);
 	console.log("refreshed content");
 	var elem = document.getElementById("ModalBox");
 	elem.style.visibility = "visible";
@@ -233,7 +233,7 @@ function rollDice()
         xmlhttp.onreadystatechange = function()
         {
                 console.log(xmlhttp.responseText);
-                closeModal();
+								openModal('rollBox');
         }
         xmlhttp.open("GET","rollDice", true);
         xmlhttp.send();
@@ -341,7 +341,10 @@ function refreshContent(id, mid)
 			{
 				openModal('discardHand');
 			}
-	
+			else if (resources.flag == "11")
+			{
+				openModal('rollBox');
+			}
 		}
 		else if (id == "readyState"){
 			ready = JSON.parse(xmlhttp.responseText);
