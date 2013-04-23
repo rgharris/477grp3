@@ -28,6 +28,9 @@
 %if not defined('success'):
 %success = False
 %end
+%if not defined('currentPlayer'):
+%currentPlayer = -1
+%end
 %if newTrade == True:
 <form onsubmit="return submitForm()" class="trade" name="trade">
 	<h2 style="margin-bottom: 15px">Trade</h2>
@@ -104,7 +107,7 @@
   <h3>Player to trade with: </h3>
 	  <select name="playerid" class="playerSelect">
 %for playerid in players:
-%if int(playerid)+1 <= numPlayers:
+%if int(playerid) != numPlayers and int(playerid) != int(currentPlayer):
   	  <option value="{{playerid}}">{{players[playerid]["playerName"]}}</option>
 %end
 %end

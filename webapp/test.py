@@ -288,7 +288,7 @@ def createGameInfo(filename):
 	#This function will create a new game info file.
 	from time import time
 	#Careful when editing this - it's a mess, but contains everything possible for the game.
-	gameStatus = {'gameTime':time(), 'trade':{'from':-1, 'to':-1, 'give':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}, 'get':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}}, 'dev':{'knight':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}, 'gameState':{'gameStart':0, 'gameEnd':-1, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'numPlayers':0, 'diceRolled':0, 'setupComplete':0, 'firstPlayer':-1, 'reverse':0, 'longestRoad':-1, 'largestArmy':-1, 'currentPlayer':-1, 'devCardPlayed':0, 'runningPurchase':0, 'buildingRoads':-1, 'playingKnight':0}, 'playerInfo':{'0':{'playerName': "Player 1", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'1':{'playerName': "Player 2", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'2':{'playerName': "Player 3", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}},'3':{'playerName': "Player 4", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}}}}
+	gameStatus = {'gameTime':time(), 'trade':{'from':-1, 'to':-1, 'give':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}, 'get':{'ore':0, 'wheat':0, 'clay':0, 'sheep':0, 'wood':0}}, 'dev':{'knight':14, 'monopoly':2, 'road':2, 'plenty':2, 'victory':5}, 'gameState':{'gameStart':0, 'gameEnd':-1, 'ready':{'0':0, '1':0, '2':0, '3':0}, 'numPlayers':0, 'diceRolled':0, 'setupComplete':0, 'firstPlayer':-1, 'reverse':0, 'longestRoad':-1, 'largestArmy':-1, 'currentPlayer':-1, 'devCardPlayed':0, 'runningPurchase':0, 'buildingRoads':-1, 'playingKnight':0}, 'playerInfo':{'0':{'playerName': "Player 1", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}, 'portsOwned':{'5':'4 to 1'}},'1':{'playerName': "Player 2", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}, 'portsOwned':{'5':'4 to 1'}},'2':{'playerName': "Player 3", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}, 'portsOwned':{'5':'4 to 1'}},'3':{'playerName': "Player 4", 'resources':{'ore':0, 'wheat':0, 'sheep':0, 'clay':0, 'wood':0}, 'cards':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'onHold':{'victory':0, 'monopoly':0, 'road':0, 'knight':0, 'plenty':0}, 'playedKnights':0, 'points':0, 'flag':"0", 'initialPlacements':{'settlement':0, 'road':0}, 'portsOwned':{'5':'4 to 1'}}}}
 	gameStatus = writeJson(filename, gameStatus)
 	return gameStatus
 
@@ -446,25 +446,71 @@ def trade(playerID, tradeInfo, option):
 #or denying a request. PlayerID could be the trader or the tradee, and tradeInfo is the dictionary of
 #trade information.
 	if option == "submit":
-		#If we're submitting a new trade, write the new tradeInfo dictionary.
-		#This fun line removes all entries with 0 resources and turns all the numbers into ints.
-		tradeInfo['give'] = dict((key, int(val)) for key, val in tradeInfo['give'].items() if int(val) != 0)
-		tradeInfo['get'] = dict((key, int(val)) for key, val in tradeInfo['get'].items() if int(val) != 0)
-		tradeInfo['from'] = playerID
-		tradeInfo['to'] = int(tradeInfo['to'])
-		#If the player doesn't have the resources available or gives nothing or gets nothing,
-		#then stop the trade.
-		if(chkResources(playerID, tradeInfo['give']) == False) or (len(tradeInfo['give']) == 0) or (len(tradeInfo['get']) == 0):
-			playerInfo = getPlayerInfo(playerID)
-			playerInfo['flag'] = 2
-			writePlayerInfo(playerID, playerInfo)
+		if int(tradeInfo['to']) < 4:
+			#If we're submitting a new trade, write the new tradeInfo dictionary.
+			#This fun line removes all entries with 0 resources and turns all the numbers into ints.
+			tradeInfo['give'] = dict((key, int(val)) for key, val in tradeInfo['give'].items() if int(val) != 0)
+			tradeInfo['get'] = dict((key, int(val)) for key, val in tradeInfo['get'].items() if int(val) != 0)
+			tradeInfo['from'] = playerID
+			tradeInfo['to'] = int(tradeInfo['to'])
+			#If the player doesn't have the resources available or gives nothing or gets nothing,
+			#then stop the trade.
+			if(chkResources(playerID, tradeInfo['give']) == False) or (len(tradeInfo['give']) == 0) or (len(tradeInfo['get']) == 0):
+				playerInfo = getPlayerInfo(playerID)
+				playerInfo['flag'] = 2
+				writePlayerInfo(playerID, playerInfo)
+			else:
+				tradePlayerInfo = getPlayerInfo(tradeInfo['to'])
+				tradePlayerInfo['flag'] = 3
+				writePlayerInfo(tradeInfo['to'], tradePlayerInfo)
+			writeGameInfo("trade", tradeInfo)
 		else:
-			tradePlayerInfo = getPlayerInfo(tradeInfo['to'])
-			tradePlayerInfo['flag'] = 3
-			writePlayerInfo(tradeInfo['to'], tradePlayerInfo)
-		writeGameInfo("trade", tradeInfo)
+			#Now we're doing meritime trading. So...
+			tradeInfo['get'] = dict((key, int(val)) for key, val in tradeInfo['get'].items() if int(val) != 0)
+			tradeInfo['give'] = dict((key, int(val)) for key, val in tradeInfo['give'].items() if int(val) != 0)
+			playerInfo = getPlayerInfo(playerID)
+			tradeInfo['accepted'] = 0
+			if(chkResources(playerID, tradeInfo['give']) == False) or len(tradeInfo['get']) != 1 or len(tradeInfo['give']) != 1:
+				playerInfo['flag'] = 2
+			else:
+				playerInfo['flag'] = 4
+				if(int(tradeInfo['to']) == 5):
+					resource = list(tradeInfo['give'])[0]
+					if tradeInfo['give'][resource] == 4:
+						playerInfo['resources'][resource] -= tradeInfo['give'][resource]
+						playerInfo['resources'][list(tradeInfo['get'])[0]] += list(tradeInfo['get'].values())[0]
+						tradeInfo['accepted'] = 1
+				elif int(tradeInfo['to']) == 6 and 'ore' in tradeInfo['give'] and tradeInfo['give']['ore'] == 2:
+						playerInfo['resources']['ore'] -= tradeInfo['give']['ore']
+						playerInfo['resources'][list(tradeInfo['get'])[0]] += list(tradeInfo['get'].values())[0]
+						tradeInfo['accepted'] = 1
+				elif int(tradeInfo['to']) == 7 and 'wheat' in tradeInfo['give'] and tradeInfo['give']['wheat'] == 2:
+						playerInfo['resources']['wheat'] -= tradeInfo['give']['wheat']
+						playerInfo['resources'][list(tradeInfo['get'])[0]] += list(tradeInfo['get'].values())[0]
+						writei2c('debug2', 1)
+						tradeInfo['accepted'] = 1
+				elif int(tradeInfo['to']) == 8 and 'sheep' in tradeInfo['give'] and tradeInfo['give']['sheep'] == 2:
+						playerInfo['resources']['sheep'] -= tradeInfo['give']['sheep']
+						playerInfo['resources'][list(tradeInfo['get'])[0]] += list(tradeInfo['get'].values())[0]
+						tradeInfo['accepted'] = 1
+				elif int(tradeInfo['to']) == 9 and 'clay' in tradeInfo['give'] and tradeInfo['give']['clay'] == 2:
+						playerInfo['resources']['clay'] -= tradeInfo['give']['clay']
+						playerInfo['resources'][list(tradeInfo['get'])[0]] += list(tradeInfo['get'].values())[0]
+						tradeInfo['accepted'] = 1
+				elif int(tradeInfo['to']) == 10 and 'wood' in tradeInfo['give'] and tradeInfo['give']['wood'] == 2:
+						playerInfo['resources']['wood'] -= tradeInfo['give']['wood']
+						playerInfo['resources'][list(tradeInfo['get'])[0]] += list(tradeInfo['get'].values())[0]
+						tradeInfo['accepted'] = 1
+				elif(int(tradeInfo['to']) == 11):
+					resource = list(tradeInfo['give'])[0]
+					if tradeInfo['give'][resource] == 3:
+						playerInfo['resources'][resource] -= tradeInfo['give'][resource]
+						playerInfo['resources'][list(tradeInfo['get'])[0]] += list(tradeInfo['get'].values())[0]
+						tradeInfo['accepted'] = 1
+			writeGameInfo("trade", tradeInfo)
+			writePlayerInfo(playerID, playerInfo)
 	elif option == "accept":
-		#If	we're accepting, then swap resources and complete the trade.
+		#If we're accepting, then swap resources and complete the trade.
 		tradeInfo = getTradeStatus()
 		tradePlayerInfo = getPlayerInfo(tradeInfo['from'])
 		tradePlayerInfo['flag'] = 4
@@ -499,9 +545,10 @@ def checkLongestRoad():
 	longestRoadPlayer = readi2c('longestRoad') - 1
 	gameState = getGameStatus()
 	if gameState['longestRoad'] != longestRoadPlayer:
-		playerInfo = getPlayerInfo(gameState['longestRoad'])
-		playerInfo['points'] -= 2
-		writePlayerInfo(gameState['longestRoad'], playerInfo)
+		if gameState['longestRoad'] != -1:
+			playerInfo = getPlayerInfo(gameState['longestRoad'])
+			playerInfo['points'] -= 2
+			writePlayerInfo(gameState['longestRoad'], playerInfo)
 		gameState['longestRoad'] = longestRoadPlayer
 		if longestRoadPlayer != -1:
 			playerInfo = getPlayerInfo(longestRoadPlayer)
@@ -559,8 +606,8 @@ def performPurchase(playerID, purchase):
 			writePlayerInfo(playerID, playerInfo)
 			payForPurchase(playerID, {'wood':1, 'clay':1, 'sheep':1, 'wheat':1})
 			if placePiece == False:
+				getPorts(playerID)
 				writei2c('pi', 'confirm')
-				getPorts()
 			return True, placePiece
 		else:
 			if placePiece == False:
@@ -697,6 +744,27 @@ def weighted_choice_sub(weights):
 		if rnd < 0:
 			return i
 
+def getPorts(playerID):
+	portType = readi2c('port')
+	if portType == 255:
+		return False
+	else:
+		playerInfo = getPlayerInfo(playerID)
+		if portType == 0:
+			playerInfo['portsOwned']['6'] = '2 to 1 Ore'
+		elif portType == 1:
+			playerInfo['portsOwned']['7'] = '2 to 1 Wheat'
+		elif portType == 2:
+			playerInfo['portsOwned']['8'] = '2 to 1 Sheep'
+		elif portType == 3:
+			playerInfo['portsOwned']['9'] = '2 to 1 Clay'
+		elif portType == 4:
+			playerInfo['portsOwned']['10'] = '2 to 1 Wood'
+		elif portType == 5:
+			playerInfo['portsOwned']['11'] = '3 to 1'
+		writePlayerInfo(playerID, playerInfo)
+		return True
+
 #########################BOTTLE OUTPUT###################################
 #Add the template path if it's not there.
 if '/home/pi/477grp3/webapp/layouts/' not in TEMPLATE_PATH:
@@ -761,7 +829,10 @@ def handle_ajax():
 		elif mid == "trade":
 			#Current player wishes to trade
 			gameStatus = getGameStatus()
-			return template('trade', players=getGameInfo()['playerInfo'], newTrade=True, numPlayers=gameStatus['numPlayers'])
+			portsOwned = getPlayerInfo(int(request.get_cookie("playerID")))['portsOwned']
+			tradePlayers = getGameInfo()['playerInfo']
+			tradePlayers.update(dict((key, {"playerName":portsOwned[key]}) for key in portsOwned))
+			return template('trade', players=tradePlayers, newTrade=True, numPlayers=gameStatus['numPlayers'], currentPlayer=request.get_cookie('playerID'))
 		elif mid == "invalidTrade":
 			#Current player cannot trade with given values
 			writePlayerInfo(playerID, playerInfo)
@@ -1006,6 +1077,7 @@ def handle_i2c():
 	#Basically handles confirm/deny directly from the web interface.
 	todo = request.params.todo
 	if todo == "confirm":
+		getPorts(int(request.get_cookie("playerID")))
 		writei2c('pi', 'confirm')
 		#Every time we confirm, check if we're in initial setup and if so auto inc to next player.
 		checkIfNextPlayer(int(request.get_cookie("playerID")))
