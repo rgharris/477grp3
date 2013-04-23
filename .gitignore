@@ -1,3 +1,12 @@
 Release/
 Debug/
 *.atsuo
+.*.swp
+*.json
+*.bak
+webapp/chkRefresh/-1
+webapp/chkRefresh/0
+webapp/chkRefresh/1
+webapp/chkRefresh/2
+webapp/chkRefresh/3
+webapp/chkRefresh/4
