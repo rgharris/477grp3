@@ -337,11 +337,11 @@ function refreshContent(id, mid)
 			{
 				openModal('endGame');
 			}
-			else if (resources.flag == "10")
+			else if (resources.flag == "10") //Indicates player needs to discard hand (7 roll)
 			{
 				openModal('discardHand');
 			}
-			else if (resources.flag == "11")
+			else if (resources.flag == "11") //Indicates the dice has been rolled.
 			{
 				openModal('rollBox');
 			}
