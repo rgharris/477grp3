@@ -32,4 +32,4 @@ At this point the main project has been completed and we're squashing bugs as we
 DISCLAIMER
 ----------
 
-As has been mentioned several times, this is a senior design project, and as such is never going to leave an early "beta" state, practically an "alpha" state. After the 2013 spring semester is over, it will probably not be worked on by Team Hex Me Baby again. We hold no liability to anything that may happen to you or anything you own as a result of using the Hackers of Catron or any part in any way. 
+As has been mentioned several times, this is a senior design project, and as such is never going to leave an early beta state, practically an alpha state. After the 2013 spring semester is over, it will probably not be worked on by Team Hex Me Baby again. We hold no liability to anything that may happen to you or anything you own as a result of using the Hackers of Catron or any part in any way. 
