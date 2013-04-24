@@ -16,7 +16,7 @@
 //--------------------------------------------------------------------------------------------------------------
 
 //! Defines & Variables to manage a virtual TWI memory
-#define TWI_MEM_SIZE    30 // The size of the virtual mem
+#define TWI_MEM_SIZE    35 // The size of the virtual mem
 #define TWI_MEM_IDLE    0  // Idle state
 #define TWI_MEM_ADDR    1  // Address state
 #define TWI_MEM_DATA    2  // Data state
@@ -49,7 +49,7 @@
 #define LONGEST_ROAD_REG			8		// Which player has the longest road?
 #define DIE_VALUE_REG				9		// The value on the die roll
 #define RESOURCE_REC_REG			10		// 4x5 Array of resources each player receives on the die roll
-
+ 
 // Register 0: Pi Events
 #define PI_TURN_ON				1			// Pi is booted
 #define PI_NEW_GAME				2			// Start a new game
@@ -64,7 +64,9 @@
 #define PI_SETTLEMENT_PURCHASE	11			// A settlement was purchased
 #define PI_CITY_PURCHASE		12			// A city was purchased via web interface
 #define PI_END_GAME				13			// The Game is Over
-#define PI_SHUTDOWN				14			// The Pi is shutting down 
+#define PI_SHUTDOWN				14			// The Pi is shutting down
+#define PI_STOP_BUILD			15			// The player wants to stop a build 
+#define PI_RESOURCE_READ		16			// The Pi has read the resources
  
 
 // Register 3: MCU Events (points to first register I2c should read)
@@ -83,6 +85,8 @@
 #define PIECE_TYPE_ROAD			 1			// The piece is a road
 #define PIECE_TYPE_SETTLEMENT	 2			// The piece is a settlement
 #define PIECE_TYPE_CITY			 3			// The piece is a city
+
+#define DEBUG_REG				 30
 
 // Global Variables
 extern U8  s_memory[TWI_MEM_SIZE];

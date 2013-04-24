@@ -114,6 +114,9 @@ static void twi_slave_rx( U8 u8_value )
 					  case PI_NEW_PIECE_REJECT:
 						rejectNewPiece();
 						s_memory[PI_EVENT_REG] = 0;
+						break;
+					case PI_RESOURCE_READ:
+						clear_resources();
 						break;					  					
 				  }
 				  //s_memory[PI_EVENT_REG] = 0;

@@ -11,7 +11,7 @@
 
 void PositionTest(void);
 void SetThiefPos(void);
-
+	
 
 int main(void)
 {
@@ -20,10 +20,12 @@ int main(void)
 	uint8_t pos;
 	int ColPins[]= {HE_COL0,HE_COL1,HE_COL2,HE_COL3,HE_COL4,HE_COL5,HE_COL6,HE_COL7, HE_COL8,HE_COL9,HE_COL10,HE_COL11,HE_COL12,HE_COL13,HE_COL14,HE_COL15,HE_COL16,HE_COL17};
     int8_t player;
-	//uint8_t initialSettlements[]={0xFF,0xFF,0xFF};
+	wdt_opt_t opt_WATCH;
+	opt_WATCH.us_timeout_period = 1000000;
+
 
 	// Initialize the board
-	board_init();
+	board_init();	
 	// Clear all of the 7-segment displays
 	rarity_clear_all();
 	// Clear all of the RGB LEDs
@@ -51,13 +53,11 @@ int main(void)
 	for(i=0;i<s_memory[PLAYER_COUNT_REG];i++) {
 		pos = buildSettlement(1);
 		buildRoad(1, pos);
-		//initialSettlements[i]=pos;
 		assign_initial_resources(pos);
 	}
-	/*for (i=0;i<s_memory[PLAYER_COUNT_REG];i++)
-	{
-		assign_initial_resources(initialSettlements[i]);
-	}*/
+	refresh_display();
+	
+
 	
 	
 	//////////////////////////////////////////////////////////////////////////
@@ -65,8 +65,24 @@ int main(void)
 	//////////////////////////////////////////////////////////////////////////
 	mainGameLoop();
 	
-	rgb_clear_all();
-	rarity_clear_all();
+	//rgb_clear_all();
+	//rarity_clear_all();
+	
+	
+	//////////////////////////////////////////////////////////////////////////
+	// End Game, want to play a new one?
+	//////////////////////////////////////////////////////////////////////////
+	while(s_memory[PI_EVENT_REG]!=PI_NEW_GAME) {
+		delay_ms(200);
+	}
+	
+	offAnimate();
+
+	wdt_enable(&opt_WATCH);
+	
+	while(1) {
+		delay_ms(200);
+	}
 }	
 
 // Prototyping

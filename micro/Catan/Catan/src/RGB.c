@@ -200,3 +200,110 @@ void rgb_display_resource(int hexnum, int resource){
 		break;
 	}
 }
+
+void rgb_hex_set_variable(int hex_num, int color, uint8_t speed) {
+	//RBG
+	int red_int = (color & (0xF00000)) >> 20;
+	int green_int = (color & (0x00F000)) >> 12;
+	int blue_int = (color & (0x0000F0)) >> 4;
+	switch (hex_num)
+	{
+		case 0:
+		lightRGB(3,A2,red_int,speed); // Device 3, Channel A2
+		lightRGB(3,B2,blue_int,speed); // Device 3, Channel B2
+		lightRGB(3,C2,green_int,speed); // Device 3, Channel C2
+		break;
+		case 1:
+		lightRGB(6,A2,red_int,speed); // Device 4, Channel A2
+		lightRGB(6,B2,blue_int,speed); // Device 4, Channel B2
+		lightRGB(6,C2,green_int,speed); // Device 4, Channel C2
+		break;
+		case 2:
+		lightRGB(6,A1,red_int,speed); // Device 3, Channel A1
+		lightRGB(6,B1,blue_int,speed); // Device 3, Channel B1
+		lightRGB(6,C1,green_int,speed); // Device 3, Channel C1
+		break;
+		case 3:
+		lightRGB(6,A0,red_int,speed); // Device 4, Channel A0
+		lightRGB(6,B0,blue_int,speed); // Device 4, Channel B0
+		lightRGB(6,C0,green_int,speed); // Device 4, Channel C0
+		break;
+		case 4:
+		lightRGB(5,A1,red_int,speed); // Device 5, Channel A1
+		lightRGB(5,B1,blue_int,speed); // Device 5, Channel B1
+		lightRGB(5,C1,green_int,speed); // Device 5, Channel C1
+		break;
+		case 5:
+		lightRGB(5,A2,red_int,speed); // Device 5, Channel A2
+		lightRGB(5,B2,blue_int,speed); // Device 5, Channel B2
+		lightRGB(5,C2,green_int,speed); // Device 5, Channel C2
+		break;
+		case 6:
+		lightRGB(0,A2,red_int,speed); // Device 0, Channel A2
+		lightRGB(0,B2,blue_int,speed); // Device 0, Channel B2
+		lightRGB(0,C2,green_int,speed); // Device 0, Channel C2
+		break;
+		case 7:
+		lightRGB(1,A2,red_int,speed); // Device 1, Channel A2
+		lightRGB(1,B2,blue_int,speed); // Device 1, Channel B2
+		lightRGB(1,C2,green_int,speed); // Device 1, Channel C2
+		break;
+		case 8:
+		lightRGB(0,A1,red_int,speed); // Device 0, Channel A1
+		lightRGB(0,B1,blue_int,speed); // Device 0, Channel B1
+		lightRGB(0,C1,green_int,speed); // Device 0, Channel C1
+		break;
+		case 9:
+		lightRGB(1,A0,red_int,speed); // Device 1, Channel A0
+		lightRGB(1,B0,blue_int,speed); // Device 1, Channel B0
+		lightRGB(1,C0,green_int,speed); // Device 1, Channel C0
+		break;
+		case 10:
+		lightRGB(1,A1,red_int,speed); // Device 1, Channel A1
+		lightRGB(1,B1,blue_int,speed); // Device 1, Channel B1
+		lightRGB(1,C1,green_int,speed); // Device 1, Channel C1
+		break;
+		case 11:
+		lightRGB(2,A1,red_int,speed); // Device 2, Channel A1
+		lightRGB(2,B1,blue_int,speed); // Device 2, Channel B1
+		lightRGB(2,C1,green_int,speed); // Device 2, Channel C1
+		break;
+		case 12:
+		lightRGB(2,A2,red_int,speed); // Device 2, Channel A2
+		lightRGB(2,B2,blue_int,speed); // Device 2, Channel B2
+		lightRGB(2,C2,green_int,speed); // Device 2, Channel C2
+		break;
+		case 13:
+		lightRGB(2,A0,red_int,speed); // Device 2, Channel A0
+		lightRGB(2,B0,blue_int,speed); // Device 2, Channel B0
+		lightRGB(2,C0,green_int,speed); // Device 2, Channel C0
+		break;
+		case 14:
+		lightRGB(3,A0,red_int,speed); // Device 3, Channel A0
+		lightRGB(3,B0,blue_int,speed); // Device 3, Channel B0
+		lightRGB(3,C0,green_int,speed); // Device 3, Channel C0
+		break;
+		case 15:
+		lightRGB(3,A1,red_int,speed); // Device 3, Channel A1
+		lightRGB(3,B1,blue_int,speed); // Device 3, Channel B1
+		lightRGB(3,C1,green_int,speed); // Device 3, Channel C1
+		break;
+		case 16:
+		lightRGB(5,A0,red_int,speed); // Device 5, Channel A0
+		lightRGB(5,B0,blue_int,speed); // Device 5, Channel B0
+		lightRGB(5,C0,green_int,speed); // Device 5, Channel C0
+		break;
+		case 17:
+		lightRGB(0,A0,red_int,speed); // Device 0, Channel A0
+		lightRGB(0,B0,blue_int,speed); // Device 0, Channel B0
+		lightRGB(0,C0,green_int,speed); // Device 0, Channel C0
+		break;
+		case 18:
+		lightRGB(4,A0,red_int,speed); // Device 6, Channel A0
+		lightRGB(4,B0,blue_int,speed); // Device 6, Channel B0
+		lightRGB(4,C0,green_int,speed); // Device 6, Channel C0
+		break;
+		default:
+		break;
+	}
+}

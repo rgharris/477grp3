@@ -13,6 +13,7 @@
 
 void board_init(void)
 {
+	wdt_disable();
 	sysclk_init();
 	ioport_init();
 	
@@ -44,4 +45,6 @@ void board_init(void)
 	delay_ms(100);
 	rarity_init();
 	I2C_init();
+	
+	
 }
