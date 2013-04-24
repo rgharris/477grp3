@@ -930,7 +930,8 @@ def handle_ajax():
 			numDiscard = floor(sum(getPlayerInfo(int(request.get_cookie("playerID")))['resources'].values())/2)
 			return template('sevenRoll', error=False, complete=False, numDiscard=numDiscard)
 		elif mid == "rollBox":
-			return template('diceBox', diceRoll=getGameStatus()['diceRolled'])
+			#return template('diceBox', diceRoll=getGameStatus()['diceRolled'])
+			return "<h2>Dice Rolled!</h2><p>A " + str(getGameStatus()['diceRolled']) + " was rolled!</p>"
 		
 	return "<p>Your request was invalid. Please try again.</p>"
 

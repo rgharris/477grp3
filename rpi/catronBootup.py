@@ -14,6 +14,12 @@ BOOTUP = 1
 if __name__ == "__main__":
 	r.seed() #Uses system time by default
 	with i2c.I2CMaster() as bus:
-		bus.transaction(i2c.writing_bytes(MICROADDR, STARTRAND, r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250))) #Too lazy to figure out the 'pythonic' way to do this. This should work. Repeated 19 times.
-		bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, BOOTUP))
-		print("Generated random board!")
+		while True:
+			try:
+				bus.transaction(i2c.writing_bytes(MICROADDR, STARTRAND, r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250), r.randint(0,250))) #Too lazy to figure out the 'pythonic' way to do this. This should work. Repeated 19 times.
+				bus.transaction(i2c.writing_bytes(MICROADDR, PIREG, BOOTUP))
+				break
+			except:
+				pass
+			
+	print("Generated random board!")
