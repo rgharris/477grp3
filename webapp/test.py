@@ -989,7 +989,7 @@ def handle_form():
 				return template('purchase', invalidPurchase=True, purchaseItem=getCosts(value['type']))
 			else:
 				gameState = getGameStatus()
-				if gameState['runningPurchase'] = 1:
+				if gameState['runningPurchase'] == 1:
 					gameState['runningPurchase'] = 0
 					writeGameInfo('gameState', gameState)
 				if value['type'] != 'development card' and placePiece == True:
