@@ -13,6 +13,7 @@
 #include <Catan.h>
 
 #define TRANS_TIME	7 // A number 0-4 will define the time taken to change color
+#define FAST_TIME 0
 
 // RG Color Address
 #define A0 0
@@ -43,8 +44,9 @@
 #define COLOR_SGREEN 0x00ff5f
 #define COLOR_WOOD  0x00fF00
 #define COLOR_ERROR 0xFF0000 //0xFF
-#define COLOR_ORE	0xB09090  //0xB0B090
-#define COLOR_DESERT 0xF0F0A0
+#define COLOR_ORE	 0xB0B070 //0xB09090  //0xB0B090
+#define COLOR_DESERT 0xD0A050//0xF0F0A0
+#define COLOR_TAN	 0xD0B060
 #define COLOR_GREY   0xB0B070
 #define COLOR_DGREY  0x808030
 #define COLOR_CONFIRM 0x0000FF
@@ -56,6 +58,7 @@ void rgb_loop_test( void );
 void rgb_hex_set(int hex_num, int color); 
 void rgb_clear_all( void );
 void rgb_display_resource(int hex_num,int resource);
+void rgb_hex_set_variable(int hex_num, int color, uint8_t speed);
 
 
 
