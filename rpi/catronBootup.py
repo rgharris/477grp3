@@ -13,6 +13,8 @@ BOOTUP = 1
 
 if __name__ == "__main__":
 	r.seed() #Uses system time by default
+	if os.path.isfile("/home/pi/477grp3/webapp/gameStatus.json"):
+		os.remove("/home/pi/477grp3/webapp/gameStatus.json")
 	with i2c.I2CMaster() as bus:
 		while True:
 			try:
