@@ -357,11 +357,14 @@ def doASevenRoll(playerID):
 			playerInfo['flag'] = "8"
 		if sum(playerInfo['resources'].values()) > 7:
 			playerInfo['flag'] = "10"
+		elif i != playerID:
+			playerInfo['flag'] = "11"
 		writePlayerInfo(i, playerInfo)
 
 def discardResources(playerID, resourceDict):
 	playerInfo = getPlayerInfo(playerID)
 	from math import floor
+	resourceDict = dict((key, int(val)) for key, val in resourceDict.items() if int(val) != 0)
 	for item in resourceDict:
 		resourceDict[item] = int(resourceDict[item])
 	if sum(resourceDict.values()) != floor(sum(playerInfo['resources'].values())/2):
@@ -436,8 +439,7 @@ def generateReadyLinks(joined, numPlayers):
 		if numPlayers <= 2:
 			return "<span class=\"waitLink\">Waiting...</span><a href=\"javascript:unsetReady();\" class=\"notReadyLink\">I'm not ready!</a>"
 		else:
-			return "<a href=\"/?start=true\" class=\"halfReadyLink\">Start game!</a><a href=\"javascript:unsetReady();\" class=\"notReadyLink\">I'm not ready!</a>"
-
+			return "<a href=\"javascript:startGame();\" class=\"halfReadyLink\">Start game!</a><a href=\"javascript:unsetReady();\" class=\"notReadyLink\">I'm not ready!</a>"
 def chkResources(playerID, resourceDict):
 #This function checks if the given player has the resources (both type and number) given in resourceDict.
 	playerInfo = getPlayerInfo(playerID)
@@ -958,8 +960,7 @@ def handle_ajax():
 			numDiscard = floor(sum(getPlayerInfo(int(request.get_cookie("playerID")))['resources'].values())/2)
 			return template('sevenRoll', error=False, complete=False, numDiscard=numDiscard)
 		elif mid == "rollBox":
-			#return template('diceBox', diceRoll=getGameStatus()['diceRolled'])
-			return "<h2>Dice Rolled!</h2><p>A " + str(getGameStatus()['diceRolled']) + " was rolled!</p><a href=\"javascript:closeModal();\" class=\"bottom left\">Got it!</a>"
+			return template('rollBox', numberRolled=str(getGameStatus()['diceRolled']))
 		
 	return "<p>Your request was invalid. Please try again.</p>"
 
@@ -1083,25 +1084,28 @@ def handle_form():
 
 @get('/ready')
 def handle_players():
-	set = request.params.set
-	if set == "true":
-		#Joining a new player, set the cookies and write stuff as necessary.
-		from time import time
-		playerID, numPlayers = addPlayer()
-		gameTime = getGameInfo()['gameTime']
-		response.set_cookie("gameTime", str(gameTime))	#Game start time, like an ID
-		#Player join time prevents multiple players from having the same ID and times out if it takes too
-		#long to start the game (so they have to re-join)
-		response.set_cookie("joinTime", str(time()))		
-		response.set_cookie("playerID", str(playerID))	#Player ID
-		return str(numPlayers)
-	elif set == "false":
-		#Unjoining a player, unset cookies and remove as necessary.
-		numPlayers = removePlayer(request.get_cookie("playerID"))
-		response.set_cookie("gameTime", "-1")
-		response.set_cookie("joinTime", "-1")
-		response.set_cookie("playerID", "-1")
-		return str(numPlayers)
+	if "start" in request.params:
+		startGame()
+	else:
+		set = request.params.set
+		if set == "true":
+			#Joining a new player, set the cookies and write stuff as necessary.
+			from time import time
+			playerID, numPlayers = addPlayer()
+			gameTime = getGameInfo()['gameTime']
+			response.set_cookie("gameTime", str(gameTime))	#Game start time, like an ID
+			#Player join time prevents multiple players from having the same ID and times out if it takes too
+			#long to start the game (so they have to re-join)
+			response.set_cookie("joinTime", str(time()))		
+			response.set_cookie("playerID", str(playerID))	#Player ID
+			return str(numPlayers)
+		elif set == "false":
+			#Unjoining a player, unset cookies and remove as necessary.
+			numPlayers = removePlayer(request.get_cookie("playerID"))
+			response.set_cookie("gameTime", "-1")
+			response.set_cookie("joinTime", "-1")
+			response.set_cookie("playerID", "-1")
+			return str(numPlayers)
 
 @get('/i2c')
 def handle_i2c():
@@ -1124,15 +1128,17 @@ def handle_i2c():
 
 @get('/rollDice')
 def handle_dice_roll():
-	#Handle a dice roll.
-	diceNumber = rollDice(int(request.get_cookie("playerID")))
+	if "seen" in request.params:
+		playerInfo = getPlayerInfo(int(request.get_cookie("playerID")))
+		playerInfo['flag'] = "0"
+		writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
+	else:
+		#Handle a dice roll.
+		diceNumber = rollDice(int(request.get_cookie("playerID")))
 
 # This request handles initial loading of the page.
 @get('/')
 def show_webapp():
-	if "start" in request.params:
-		#If we're starting the game, then start the game.
-		startGame()
 	gameTime = getGameInfo()['gameTime'] #Check the game time (it's sort of our ID)
 	gameStatus = getGameStatus()
 	if gameStatus['gameStart'] == 0:

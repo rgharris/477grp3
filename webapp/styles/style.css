@@ -461,6 +461,11 @@ body.wait div#body span.waitLink {
 	border-bottom-left-radius: 10px;
 }
 
+body.wait div#body span.fullWidth {
+	width: 100%;
+	border-bottom-right-radius: 10px;
+}
+
 body.wait div#body a.halfReadyLink {
 	display:block;
 	width:50%;

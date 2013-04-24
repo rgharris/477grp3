@@ -24,7 +24,7 @@
 %if numPlayers <= 2:
 					<span class="waitLink">Waiting...</span><a href="javascript:unsetReady();" class="notReadyLink">I'm not ready!</a>
 %else:
-					<a href="/?start=true" class="halfReadyLink">Start game!</a><a href="javascript:unsetReady();" class="notReadyLink">I'm not ready!</a>
+					<a href="javascript:startGame();" class="halfReadyLink">Start game!</a><a href="javascript:unsetReady();" class="notReadyLink">I'm not ready!</a>
 %end
 %end
 					</span>

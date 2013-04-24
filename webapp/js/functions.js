@@ -92,6 +92,19 @@ function setReady()
 	xmlhttp.send();
 
 }
+//Start the game!
+function startGame()
+{
+	var xmlhttp;
+	xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function()
+	{
+		console.log("startGame: " + xmlhttp.responseText);
+	}
+	xmlhttp.open("GET","ready?start=go", true);
+	xmlhttp.send();
+
+}
 //Tell the server we lied and we aren't actually ready.
 function unsetReady()
 {
@@ -225,6 +238,20 @@ function denyTrade()
 	xmlhttp.open("GET","submitForm?id=trade&value=deny", true);
 	xmlhttp.send();
 }
+//Tell the server that we've seen the dice roll.
+function seenRoll()
+{
+	var xmlhttp;
+	xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function()
+	{
+		console.log(xmlhttp.responseText);
+		closeModal();
+	}
+	xmlhttp.open("GET","rollDice?seen=True", true);
+	xmlhttp.send();
+}
+
 //Tell the server to roll the dice.
 function rollDice()
 {        
@@ -233,7 +260,7 @@ function rollDice()
         xmlhttp.onreadystatechange = function()
         {
                 console.log(xmlhttp.responseText);
-								openModal('rollBox');
+		openModal('rollBox');
         }
         xmlhttp.open("GET","rollDice", true);
         xmlhttp.send();
@@ -348,8 +375,13 @@ function refreshContent(id, mid)
 		}
 		else if (id == "readyState"){
 			ready = JSON.parse(xmlhttp.responseText);
-			if (ready.gameStart == 1){ location.reload(true); }
-			document.getElementById("readyLinks").innerHTML = ready.readyLink;
+			if (ready.gameStart == 1){ 
+				document.getElementById("readyLinks").innerHTML="<span class=\"fullWidth waitLink\">Game is starting...</span>";
+				location.reload(true); 
+			}
+			else{
+				document.getElementById("readyLinks").innerHTML = ready.readyLink;
+			}
 			document.getElementById("playersReady").innerHTML = ready.players;
 		}
 		else{
