@@ -13,7 +13,8 @@
 			<script>setInterval("refreshContent(\"resources\", 0)", 1000)</script>
 			
          <!--Modal Boxes-->
-         <a href="javascript:closeModal()" class="overlay" id="modal"></a>
+         <!--<a href="javascript:closeModal()" class="overlay" id="modal"></a>-->
+	 <div class="overlay" id="modal"></div>
          <div class="modal" id="ModalBox">
 				 <!--img class="loadingGif" src="images/loading.gif" alt="Loading..." /-->
 				 <p>Loading...</p>
