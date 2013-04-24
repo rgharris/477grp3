@@ -31,6 +31,9 @@
 %if not defined('currentPlayer'):
 %currentPlayer = -1
 %end
+%if not defined('needRollDice'):
+%needRollDice = False
+%end
 %if newTrade == True:
 <form onsubmit="return submitForm()" class="trade" name="trade">
 	<h2 style="margin-bottom: 15px">Trade</h2>
@@ -136,6 +139,10 @@
 %elif success == True:
 	<h2>Trade Successful</h2>
 		<p class="generic">Your trade has been accepted and has taken place.</p>
+		<a href="javascript:closeModal();refreshContent('clearFlag', 0);" class="bottom left">Got it!</a>
+%elif needRollDice == True:
+	<h2>Cannot trade yet!</h2>
+		<p class="generic">You need to roll the dice before you can trade!</p>
 		<a href="javascript:closeModal();refreshContent('clearFlag', 0);" class="bottom left">Got it!</a>
 %else:
 	<h2>Error</h2>

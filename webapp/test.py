@@ -211,12 +211,12 @@ def endGame(playerID):
 #This function ends the game when a player has reached 10 or more points.
 	gameState = getGameStatus()
 	#Set the winning player ID
-	gameState['gameEnd'] == playerID
 	for i in range(0, gameState['numPlayers']):
 		#Notify everyone of game over
 		playerInfo = getPlayerInfo(i)
 		playerInfo['flag'] = "9"
 		writePlayerInfo(i, playerInfo)
+	gameState['gameEnd'] = int(playerID)
 	writeGameInfo("gameState", gameState)
 	#Notify micro of game over.
 	writei2c('pi', 'endGame')
@@ -264,9 +264,9 @@ def writeGameInfo(key, value):
 		#If the game info file is more than 10 hours old, replace it.
 		if float(gameStatus['gameTime']) + 36000 < time():
 			gameStatus = createGameInfo(filename)
-	gameStatus[key] = value
 	#Only write to the file if the game has not ended.
 	if gameStatus['gameState']['gameEnd'] == -1:
+		gameStatus[key] = value
 		gameStatus = writeJson(filename, gameStatus)
 	return gameStatus
 
@@ -356,7 +356,6 @@ def doASevenRoll(playerID):
 		if i == playerID:
 			playerInfo['flag'] = "8"
 		if sum(playerInfo['resources'].values()) > 7:
-			writei2c('debug' + str(i+1), i)
 			playerInfo['flag'] = "10"
 		writePlayerInfo(i, playerInfo)
 
@@ -493,7 +492,6 @@ def trade(playerID, tradeInfo, option):
 				elif int(tradeInfo['to']) == 7 and 'wheat' in tradeInfo['give'] and tradeInfo['give']['wheat'] == 2:
 						playerInfo['resources']['wheat'] -= tradeInfo['give']['wheat']
 						playerInfo['resources'][list(tradeInfo['get'])[0]] += list(tradeInfo['get'].values())[0]
-						writei2c('debug2', 1)
 						tradeInfo['accepted'] = 1
 				elif int(tradeInfo['to']) == 8 and 'sheep' in tradeInfo['give'] and tradeInfo['give']['sheep'] == 2:
 						playerInfo['resources']['sheep'] -= tradeInfo['give']['sheep']
@@ -835,10 +833,13 @@ def handle_ajax():
 		elif mid == "trade":
 			#Current player wishes to trade
 			gameStatus = getGameStatus()
-			portsOwned = getPlayerInfo(int(request.get_cookie("playerID")))['portsOwned']
-			tradePlayers = getGameInfo()['playerInfo']
-			tradePlayers.update(dict((key, {"playerName":portsOwned[key]}) for key in portsOwned))
-			return template('trade', players=tradePlayers, newTrade=True, numPlayers=gameStatus['numPlayers'], currentPlayer=request.get_cookie('playerID'))
+			if gameStatus['diceRolled'] != 0:
+				portsOwned = getPlayerInfo(int(request.get_cookie("playerID")))['portsOwned']
+				tradePlayers = getGameInfo()['playerInfo']
+				tradePlayers.update(dict((key, {"playerName":portsOwned[key]}) for key in portsOwned))
+				return template('trade', players=tradePlayers, newTrade=True, numPlayers=gameStatus['numPlayers'], currentPlayer=request.get_cookie('playerID'))
+			else:
+				return template('trade', needRollDice=True)
 		elif mid == "invalidTrade":
 			#Current player cannot trade with given values
 			writePlayerInfo(playerID, playerInfo)
