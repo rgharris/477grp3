@@ -272,7 +272,9 @@ function settings(todo)
         xmlhttp.onreadystatechange = function()
         {
                 console.log(xmlhttp.responseText);
-		closeModal();
+		if(todo != 'shutdown'){
+			closeModal();
+		}
         }
         xmlhttp.open("GET","settings?todo=" + todo, true);
         xmlhttp.send();

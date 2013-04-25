@@ -774,6 +774,11 @@ def getPorts(playerID):
 		writePlayerInfo(playerID, playerInfo)
 		return True
 
+def shutdown():
+	writei2c('pi', 'shutdown')
+	from subprocess import call
+	call("/sbin/halt")
+
 #########################BOTTLE OUTPUT###################################
 #Add the template path if it's not there.
 if '/home/pi/477grp3/webapp/layouts/' not in TEMPLATE_PATH:
@@ -1168,6 +1173,11 @@ def handle_settings():
 		else:
 			playerInfo['quickConfirm'] = 1
 		writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
+	if todo == "shutdown":
+		return template('settings', confirmShutdown=True)
+	if todo == "reallyShutdown":
+		shutdown()
+		return "<h2>Shutdown</h2><p>Shutting down.</p>"
 
 # This request handles initial loading of the page.
 @get('/')
