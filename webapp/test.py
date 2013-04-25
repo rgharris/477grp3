@@ -1193,21 +1193,37 @@ def handle_settings():
 			playerInfo['quickConfirm'] = 1
 		writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
 	elif todo == "shutdown":
+		playerInfo = getPlayerInfo(int(request.get_cookie("playerID")))
+		if playerInfo['flag'] == "9":
+			playerInfo['flag'] = "14"
+			writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
 		return template('settings', confirmShutdown=True)
 	elif todo == "reallyShutdown":
 		shutdown()
 		return "<h2>Shutdown</h2><p>Shutting down.</p>"
 	elif todo == "endGame":
-		return template('endGame', confirmEndgame=True)
+		return template('settings', endGame=True)
 	elif todo == "reallyEndGame":
 		endGame(-1)
 	elif todo == "restartGame":
-		return template('endGame', confirmNewGame=True)
+		playerInfo = getPlayerInfo(int(request.get_cookie("playerID")))
+		if playerInfo['flag'] == "9":
+			playerInfo['flag'] = "14"
+			writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
+		return template('settings', restartGame=True)
 	elif todo == 'reallyRestartGame':
+		from time import sleep
 		winner = getGameStatus()['gameEnd']
 		if winner == -1:
 			endGame(-1)
+			sleep(2)
 		restartGame()
+	elif todo == 'cancel':
+		playerInfo = getPlayerInfo(int(request.get_cookie("playerID")))
+		if playerInfo['flag'] == "14":
+			playerInfo['flag'] = "9"
+			writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
+		return
 
 # This request handles initial loading of the page.
 @get('/')

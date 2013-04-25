@@ -272,7 +272,7 @@ function settings(todo)
         xmlhttp.onreadystatechange = function()
         {
                 console.log(xmlhttp.responseText);
-		if(todo != 'shutdown' && todo != 'reallyShutdown'){
+		if(todo == 'quickConfirm' || todo == 'cancel'){
 			closeModal();
 		}else{
 			document.getElementById('cardContent').innerHTML=xmlhttp.responseText;
@@ -318,7 +318,7 @@ function refreshContent(id, mid)
 			document.getElementById("sheepAmt").innerHTML = resources.sheep;
 			document.getElementById("devAmt").innerHTML = resources.dev;
 			document.getElementById("points").innerHTML = resources.points;
-			if (resources.flag == lastFlag && resources.flag != "12") {
+			if (resources.flag == lastFlag && resources.flag != "12" && resources.flag != "14") {
 				 if (resources.dice != 0){
                                         document.getElementById('endTurnButton').innerHTML = "<a href=\"javascript:openModal('endTurn')\" id='turnButton' class='button borderTop'>End Turn</a>";
                                 }
@@ -327,7 +327,7 @@ function refreshContent(id, mid)
                                 }
 				return;
 			}
-			else if (resources.flag != "12"){
+			else if (resources.flag != "12" && resources.flag != "14"){
 				closeModal();
 			}
 			lastFlag = resources.flag;
