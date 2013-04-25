@@ -777,7 +777,7 @@ def getPorts(playerID):
 def shutdown():
 	writei2c('pi', 'shutdown')
 	from subprocess import call
-	call("/usr/bin/sudo /sbin/halt")
+	call(["/usr/bin/sudo", "/sbin/halt"])
 
 #########################BOTTLE OUTPUT###################################
 #Add the template path if it's not there.
