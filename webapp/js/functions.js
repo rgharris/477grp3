@@ -272,8 +272,10 @@ function settings(todo)
         xmlhttp.onreadystatechange = function()
         {
                 console.log(xmlhttp.responseText);
-		if(todo != 'shutdown'){
+		if(todo != 'shutdown' && todo != 'reallyShutdown'){
 			closeModal();
+		}else{
+			document.getElementById('cardContent').innerHTML=xmlhttp.responseText;
 		}
         }
         xmlhttp.open("GET","settings?todo=" + todo, true);
