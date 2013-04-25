@@ -39,7 +39,7 @@
 							<a href="javascript:openModal('status')" id="word_pop" class="h2"><span id="points">{{points}}</span> pts</a>
 						</div>
 					</div>
-					<a class="headElement" href="javascript:void()" id="rightHead"><img src="images/settings.png"/></a>
+					<a class="headElement" href="javascript:openModal('settings')" id="rightHead"><img src="images/settings.png"/></a>
 				</div>
 				<div id="footer" style="visibility: hidden">
 %if currentTurn == False:

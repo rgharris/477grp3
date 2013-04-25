@@ -19,6 +19,12 @@
 %if not defined('resources'):
 %resources = None
 %end
+%if not defined('wait'):
+%wait = False
+%end
+%if not defined('stealPlayers'):
+%stealPlayers = -1
+%end
 %if not defined('steal'):
 %steal = {'-1':'Nobody'}
 %end
@@ -169,6 +175,12 @@
 	<p class="generic">That is not a valid card to play.</p>
 	<a href="javascript:closeModal();" class="bottom left" name="gotit">Got it!</a>
 %end
+%elif wait == 'knight':
+	<h2>Knight</h2>
+	<form name='knight' onsubmit='return submitForm()' id='knight'>
+	<input type='hidden' value='{{stealPlayer}}' name='stealPlayer' />
+	</form>
+	<p>Please wait for the player to discard half their hand before stealing from them...</p>
 %elif success != 'false':
 %if success == 'plenty':
 	<h2>Year of Plenty</h2>

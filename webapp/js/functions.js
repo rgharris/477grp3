@@ -265,6 +265,20 @@ function rollDice()
         xmlhttp.open("GET","rollDice", true);
         xmlhttp.send();
 }
+function settings(todo)
+{
+	var xmlhttp;
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function()
+        {
+                console.log(xmlhttp.responseText);
+		closeModal();
+        }
+        xmlhttp.open("GET","settings?todo=" + todo, true);
+        xmlhttp.send();
+}
+
+
 //Generic AJAX Loading
 function loadXMLDoc(div,loc)
 {
@@ -300,7 +314,7 @@ function refreshContent(id, mid)
 			document.getElementById("sheepAmt").innerHTML = resources.sheep;
 			document.getElementById("devAmt").innerHTML = resources.dev;
 			document.getElementById("points").innerHTML = resources.points;
-			if (resources.flag == lastFlag) {
+			if (resources.flag == lastFlag && resources.flag != "12") {
 				 if (resources.dice != 0){
                                         document.getElementById('endTurnButton').innerHTML = "<a href=\"javascript:openModal('endTurn')\" id='turnButton' class='button borderTop'>End Turn</a>";
                                 }
@@ -309,7 +323,7 @@ function refreshContent(id, mid)
                                 }
 				return;
 			}
-			else{
+			else if (resources.flag != "12"){
 				closeModal();
 			}
 			lastFlag = resources.flag;
@@ -371,6 +385,10 @@ function refreshContent(id, mid)
 			else if (resources.flag == "11") //Indicates the dice has been rolled.
 			{
 				openModal('rollBox');
+			}
+			else if (resources.flag == "12")
+			{
+				openModal('knight&player=' + document.forms[0].stealPlayer.value);
 			}
 		}
 		else if (id == "readyState"){

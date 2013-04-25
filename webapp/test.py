@@ -697,6 +697,9 @@ def knight(playerID, playerSteal):
 	#player and gives it to the given player.
 	playerInfo = getPlayerInfo(playerID)
 	playerStealInfo = getPlayerInfo(playerSteal)
+	if int(playerStealInfo['flag']) == 10:
+		playerInfo['flag'] = "12"
+		return {'wait':'0'}
 	playerInfo['flag'] = "8"
 	from random import randint
 	availableResources = dict((key, int(val)) for key, val in playerStealInfo['resources'].items() if int(val) != 0)
@@ -902,28 +905,28 @@ def handle_ajax():
 					return template('purchase', confirmPurchase=True, purchaseItem=getCosts(piece))
 				else:
 					#Accept the purchase.
-					purchaseResult, placePiece = performPurchase(request.get_cookie("playerID"), value['type'])
+					purchaseResult, placePiece = performPurchase(request.get_cookie("playerID"), piece)
 					if purchaseResult == False:
 						#If purchaseResult is false, then they didn't have the resources available.
 						gameState = getGameStatus();
 						if gameState['runningPurchase'] == 1:
 							gameState['runningPurchase'] = 0
 							writeGameInfo("gameState", gameState)
-							return template('purchase', invalidPurchase=True, purchaseItem=getCosts(value['type']))
+							return template('purchase', invalidPurchase=True, purchaseItem=getCosts(piece))
 						else:
 							if gameState['runningPurchase'] == 1:
 								gameState['runningPurchase'] = 0
 								writeGameInfo('gameState', gameState)
-								if value['type'] != 'development card' and placePiece == True:
+								if piece != 'development card' and placePiece == True:
 									#If they didn't purchase a development card, have them place their piece, if they need to.
 									return template('purchase', placePiece=True)
-							elif value['type'] == 'city':
+							elif  piece == 'city':
 								#Cities are weird, because they can be purchased by removing a settlement.
 								return template('purchase', placePiece=True)
 							else:
 								return
 			else:
-				if (errorType == 'confirm' and playerInfo['quickConfirm'] == 0) or errorType != 'confirm':
+				if (errorType == 'confirm' and playerInfo['quickConfirm'] == 0) or errorType != 'confirm' or piece == 'thief':
 					return template('pieceStuff', errorType=errorType, piece=piece)
 		elif mid == "initSetup":
 			#"Please place your initial __________ now"
@@ -947,10 +950,22 @@ def handle_ajax():
 			else:
 				return template('devCards', playCard='road')
 		elif mid == "knight":
-			#Show the "Steal from this player" box for the knight
-			playerInfo = getPlayerInfo(int(playerID))
-			checkLargestArmy()
-			return template('devCards', playCard='knight', steal=getStealPlayers(int(playerID)))
+			if "player" in request.query:
+				resources = knight(int(request.get_cookie("playerID")), int(request.query.player))
+				if list(resources.keys())[0] == 'wait':
+					playerInfo = getPlayerInfo(int(request.get_cookie("playerID")))
+					playerInfo['flag'] = "12"
+					writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
+					return template('devCards', resources=resources, wait='knight', stealPlayer=request.query.player)
+				gameState = getGameStatus()
+				gameState['playingKnight'] = 0
+				writeGameInfo("gameState", gameState)
+				return template('devCards', resources=resources, success='knight')
+			else:
+				#Show the "Steal from this player" box for the knight
+				playerInfo = getPlayerInfo(int(playerID))
+				checkLargestArmy()
+				return template('devCards', playCard='knight', steal=getStealPlayers(int(playerID)))
 		elif mid == "endGame":
 			#Show the "Game is over! Whoo! Congrats player X!" screen.
 			return template('gameOver', winner=getPlayerInfo(getGameStatus()['gameEnd'])['playerName'])
@@ -961,8 +976,10 @@ def handle_ajax():
 			return template('sevenRoll', error=False, complete=False, numDiscard=numDiscard)
 		elif mid == "rollBox":
 			return template('rollBox', numberRolled=str(getGameStatus()['diceRolled']))
+		elif mid == "settings":
+			return template('settings', quickConfirm=int(getPlayerInfo(int(request.get_cookie("playerID")))['quickConfirm']))
 		
-	return "<p>Your request was invalid. Please try again.</p>"
+	return "<p>Please wait...(if this does not go away in at most a minute, please try again.)</p>"
 
 #This request happens whenever a form is submitted from the webapp.
 @get('/submitForm')
@@ -1077,6 +1094,11 @@ def handle_form():
 	elif fid == "knight":
 		#If a knight form was submitted
 		resources = knight(int(request.get_cookie("playerID")), int(request.params.value))
+		if list(resources.keys())[0] == 'wait':
+			playerInfo = getPlayerInfo(int(request.get_cookie("playerID")))
+			playerInfo['flag'] = "12"
+			writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
+			return template('devCards', resources=resources, wait='knight', stealPlayer=request.params.value)
 		gameState = getGameStatus()
 		gameState['playingKnight'] = 0
 		writeGameInfo("gameState", gameState)
@@ -1135,6 +1157,17 @@ def handle_dice_roll():
 	else:
 		#Handle a dice roll.
 		diceNumber = rollDice(int(request.get_cookie("playerID")))
+
+@get('/settings')
+def handle_settings():
+	todo = request.params.todo
+	if todo == "quickConfirm":
+		playerInfo = getPlayerInfo(int(request.get_cookie("playerID")))
+		if playerInfo['quickConfirm'] == 1:
+			playerInfo['quickConfirm'] = 0
+		else:
+			playerInfo['quickConfirm'] = 1
+		writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
 
 # This request handles initial loading of the page.
 @get('/')
