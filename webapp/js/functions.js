@@ -390,9 +390,13 @@ function refreshContent(id, mid)
 			{
 				openModal('rollBox');
 			}
-			else if (resources.flag == "12")
+			else if (resources.flag == "12") //Indicates waiting for player to discard
 			{
 				openModal('knight&player=' + document.forms[0].stealPlayer.value);
+			}
+			else if (resources.flag == "13") //Indicates new game starting.
+			{
+				location.reload(true);
 			}
 		}
 		else if (id == "readyState"){

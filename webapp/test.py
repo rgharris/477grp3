@@ -325,6 +325,11 @@ def startGame():
 	playerInfo['flag'] = "1"
 	writePlayerInfo(gameState['firstPlayer'], playerInfo)
 	writeGameInfo("gameState", gameState)
+	for i in range(0, gameState['numPlayers']):
+		if i != gameState['firstPlayer']:
+			playerInfo = getPlayerInfo(i)
+			playerInfo['flag'] = "0"
+			writePlayerInfo(i, playerInfo)
 	writei2c('playerCount', int(gameState['numPlayers']))
 	writei2c('currentPlayer', int(gameState['currentPlayer']+1))
 	writei2c('pi','newGame')
@@ -774,6 +779,16 @@ def getPorts(playerID):
 		writePlayerInfo(playerID, playerInfo)
 		return True
 
+def restartGame():
+	from sys import path
+	path.insert(0, '/home/pi/477grp3/rpi')
+	from catronBootup import startBoard
+	startBoard()
+	for i in range(0, 4):
+		playerInfo = getPlayerInfo(i)
+		playerInfo['flag'] = "13"
+		writePlayerInfo(i, playerInfo)
+
 def shutdown():
 	writei2c('pi', 'shutdown')
 	from subprocess import call
@@ -973,7 +988,11 @@ def handle_ajax():
 				return template('devCards', playCard='knight', steal=getStealPlayers(int(playerID)))
 		elif mid == "endGame":
 			#Show the "Game is over! Whoo! Congrats player X!" screen.
-			return template('gameOver', winner=getPlayerInfo(getGameStatus()['gameEnd'])['playerName'])
+			gameStatus = getGameStatus()
+			if(gameStatus['gameEnd'] != -1):
+				return template('gameOver', winner=getPlayerInfo(getGameStatus()['gameEnd'])['playerName'])
+			else:
+				return template('gameOver', winner=False)
 		elif mid == "discardHand":
 			#Force the player to discard half of their hand. A 7 was rolled and they have more then 7 resources.
 			from math import floor
@@ -1173,11 +1192,22 @@ def handle_settings():
 		else:
 			playerInfo['quickConfirm'] = 1
 		writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
-	if todo == "shutdown":
+	elif todo == "shutdown":
 		return template('settings', confirmShutdown=True)
-	if todo == "reallyShutdown":
+	elif todo == "reallyShutdown":
 		shutdown()
 		return "<h2>Shutdown</h2><p>Shutting down.</p>"
+	elif todo == "endGame":
+		return template('endGame', confirmEndgame=True)
+	elif todo == "reallyEndGame":
+		endGame(-1)
+	elif todo == "restartGame":
+		return template('endGame', confirmNewGame=True)
+	elif todo == 'reallyRestartGame':
+		winner = getGameStatus()['gameEnd']
+		if winner == -1:
+			endGame(-1)
+		restartGame()
 
 # This request handles initial loading of the page.
 @get('/')
