@@ -782,6 +782,7 @@ def getPorts(playerID):
 def restartGame():
 	from sys import path
 	path.insert(0, '/home/pi/477grp3/rpi')
+	writei2c('pi', 'newGame')
 	from catronBootup import startBoard
 	startBoard()
 	for i in range(0, 4):
