@@ -781,8 +781,11 @@ def getPorts(playerID):
 
 def restartGame():
 	from sys import path
+	from time import sleep
 	path.insert(0, '/home/pi/477grp3/rpi')
+	sleep(2)
 	writei2c('pi', 'newGame')
+	sleep(2)
 	from catronBootup import startBoard
 	startBoard()
 	for i in range(0, 4):
@@ -947,7 +950,7 @@ def handle_ajax():
 							else:
 								return
 			else:
-				if (errorType == 'confirm' and playerInfo['quickConfirm'] == 0) or errorType != 'confirm' or piece == 'thief':
+				if (errorType == 'confirm' and playerInfo['quickConfirm'] == 0) or gameStatus['setupComplete'] == 0 or errorType != 'confirm' or piece == 'thief':
 					return template('pieceStuff', errorType=errorType, piece=piece)
 		elif mid == "initSetup":
 			#"Please place your initial __________ now"
@@ -1215,7 +1218,7 @@ def handle_settings():
 	elif todo == 'reallyRestartGame':
 		from time import sleep
 		winner = getGameStatus()['gameEnd']
-		if winner == -1:
+		if int(winner) == -1:
 			endGame(-1)
 			sleep(2)
 		restartGame()
