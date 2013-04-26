@@ -862,7 +862,8 @@ def handle_ajax():
 		#If we need to update the ModalBox, then we need to see what we need to update in the Modal box.
 		mid = request.query.modal
 		playerID = request.get_cookie("playerID")
-		playerInfo = getPlayerInfo(playerID)
+		if playerID is not None:
+			playerInfo = getPlayerInfo(playerID)
 		if mid == "name":
 			return template('nameBox', name=playerInfo['playerName'])
 		elif mid == "status":
@@ -1022,7 +1023,10 @@ def handle_ajax():
 		elif mid == "rollBox":
 			return template('rollBox', numberRolled=str(getGameStatus()['diceRolled']))
 		elif mid == "settings":
-			return template('settings', quickConfirm=int(getPlayerInfo(int(request.get_cookie("playerID")))['quickConfirm']))
+			if request.get_cookie("playerID") is not None:
+				return template('settings', quickConfirm=int(getPlayerInfo(int(request.get_cookie("playerID")))['quickConfirm']))
+			else:
+				return template('settings', quickConfirm=0)
 		
 	return "<p>Please wait...(if this does not go away in at most a minute, please try again.)</p>"
 
