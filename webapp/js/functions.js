@@ -309,6 +309,9 @@ function refreshContent(id, mid)
 	xmlhttp.onreadystatechange=function()
 	{
 		console.log(xmlhttp.responseText);
+		if(xmlhttp.responseText == "close"){
+			closeModal();
+		}
 		if (id == "resources"){
 			resources = JSON.parse(xmlhttp.responseText);
 			document.getElementById("clayAmt").innerHTML = resources.clay;
@@ -318,7 +321,7 @@ function refreshContent(id, mid)
 			document.getElementById("sheepAmt").innerHTML = resources.sheep;
 			document.getElementById("devAmt").innerHTML = resources.dev;
 			document.getElementById("points").innerHTML = resources.points;
-			if (resources.flag == lastFlag && resources.flag != "12" && resources.flag != "14") {
+			if (resources.flag == lastFlag && resources.flag != "12" && resources.flag != "14" && resources.flag != "15") {
 				 if (resources.dice != 0){
                                         document.getElementById('endTurnButton').innerHTML = "<a href=\"javascript:openModal('endTurn')\" id='turnButton' class='button borderTop'>End Turn</a>";
                                 }
@@ -327,7 +330,7 @@ function refreshContent(id, mid)
                                 }
 				return;
 			}
-			else if (resources.flag != "12" && resources.flag != "14"){
+			else if (resources.flag != "12" && resources.flag != "14" && resources.flag != "15"){
 				closeModal();
 			}
 			lastFlag = resources.flag;

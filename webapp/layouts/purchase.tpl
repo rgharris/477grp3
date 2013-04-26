@@ -16,8 +16,11 @@
 %if not defined('devCard'):
 %devCard = False
 %end
+%if not defined('diceRolled'):
+%diceRolled = True
+%end
 <span id="purchaseContent">
-%if newPurchase == True:
+%if newPurchase == True and diceRolled == True:
 	<h2>Purchase</h2>
 	<p class="purchase">
 	<a href="javascript:purchase('get','settlement')" class="bottom half top left">Settlement</a>
@@ -25,6 +28,10 @@
 	<a href="javascript:purchase('get','road')" class="bottom half bot left">Road</a>
 	<a href="javascript:purchase('get','development card')" class="bottom half bot right">Dev. Card</a>
 	</p>
+%elif diceRolled == False:
+	<h2>Purchase</h2>
+	<p class="generic">You must roll the dice first!</p>
+	<a href="javascript:closeModal();" class="bottom left" name="gotit">Got it!</a>
 %elif invalidPurchase == True:
 	<h2>Purchase Error</h2>
 		<p class="generic">You don't have enough resources to purchase a {{list(purchaseItem)[0]}}.</p>

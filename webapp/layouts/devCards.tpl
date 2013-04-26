@@ -28,6 +28,9 @@
 %if not defined('steal'):
 %steal = {'-1':'Nobody'}
 %end
+%if not defined('currentTurn'):
+%currentTurn = False
+%end
 %if showCards == True:
 <span id="cardContent">
 	<h2>Development Cards</h2>
@@ -42,10 +45,13 @@
 %if showCard == 'plenty':
 	<h2>Year of Plenty card</h2>
 	<p class="generic">This card allows you to take any two resources. 
-%if devCards['plenty'] != 0 and playedDevCard == 0:
+%if devCards['plenty'] != 0 and playedDevCard == 0 and currentTurn == True:
 		You currently have {{devCards['plenty']}} Year of Plenty cards available. Would you like to play one?</p>            
 		<a href="javascript:playCard('plenty','playing')" class="bottom half left">Yes I would!</a>
 		<a href="javascript:closeModal();" class="bottom half right">No I wouldn't.</a>
+%elif currentTurn == False:
+		You currently have {{devCards['plenty']}} Year of Plenty cards available, but it is not your turn</p>
+		<a href="javascript:closeModal();" class="bottom left">Got it!</a>
 %elif devCards['plenty'] != 0 and playedDevCard != 0:
 		You currently have {{devCards['plenty']}} Year of Plenty cards available, but have already played a development card this turn.</p>
 		<a href="javascript:closeModal();" class="bottom left">Got it!</a>
@@ -57,10 +63,13 @@
 %elif showCard == 'monopoly':
 	<h2>Monopoly card</h2>
 	<p class="generic">This card allows you to take a monopoly on a single resource, forcing all players currently holding that resource to hand it over to you.
-%if devCards['monopoly'] != 0 and playedDevCard == 0:
+%if devCards['monopoly'] != 0 and playedDevCard == 0 and currentTurn == True:
 		You currently have {{devCards['monopoly']}} Monopoly cards available. Would you like to play one?</p>            
 		<a href="javascript:playCard('monopoly','playing')" class="bottom half left">Yes I would!</a>
 		<a href="javascript:closeModal();" class="bottom half right">No I wouldn't.</a>
+%elif currentTurn == False:
+		You currently have {{devCards['monopoly']}} Monopoly cards available, but it is not your turn</p>
+		<a href="javascript:closeModal();" class="bottom left">Got it!</a>
 %elif devCards['monopoly'] != 0 and playedDevCard != 0:
 		You currently have {{devCards['monopoly']}} Monopoly cards available, but have already played a development card this turn.</p>
 		<a href="javascript:closeModal();" class="bottom left">Got it!</a>
@@ -77,10 +86,13 @@
 %elif showCard == 'road':
 	<h2>Road Building card</h2>
 	<p class="generic">This card allows you to take two roads at no additional cost. 
-%if devCards['road'] != 0 and playedDevCard == 0:
+%if devCards['road'] != 0 and playedDevCard == 0 and currentTurn == True:
 		You currently have {{devCards['road']}} Road Building cards available. Would you like to play one?</p>            
 		<a href="javascript:playCard('road','playing')" class="bottom half left">Yes I would!</a>
 		<a href="javascript:closeModal();" class="bottom half right">No I wouldn't.</a>
+%elif currentTurn == False:
+		You currently have {{devCards['road']}} Road Building cards available, but it is not your turn</p>
+		<a href="javascript:closeModal();" class="bottom left">Got it!</a>
 %elif devCards['road'] != 0 and playedDevCard != 0:
 		You currently have {{devCards['road']}} Road Building cards available, but have already played a development card this turn.</p>
 		<a href="javascript:closeModal();" class="bottom left">Got it!</a>
@@ -92,10 +104,13 @@
 %elif showCard == 'knight':
 	<h2>Knight card</h2>
 	<p class="generic">This card allows you to move the thief and steal a single, random resource from a given player. You have played {{devCards['knightsPlayed']}},
-%if devCards['knight'] != 0 and playedDevCard == 0:
+%if devCards['knight'] != 0 and playedDevCard == 0 and currentTurn == True:
 		and currently have {{devCards['knight']}} Knight cards available. Would you like to play one?</p>            
 		<a href="javascript:playCard('knight','playing')" class="bottom half left">Yes I would!</a>
 		<a href="javascript:closeModal();" class="bottom half right">No I wouldn't.</a>
+%elif currentTurn == False:
+		You currently have {{devCards['knight']}} Knight cards available, but it is not your turn</p>
+		<a href="javascript:closeModal();" class="bottom left">Got it!</a>
 %elif devCards['knight'] != 0 and playedDevCard != 0:
 		and currently have {{devCards['knight']}} Knight cards available, but have already played a development card this turn.</p>
 		<a href="javascript:closeModal();" class="bottom left">Got it!</a>

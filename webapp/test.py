@@ -165,7 +165,6 @@ def getResources(playerID):
 	for resource in resources:
 		playerInfo['resources'][resource] += int(resources[resource])
 	writePlayerInfo(playerID, playerInfo)
-	writei2c('pi', 'readResources')
 
 def displayResources(playerID):
 #This function builds a json string to send back to the client, which will allow it to update it's
@@ -177,7 +176,6 @@ def displayResources(playerID):
 	#The flag's values are defined in the js/functions.js file.
 	output = playerInfo['resources'].copy()
 	output['dev'] = sum(playerInfo['cards'].values()) + sum(playerInfo['onHold'].values())
-	output['flag'] = playerInfo['flag']
 	#If we're reading stuff for the current player, then we need to check a few other things as well.
 	if(gameStatus['currentPlayer'] == playerID):
 		response = readi2c('micro', playerID)
@@ -190,10 +188,20 @@ def displayResources(playerID):
 		#And finally we need to see if we're in the middle of a knight card, and if so set the flag.
 		elif (gameStatus['playingKnight'] == 1):
 			output['flag'] = "8"
-		else:
+		elif playerInfo['flag'] != "15":
 			if(gameStatus['runningPurchase'] == 1):
 				gameStatus['runningPurchase'] = 0
 				writeGameInfo("gameState", gameStatus)
+			output['flag'] = playerInfo['flag']
+		elif playerInfo['flag'] == "15":
+			if(gameStatus['runningPurchase'] == 0):
+				gameStatus['runningPurchase'] = 1
+				writeGameInfo("gameState", gameStatus)
+			output['flag'] = playerInfo['flag']
+		else:
+			output['flag'] = playerInfo['flag']
+	else:
+		output['flag'] = playerInfo['flag']
 	#We also need to send the player's current points - all of them, not just the public ones.
 	output['points'] = playerInfo['points'] + playerInfo['cards']['victory'] + playerInfo['onHold']['victory']
 	#But if they're at or above 10 points, they've won the game, so skip to that function to do things.
@@ -347,6 +355,7 @@ def rollDice(playerID):
 			playerInfo = getPlayerInfo(i)
 			playerInfo['flag'] = "11"
 			writePlayerInfo(i, playerInfo)
+		writei2c('pi', 'readResources')
 	else:
 		doASevenRoll(int(playerID))
 		writei2c('pi', 'knightDevCard')
@@ -413,6 +422,7 @@ def endTurn(playerID):
 				nextPlayerId = gameState['currentPlayer']
 				gameState['setupComplete'] = 1
 				getResources(playerID)
+				writei2c('pi', 'readResources')
 				#Need to retreive player info again, it's been updated.
 				playerInfo  = getPlayerInfo(playerID)
 			elif gameState['reverse'] == 1:
@@ -421,6 +431,7 @@ def endTurn(playerID):
 				else:
 					nextPlayerId = gameState['currentPlayer'] - 1
 				getResources(playerID)
+				writei2c('pi', 'readResources')
 				#Need to retreive player info again, it's been updated.
 				playerInfo  = getPlayerInfo(playerID)
 		gameState['currentPlayer'] = nextPlayerId
@@ -909,7 +920,11 @@ def handle_ajax():
 			else:
 				return template('trade')
 		elif mid == "purchase":
-			return template('purchase', newPurchase=True)
+			if (getGameStatus()['diceRolled'] == 0):
+				diceRolled = False
+			else:
+				diceRolled = True
+			return template('purchase', newPurchase=True, diceRolled=diceRolled)
 		elif mid == "devCards":
 			playerInfo = getPlayerInfo(playerID)
 			output = playerInfo['cards'].copy()
@@ -920,7 +935,7 @@ def handle_ajax():
 			gameStatus = getGameStatus()
 			playerInfo = getPlayerInfo(int(request.get_cookie('playerID')))
 			errorType, piece = readi2c('pieceType', playerID)
-			if errorType == 'confirm' and gameStatus['setupComplete'] == 1 and gameStatus['runningPurchase'] == 0 and gameStatus['buildingRoads'] == -1 and piece != 'thief':
+			if errorType == 'confirm' and gameStatus['setupComplete'] == 1 and gameStatus['buildingRoads'] == -1 and piece != 'thief' and gameStatus['runningPurchase'] == 0:
 				if playerInfo['quickConfirm'] == 0:
 					if piece != 'city':
 						gameState = getGameStatus();
@@ -937,21 +952,23 @@ def handle_ajax():
 							gameState['runningPurchase'] = 0
 							writeGameInfo("gameState", gameState)
 							return template('purchase', invalidPurchase=True, purchaseItem=getCosts(piece))
-						else:
-							if gameState['runningPurchase'] == 1:
-								gameState['runningPurchase'] = 0
-								writeGameInfo('gameState', gameState)
-								if piece != 'development card' and placePiece == True:
-									#If they didn't purchase a development card, have them place their piece, if they need to.
-									return template('purchase', placePiece=True)
-							elif  piece == 'city':
-								#Cities are weird, because they can be purchased by removing a settlement.
+					else:
+						if gameState['runningPurchase'] == 1:
+							if piece != 'development card' and placePiece == True:
+								#If they didn't purchase a development card, have them place their piece, if they need to.
 								return template('purchase', placePiece=True)
-							else:
-								return
+						elif piece == 'city':
+							#Cities are weird, because they can be purchased by removing a settlement.
+							return template('purchase', placePiece=True)
+						else:
+							return
 			else:
 				if (errorType == 'confirm' and playerInfo['quickConfirm'] == 0) or gameStatus['setupComplete'] == 0 or errorType != 'confirm' or piece == 'thief':
 					return template('pieceStuff', errorType=errorType, piece=piece)
+				elif (errorType == 'confirm' and playerInfo['quickConfirm'] == 1):
+					getPorts(playerID)
+					writei2c('pi', 'confirm')
+					return "close"
 		elif mid == "initSetup":
 			#"Please place your initial __________ now"
 			initPlace = getPlayerInfo(playerID)['initialPlacements']
@@ -1064,11 +1081,11 @@ def handle_form():
 				return template('purchase', invalidPurchase=True, purchaseItem=getCosts(value['type']))
 			else:
 				gameState = getGameStatus()
-				if gameState['runningPurchase'] == 1:
-					gameState['runningPurchase'] = 0
-					writeGameInfo('gameState', gameState)
 				if value['type'] != 'development card' and placePiece == True:
 					#If they didn't purchase a development card, have them place their piece, if they need to.
+					playerInfo = getPlayerInfo(int(request.get_cookie("playerID")))
+					playerInfo['flag'] = "15"
+					writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
 					return template('purchase', placePiece=True)
 				elif value['type'] == 'development card':
 					if purchaseResult == 'plenty':
@@ -1108,7 +1125,11 @@ def handle_form():
 			writeGameInfo("gameState", gameStatus)
 			return template('devCards', devCards=output, playCard=value['type'])
 		else:
-			return template('devCards', devCards=output, playedDevCard=gameStatus['devCardPlayed'], showCard=value['type'])
+			if gameStatus['currentPlayer'] == int(request.get_cookie("playerID")):
+				currentTurn = True
+			else:
+				currentTurn = False
+			return template('devCards', devCards=output, playedDevCard=gameStatus['devCardPlayed'], showCard=value['type'], currentTurn=currentTurn)
 	elif fid == "yearofplenty":
 		#If a year of plenty form was submitted
 		from json import loads
@@ -1167,10 +1188,14 @@ def handle_i2c():
 		#Every time we confirm, check if we're in initial setup and if so auto inc to next player.
 		checkIfNextPlayer(int(request.get_cookie("playerID")))
 		gameState = getGameStatus();
-		if gameState['runningPurchase'] == 1:
-			#If we're confirming a purchase, we've completed it.
-			gameState['runningPurchase'] = 0
-			writeGameInfo("gameState", gameState)
+		playerInfo = getPlayerInfo(int(request.get_cookie("playerID")))
+		if playerInfo['flag'] == "15":
+			playerInfo['flag'] = "0"
+			writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
+			if gameState['runningPurchase'] == 1:
+				#If we're confirming a purchase, we've completed it.
+				gameState['runningPurchase'] = 0
+				writeGameInfo("gameState", gameState)
 		if gameState['buildingRoads'] > -1 and gameState['buildingRoads'] < 2:
 			#Increment number of roads built if we're buliding roads.
 			gameState['buildingRoads'] += 1
