@@ -10,11 +10,24 @@
 		<body class="wait">
 			<script>setInterval("refreshContent(\"readyState\", 0)", 1000)</script>
 			<div id="container">
-				<div id="head">
-					<h2>Waiting for players</h2>
-					<!--img src="images/settings.png" class="settingsImg" /--->
+				<div id="head" style="background-color: rgba(255,253,208,.5)">
+					<span  class="headElement" id="imageReplace">
+						<img id="leftHeadImg" src="images/menu_gray.png"/>
+					</span>
+					<div id="middleHead" class="headElement">
+						<div class="centered">
+							<h2>Waiting for Players</h2>
+						</div>
+					</div>
+					<a class="headElement" href="javascript:openModal('settings')" id="rightHead"><img src="images/settings.png"/></a>
 				</div>
-				<div id="body">
+
+				<div id="body">         
+					<div class="overlay" id="modal"></div>
+        				 <div class="modal" id="ModalBox">
+                               			  <p>Loading...</p>
+     					    </div>
+
 %numPlayersDisplay = str(numPlayers)
 					Waiting for players! Currently have <span id="playersReady">{{numPlayersDisplay}}</span> players ready.<br />
 					<span id="readyLinks">
