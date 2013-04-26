@@ -1240,10 +1240,11 @@ def handle_settings():
 	elif todo == "reallyEndGame":
 		endGame(-1)
 	elif todo == "restartGame":
-		playerInfo = getPlayerInfo(int(request.get_cookie("playerID")))
-		if playerInfo['flag'] == "9":
-			playerInfo['flag'] = "14"
-			writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
+		if request.get_cookie("playerID") is not None:
+			playerInfo = getPlayerInfo(int(request.get_cookie("playerID")))
+			if playerInfo['flag'] == "9":
+				playerInfo['flag'] = "14"
+				writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
 		return template('settings', restartGame=True)
 	elif todo == 'reallyRestartGame':
 		from time import sleep
@@ -1253,10 +1254,11 @@ def handle_settings():
 			sleep(2)
 		restartGame()
 	elif todo == 'cancel':
-		playerInfo = getPlayerInfo(int(request.get_cookie("playerID")))
-		if playerInfo['flag'] == "14":
-			playerInfo['flag'] = "9"
-			writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
+		if request.get_cookie("playerID") is not None:
+			playerInfo = getPlayerInfo(int(request.get_cookie("playerID")))
+			if playerInfo['flag'] == "14":
+				playerInfo['flag'] = "9"
+				writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
 		return
 
 # This request handles initial loading of the page.
