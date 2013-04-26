@@ -1226,10 +1226,11 @@ def handle_settings():
 			playerInfo['quickConfirm'] = 1
 		writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
 	elif todo == "shutdown":
-		playerInfo = getPlayerInfo(int(request.get_cookie("playerID")))
-		if playerInfo['flag'] == "9":
-			playerInfo['flag'] = "14"
-			writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
+		if request.get_cookie("playerID") is not None:
+			playerInfo = getPlayerInfo(int(request.get_cookie("playerID")))
+			if playerInfo['flag'] == "9":
+				playerInfo['flag'] = "14"
+				writePlayerInfo(int(request.get_cookie("playerID")), playerInfo)
 		return template('settings', confirmShutdown=True)
 	elif todo == "reallyShutdown":
 		shutdown()
