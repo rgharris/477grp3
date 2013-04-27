@@ -24,6 +24,7 @@ In order to run the code in this directory and the web interface, you need to ru
 Additionally, in order to replicate the functionality of the raspberry pi in the board, you will need to install and configure hostapd for an access point (and have a compatible USB Wireless adapter attached to the pi), udhcpd for DHCP, and dnsmasq for DNS services, to give the pi a domain so that you can access it easily. Additionally, dnsmasq can be used instead of udhcpd for DHCP serving, though we did not do this. Instructions for setting up all of these can be easily found online. Some quick, possibly helpful links, include:
 
 * [The Raspberry Pi Blog](http://www.rpiblog.com/2012/12/turn-raspberry-pi-into-wireless-access.html)'s post on making an access point of a raspberry pi, which contains useful info on udhcpd and hostapd.
+* The wireless adapter we used to run the access point on the Raspberry Pi was the [Tenda W311MI 150Mbps Wireless PICO USB Adapter] (http://www.amazon.com/gp/product/B006GCYAOI). 
 * [Andrew Oberstar](http://www.andrewoberstar.com/blog/2012/12/30/raspberry-pi-as-server-dns-and-dhcp)'s blog post on using the Raspberry Pi as a server for DNS and DHCP, which explains configuring dnsmasq.
 
 Finally, we added catronBootup.py and bootupInterface.sh to `/etc/rc.local` so that they would start on boot. bootupInterface.sh should come before catronBootup.py in the file.
