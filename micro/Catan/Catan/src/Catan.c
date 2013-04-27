@@ -22,7 +22,8 @@ uint8_t DesertHex = 0;
 // Pieces each player has remaining of each type [player][piecetype] {roads,settlements,cities}
 uint8_t pieces_remaining[4][3] ={{15,5,4},{15,5,4},{15,5,4},		 {15,		5,		     4}};
 uint8_t roadmap[4][15][3] = {0};	// [player][road][{adjacent city1, adjacent city2,mark}]
-uint8_t longestRoadOwnerPrev = 0;					
+uint8_t longestRoadOwnerPrev = 0;
+uint8_t thiefHex = 0xFF;					
 uint8_t dice_roll_state = 0;		// Has the dice been rolled yet?
 uint8_t last_pos_confirmed = 0xFF;		// Gives the position of the last piece to be confirmed as placed. Needs to be set to -1 once it serves its purpose
 uint8_t last_pos_rejected = 0xFF;		// Gives position of last piece to be rejected. Should be cleared (-1) at end of clean run of check board state
@@ -194,7 +195,7 @@ void generate_board(void) {
 	
 	//Doesn't always start at the same time, so seed with current cpu count HERE as opposed to board_init.
 	uint32_t start = ((Get_sys_count() & 0xFF0)>>4) % 12;
-	uint8_t hex_order[] = {0,1,3,5,16,17,8,9,10,11,12,15,2,4,6,7,13,14,18};		// Used to lay out rarity values
+	uint8_t hex_order[] = {0,1,3,5,16,17,8,9,10,11,12,15,	2,4,6,7,13,14,	18};		// Used to lay out rarity values
 	uint8_t rarity_order[] = {5,2,6,3,8,10,9,12,11,4,8,10,9,4,5,6,3,11};
 	//first generate random number between 0 and 11
 	uint8_t desertFix = 0;
@@ -208,7 +209,11 @@ void generate_board(void) {
 			Hex2Rarity[hex_order[(start+i) % 12]] = rarity_order[i-desertFix];
 		}
 	}
-	start = (start/2) + 11;
+	if (start == 0)
+	{
+		start = 12;
+	}
+	start = ((start-1)/2) + 12;
 	for (i=0;i<6;i++){
 		if(Hex2Resource[hex_order[(start+i) % 6 + 12]] == 5){
 			desertFix = 1;
@@ -289,6 +294,7 @@ void generate_board(void) {
 			posSetOwner(7*18+i,1);	// Doesn't matter who owns the thief, so long as someone does
 			setPosLegal(7*18+i);   // We should expect to see the thief on the sensor
 			DesertHex = i;
+			thiefHex = i;
 		}
 	}
 }
@@ -366,10 +372,10 @@ void mainGameLoop(void)
 			Hex2Rarity[DesertHex] = -1;
 			refresh_display();
 		}
-		if (s_memory[PI_EVENT_REG] == PI_END_GAME) {
-			s_memory[PI_EVENT_REG] = 0;
+		if (isGameOver()||isPiShutDown()) {
 			return;
 		}
+		
 	}
 }	
 
@@ -748,8 +754,8 @@ void checkBoardState(int8_t settlement, int8_t road, int8_t city, int8_t thief, 
 			}			
 		}
 		
-		// Don't leave check board state unless the entire board has confirmed pieces
-		if (boardState == ALL_CONFIRMED)
+		// Don't leave check board state unless the entire board has confirmed pieces or if the PI wants to end the game or shut down
+		if ((boardState == ALL_CONFIRMED) || isPiShutDown() || isGameOver())
 		{
 			return;
 		}
@@ -965,6 +971,7 @@ int8_t isLegal (uint8_t pos, int8_t settlement, int8_t road, int8_t city, int8_t
 
 void assign_resources(void)
 {
+
 	// Should assign the resources to the resources to receive registers so the Pi can retrieve them
 	uint8_t i,j,k;	//i=row, j= column (hex), k = adjacent hex number
 	
@@ -987,13 +994,19 @@ void assign_resources(void)
 				{
 					if (pos2AdjHex(i*18+j,k)!=-1)
 					{
-						if ((Hex2Resource[pos2AdjHex(i*18+j,k)] < 6) && (Hex2Resource[pos2AdjHex(i*18+j,k)] > -1))
+						
+						if ((Hex2Resource[pos2AdjHex(i*18+j,k)] < 5) && (Hex2Resource[pos2AdjHex(i*18+j,k)] > -1))
 						{
 							// Only assign resource if it is the same as the current dice value
-							if (Hex2Rarity[pos2AdjHex(i*18+j,k)] == s_memory[DIE_VALUE_REG])
+							if ((Hex2Rarity[pos2AdjHex(i*18+j,k)] == s_memory[DIE_VALUE_REG]) && (thiefHex != pos2AdjHex(i*18+j,k)))
 							{
 								s_memory[RESOURCE_REC_REG+(pos2Owner(i*18+j)-1)*5+Hex2Resource[pos2AdjHex(i*18+j,k)]] += city_map[i*18+j];	
-							}							
+							}
+							if (thiefHex == pos2AdjHex(i*18+j,k))
+							{
+								s_memory[DEBUG_REG+1] = pos2AdjHex(i*18+j,k);
+							}
+																												
 						}
 					}
 				}				
@@ -1001,73 +1014,76 @@ void assign_resources(void)
 		}
 	}
 	
-	// Now need to subtract resources hidden by thief
-	// Check each thief position (don't forget middle thief at end
-	for (j=0;j<18;j++)
-	{
-		// wait for the hex that actually has a thief on it (thief owner is meaningless except to tell it exists)
-		if (pos2Owner(126+j))
-		{
-			// Make sure the thief actually affects the next roll
-			if (Hex2Rarity[j]==s_memory[DIE_VALUE_REG])
-			{
-				// Make sure the resource value was assigned correctly
-				if ((Hex2Resource[j] < 6) && (Hex2Resource[j] > -1))
-				{
-					// 1st check the three cities on the same MUX
-					for (i=1;i<7;i+=2)
-					{
-						// And if they are owned, subtract them from the total
-						if (pos2Owner(i*18+j))
-						{
-							s_memory[RESOURCE_REC_REG+(pos2Owner(i*18+j)-1)*5+Hex2Resource[j]] -= city_map[i*18+j];
-						}							
-					}
-					// 2nd check the three cities on different MUX's
-					for (i=0;i<3;i++)
-					{
-						if (pos2AdjPos(126+j,i) != -1)
-						{
-							// And if they are owned, subtract them from the total
-							if (pos2Owner(pos2AdjPos(126+j,i)))
-							{
-								s_memory[RESOURCE_REC_REG+(pos2Owner(pos2AdjPos(126+j,i))-1)*5+Hex2Resource[j]] -= city_map[pos2AdjPos(126+j,i)];
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	// Middle Thief Check
-	if (pos2Owner(145))
-	{
-		// Make sure the thief actually affects the next roll
-		if (Hex2Rarity[j]==s_memory[DIE_VALUE_REG])
-		{
-			// Make sure the resource value was assigned correctly
-			if ((Hex2Resource[j] < 6) && (Hex2Resource[j] > -1))
-			{
-				// check all six city positions adjacent
-				for (i=0;i<6;i++)
-				{
-					// And if they are owned, subtract them from the total
-					if (pos2Owner(MiddleThiefAdjSettlements[i]))
-					{
-						s_memory[RESOURCE_REC_REG+(pos2Owner(MiddleThiefAdjSettlements)-1)*5+Hex2Resource[j]] -= city_map[MiddleThiefAdjSettlements[i]];
-					}					
-				}
-			}
-		}
-	}
+	//// Now need to subtract resources hidden by thief
+	//// Check each thief position (don't forget middle thief at end
+	//for (j=0;j<18;j++)
+	//{
+		//// wait for the hex that actually has a thief on it (thief owner is meaningless except to tell it exists)
+		//if (pos2Owner(126+j))
+		//{
+			//// Make sure the thief actually affects the next roll
+			//if (Hex2Rarity[j]==s_memory[DIE_VALUE_REG])
+			//{
+				//// Make sure the resource value was assigned correctly
+				//if ((Hex2Resource[j] < 6) && (Hex2Resource[j] > -1))
+				//{
+					//// 1st check the three cities on the same MUX
+					//for (i=1;i<7;i+=2)
+					//{
+						//// And if they are owned, subtract them from the total
+						//if (pos2Owner(i*18+j))
+						//{
+							//s_memory[RESOURCE_REC_REG+(pos2Owner(i*18+j)-1)*5+Hex2Resource[j]] -= city_map[i*18+j];
+						//}							
+					//}
+					//// 2nd check the three cities on different MUX's
+					//for (i=0;i<3;i++)
+					//{
+						//if (pos2AdjPos(126+j,i) != -1)
+						//{
+							//// And if they are owned, subtract them from the total
+							//if (pos2Owner(pos2AdjPos(126+j,i)))
+							//{
+								//s_memory[RESOURCE_REC_REG+(pos2Owner(pos2AdjPos(126+j,i))-1)*5+Hex2Resource[j]] -= city_map[pos2AdjPos(126+j,i)];
+							//}
+						//}
+					//}
+				//}
+			//}
+		//}
+	//}
+	//
+	//// Middle Thief Check
+	//if (pos2Owner(145))
+	//{
+		//// Make sure the thief actually affects the next roll
+		//if (Hex2Rarity[j]==s_memory[DIE_VALUE_REG])
+		//{
+			//// Make sure the resource value was assigned correctly
+			//if ((Hex2Resource[j] < 6) && (Hex2Resource[j] > -1))
+			//{
+				//// check all six city positions adjacent
+				//for (i=0;i<6;i++)
+				//{
+					//// And if they are owned, subtract them from the total
+					//if (pos2Owner(MiddleThiefAdjSettlements[i]))
+					//{
+						//s_memory[RESOURCE_REC_REG+(pos2Owner(MiddleThiefAdjSettlements)-1)*5+Hex2Resource[j]] -= city_map[MiddleThiefAdjSettlements[i]];
+					//}					
+				//}
+			//}
+		//}
+	//}
 }
 
 void assign_initial_resources(int pos)
 {
 	// Should assign the resources to the resources to receive registers so the Pi can retrieve them
 	uint8_t i;
-	
+	if (pos>MIDDLE_THIEF_POS)
+	{
+		return;
+	}
 	for (i=0;i<3;i++)
 	{
 		// Assign the resources to the proper register for each of the 3 adjacent hexes
@@ -1093,7 +1109,13 @@ uint8_t buildRoad(int8_t initial_placement, uint8_t last_settlement)
 	uint8_t temp_pos;
 	last_pos_confirmed = 0xFF;
 	while(last_pos_confirmed == 0xFF) {
+		// Need to make sure the players aren't trying to end the game or shutdown pi
+		if (isPiShutDown()||isGameOver())
+		{
+			return 0xFF;
+		}
 		checkBoardState(0,1,0,0,initial_placement,last_settlement);
+		
 	}
 	temp_pos = last_pos_confirmed;
 	last_pos_confirmed = 0xFF;
@@ -1105,6 +1127,11 @@ uint8_t buildSettlement(int8_t initial_placement)
 	uint8_t temp_pos;
 	last_pos_confirmed = 0xFF;
 	while(last_pos_confirmed == 0xFF) {
+		// Need to make sure the players aren't trying to end the game or shutdown pi
+		if (isPiShutDown()||isGameOver())
+		{
+			return 0xFF;
+		}
 		checkBoardState(1,0,0,0,initial_placement,0xFF);
 	}
 	temp_pos = last_pos_confirmed;
@@ -1117,7 +1144,13 @@ uint8_t buildCity()
 	uint8_t temp_pos;
 	last_pos_confirmed = 0xFF;
 	while(last_pos_confirmed == 0xFF) {
+		// Need to make sure the players aren't trying to end the game or shutdown pi
+		if (isPiShutDown()||isGameOver())
+		{
+			return 0xFF;
+			
 		checkBoardState(0,0,1,0,0,0xFF);
+		}
 	}
 	temp_pos = last_pos_confirmed;
 	last_pos_confirmed = 0xFF;
@@ -1139,7 +1172,13 @@ uint8_t moveThief()
 	clearPosLegal(last_thief_pos);
 	last_pos_confirmed = 0xFF;
 	while(last_pos_confirmed == 0xFF) {
+		// Need to make sure the players aren't trying to end the game or shutdown pi
+		if (isPiShutDown()||isGameOver())
+		{
+			return 0xFF;
+		}
 		checkBoardState(0,0,0,1,0,last_thief_pos);
+		
 	}
 	temp_pos = last_pos_confirmed;
 	last_pos_confirmed = 0xFF;
@@ -1156,6 +1195,15 @@ void confirmNewPiece(void)
 	{
 		// Do something for thieves.
 		// Thief Placement affects resource distribution, redo resources
+		if (s_memory[NEW_PIECE_LOC_REG] == MIDDLE_THIEF_POS)
+		{
+			thiefHex = 18;
+		}
+		else
+		{
+			thiefHex = s_memory[NEW_PIECE_LOC_REG] % 18;
+		}
+		s_memory[DEBUG_REG] = thiefHex;
 	}
 	else if ((s_memory[NEW_PIECE_LOC_REG]/18)%2 == 0)
 	{
@@ -1728,6 +1776,27 @@ void offAnimate (void) {
 	delay_ms(400);
 }
 
+void fanimate (void) {
+	uint8_t fan[12][2] = {{2,1},{14,0},{14,15},{13,12},{13,11},{7,10},{7,9},{6,8},{6,17},{4,16},{4,5},{2,3}};
+	uint8_t i,j,k;
+	uint32_t color[12] = {COLOR_RED,COLOR_BRICK,COLOR_YELLOW,COLOR_GREEN,COLOR_BLUE,COLOR_PURPLE};
+    for(k=0;k<3;k++) {
+		for(j=0;j<6;j++) {	
+			for (i=0;i<12;i++) {
+				rgb_hex_set(fan[i][0],color[j]);
+				rgb_hex_set(fan[i][1],color[j]);
+				rgb_hex_set(fan[(i+6)%12][0],COLOR_BLACK);
+				rgb_hex_set(fan[(i+6)%12][1],COLOR_BLACK);
+				//rgb_hex_set(fan[(i+6)%12][0],color[(j+1)%7]);
+				//rgb_hex_set(fan[(i+6)%12][1],color[(j+1)%7]);
+				delay_ms(80);
+			}		
+		}
+	}	
+	rgb_clear_all();
+	offAnimate();
+}
+
 void clear_resources(void)
 {
 	uint8_t i;
@@ -1735,6 +1804,11 @@ void clear_resources(void)
 	{
 		s_memory[RESOURCE_REC_REG+i] = 0;
 	}
+}
+
+void shutdown(void)
+{
+	return;
 }
 
 void RoadmapTest (void)

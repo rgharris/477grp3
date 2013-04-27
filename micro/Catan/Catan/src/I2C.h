@@ -103,6 +103,8 @@ uint8_t isKnightPlayed(void);
 uint8_t isNewPieceConfirm(void);
 uint8_t isNewPieceReject(void);
 uint8_t PiecePurchased(void);
+uint8_t isGameOver(void);
+uint8_t isPiShutDown(void);
 
 /*static void twi_slave_rx( U8 u8_value );
 static U8 twi_slave_tx( void );

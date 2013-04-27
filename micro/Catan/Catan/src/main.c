@@ -55,7 +55,9 @@ int main(void)
 		buildRoad(1, pos);
 		assign_initial_resources(pos);
 	}
+	
 	refresh_display();
+	
 	
 
 	
@@ -65,24 +67,39 @@ int main(void)
 	//////////////////////////////////////////////////////////////////////////
 	mainGameLoop();
 	
+	
 	//rgb_clear_all();
 	//rarity_clear_all();
 	
 	
 	//////////////////////////////////////////////////////////////////////////
-	// End Game, want to play a new one?
+	// End Game, want to play a new one? Or is Pi Shutting Down?
 	//////////////////////////////////////////////////////////////////////////
-	while(s_memory[PI_EVENT_REG]!=PI_NEW_GAME) {
+	while((s_memory[PI_EVENT_REG]!=PI_NEW_GAME)&&!isPiShutDown()) {
 		delay_ms(200);
 	}
 	
-	offAnimate();
-
-	wdt_enable(&opt_WATCH);
 	
-	while(1) {
-		delay_ms(200);
+	// At this point we are either turning off the pi or we are starting a new game.
+	if (isPiShutDown())
+	{
+		
+		// Show fancy animations for ~30seconds so the players know when it is safe to unplug
+		fanimate();
+		while (1)
+		{
+			delay_ms(200);
+		}
 	}
+	else
+	{
+		// Turn on the watch dog timer to reset the micro for a new game
+		wdt_enable(&opt_WATCH);
+		while(1) {
+			onAnimate();
+		}
+	}
+	
 }	
 
 // Prototyping

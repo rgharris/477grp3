@@ -220,3 +220,18 @@ uint8_t PiecePurchased(void){
 		return s_memory[PI_EVENT_REG] - PI_ROAD_PURCHASE;
 	}
 }
+
+uint8_t isGameOver(void){
+	if (s_memory[PI_EVENT_REG] == PI_END_GAME)
+	{
+		return 1;
+	}
+	return 0;
+}
+uint8_t isPiShutDown(void){
+	if (s_memory[PI_EVENT_REG] == PI_SHUTDOWN)
+	{
+		return 1;
+	}
+	return 0;
+}

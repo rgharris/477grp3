@@ -274,7 +274,11 @@ void onAnimate (void);
 
 void offAnimate (void);
 
+void fanimate (void);
+
 void clear_resources(void);
+
+void shutdown(void);
 
 void RoadmapTest (void);
 
