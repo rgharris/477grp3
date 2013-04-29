@@ -586,7 +586,7 @@ def checkLargestArmy():
 		largestArmyInfo = getPlayerInfo(largestArmyPlayer)
 		largestArmy = largestArmyInfo['playedKnights']
 	else:
-		largestArmy = 5
+		largestArmy = 3
 	for player in range(0, gameState['numPlayers']):
 		playerInfo = getPlayerInfo(player)
 		if playerInfo['playedKnights'] > largestArmy:
