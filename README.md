@@ -1,7 +1,7 @@
 The Hackers of Catron
 =====================
 
-* Author:			Team Hex Me, Baby! ([group webpage](https://engineering.purdue.edu/477grp3/))
+* Author:			Team Hex Me, Baby! ([group webpage](https://engineering.purdue.edu/ece477/Archive/2013/Spring/S13-Grp03/))
 * Date:				Spring Semester, 2013
 * Version:			0.1.0
 * Github:			<https://github.com/rgharris/477grp3>
